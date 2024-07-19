@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -24,6 +25,9 @@ public class ReqRes {
     private String email;
     private String password;
     private String role;
+    private boolean active;
+    private String otp;
+    private LocalDateTime otpGeneratedTime;
     private Users users;
     private List<Users> usersList;
 }

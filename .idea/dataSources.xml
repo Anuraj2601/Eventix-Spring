@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="eventix@localhost" uuid="947d4d62-4bbf-4acd-abfc-2f481e74ffdd">
+    <data-source source="LOCAL" name="eventix@localhost" uuid="e620cfbe-0b74-47cb-bb42-d9b73c7b3fa0">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
-      <imported>true</imported>
-      <remarks>$PROJECT_DIR$/src/main/resources/application.properties</remarks>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://localhost:3306/eventix</jdbc-url>
       <jdbc-additional-properties>

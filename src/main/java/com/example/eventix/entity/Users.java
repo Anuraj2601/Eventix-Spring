@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -24,9 +25,13 @@ public class Users implements UserDetails {
     private String firstname;
     private String lastname;
     private String password;
+    private boolean active;
+    private String otp;
+    private LocalDateTime otpGeneratedTime;
 
     @Column(columnDefinition = "varchar(255) default 'student' ")
     private String role;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

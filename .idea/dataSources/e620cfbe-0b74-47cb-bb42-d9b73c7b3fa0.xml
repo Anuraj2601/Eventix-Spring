@@ -1025,7 +1025,7 @@
     </schema>
     <schema id="329" parent="1" name="eventix">
       <Current>1</Current>
-      <LastIntrospectionLocalTimestamp>2024-07-12.09:15:56</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2024-07-17.14:03:01</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_general_ci</CollationName>
     </schema>
     <schema id="330" parent="1" name="information_schema">
@@ -1066,7 +1066,7 @@
       <CollationName>utf8mb4_general_ci</CollationName>
     </table>
     <column id="342" parent="341" name="id">
-      <AutoIncrement>1</AutoIncrement>
+      <AutoIncrement>4</AutoIncrement>
       <DasType>int(11)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -1093,6 +1093,8 @@
     </column>
     <column id="348" parent="341" name="role">
       <DasType>varchar(255)|0s</DasType>
+      <DefaultExpression>&apos;student&apos;</DefaultExpression>
+      <NotNull>1</NotNull>
       <Position>7</Position>
     </column>
     <index id="349" parent="341" name="PRIMARY">
