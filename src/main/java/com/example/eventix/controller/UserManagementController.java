@@ -59,4 +59,16 @@ public class UserManagementController {
     public ResponseEntity<ReqRes> deleteUser(@PathVariable Integer userid) {
         return ResponseEntity.ok(usersManagementService.deleteUser(userid));
     }
+
+    @PutMapping("/verify-account")
+    public ResponseEntity<ReqRes> verifyAccount(@RequestParam String email, @RequestParam String otp) {
+        return ResponseEntity.ok(usersManagementService.verifyAccount(email, otp));
+    }
+
+    @PutMapping("/regenerate-otp"  )
+    public ResponseEntity<ReqRes> regenerateOtp(@RequestParam String email) {
+        return ResponseEntity.ok(usersManagementService.regenerateOtp(email));
+    }
+
+
 }
