@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/v1/announcement")
 @CrossOrigin
@@ -14,14 +16,14 @@ public class AnnouncementController {
     @Autowired
     private AnnouncementService announcementService;
 
-    @GetMapping("/getAnnouncements")
-    public String getAllAnnouncements() {
-        return "All announcements";
+    @GetMapping("/getAllAnnouncements")
+    public ResponseEntity<List<AnnouncementDTO>> getAllAnnouncements() {
+        return ResponseEntity.ok().body(announcementService.getAllAnnouncements());
     }
 
-    @GetMapping("/Announcement/{announcement_id}")
-    public String getAnnouncement(){
-        return "1 announcements";
+    @GetMapping("/getAnnouncement/{announcement_id}")
+    public ResponseEntity<AnnouncementDTO> getAnnouncement(@PathVariable int announcement_id){
+        return ResponseEntity.ok().body(announcementService.getAnnouncement(announcement_id));
     }
 
     @PostMapping("/saveAnnouncement")
@@ -31,13 +33,13 @@ public class AnnouncementController {
     }
 
     @PutMapping("/updateAnnouncement")
-    public String updateAnnouncement(){
-        return "update announcements";
+    public ResponseEntity<AnnouncementDTO> updateAnnouncement(@RequestBody AnnouncementDTO announcementDTO){
+        return ResponseEntity.ok().body(announcementService.updateAnnouncement(announcementDTO));
     }
 
     @DeleteMapping("/deleteAnnouncement")
-    public String deleteAnnouncement(){
-        return "delete announcements";
+    public boolean deleteAnnouncement(@RequestBody AnnouncementDTO announcementDTO){
+        return announcementService.deleteAnnouncement(announcementDTO);
     }
 
 }
