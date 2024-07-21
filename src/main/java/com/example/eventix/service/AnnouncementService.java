@@ -1,8 +1,10 @@
 package com.example.eventix.service;
 
 import com.example.eventix.dto.AnnouncementDTO;
+import com.example.eventix.dto.ResponseDTO;
 import com.example.eventix.entity.Announcements;
 import com.example.eventix.repository.AnnouncementRepo;
+import com.example.eventix.util.VarList;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -19,36 +21,145 @@ public class AnnouncementService {
     private AnnouncementRepo announcementRepo;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private ResponseDTO responseDTO;
 
-    public AnnouncementDTO saveAnnouncement(AnnouncementDTO announcementDTO){
-        Announcements savedAnnouncement =  announcementRepo.save(modelMapper.map(announcementDTO, Announcements.class));
-        return modelMapper.map(savedAnnouncement, AnnouncementDTO.class);
+    public ResponseDTO saveAnnouncement(AnnouncementDTO announcementDTO){
+        try{
+            if(announcementRepo.existsById(announcementDTO.getAnnouncement_id())){
+                responseDTO.setStatusCode(VarList.RSP_DUPLICATED);
+                responseDTO.setMessage("Announcement already exists");
+                responseDTO.setContent(announcementDTO);
 
-    }
+            }else{
+                Announcements savedAnnouncement =  announcementRepo.save(modelMapper.map(announcementDTO, Announcements.class));
+                AnnouncementDTO savedAnnouncementDTO = modelMapper.map(savedAnnouncement, AnnouncementDTO.class);
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Success");
+                responseDTO.setContent(savedAnnouncementDTO);
 
-    public List<AnnouncementDTO> getAllAnnouncements(){
-        List<Announcements> announcementsList = announcementRepo.findAll();
-        return modelMapper.map(announcementsList, new TypeToken<List<AnnouncementDTO>>(){}.getType());
-    }
+            }
 
-    public AnnouncementDTO getAnnouncement(int announcementId){
+            return responseDTO;
 
-        if(announcementRepo.existsById(announcementId)){
-            Announcements announcement = announcementRepo.findById(announcementId).orElse(null);
-            return modelMapper.map(announcement, AnnouncementDTO.class);
-        }else{
-            return null;
+        }catch(Exception e){
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(e.getMessage());
+            responseDTO.setContent(null);
+            return responseDTO;
         }
-    }
 
-    public AnnouncementDTO updateAnnouncement(AnnouncementDTO announcementDTO){
-        Announcements savedAnnouncement =  announcementRepo.save(modelMapper.map(announcementDTO, Announcements.class));
-        return modelMapper.map(savedAnnouncement, AnnouncementDTO.class);
 
     }
 
-    public boolean deleteAnnouncement(AnnouncementDTO announcementDTO){
-        announcementRepo.delete(modelMapper.map(announcementDTO, Announcements.class));
-        return true;
+    public ResponseDTO getAllAnnouncements(){
+
+        try{
+            List<Announcements> announcementsList = announcementRepo.findAll();
+            if(!announcementsList.isEmpty()){
+                List<AnnouncementDTO> announcementDTOList = modelMapper.map(announcementsList, new TypeToken<List<AnnouncementDTO>>(){}.getType());
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Success");
+                responseDTO.setContent(announcementDTOList);
+
+            }else{
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("No data found");
+                responseDTO.setContent(null);
+
+            }
+
+            return responseDTO;
+
+
+        }catch(Exception e){
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(e.getMessage());
+            responseDTO.setContent(null);
+            return responseDTO;
+
+        }
+
+
+    }
+
+    public ResponseDTO getAnnouncement(int announcementId){
+
+        try{
+            if(announcementRepo.existsById(announcementId)){
+                Announcements announcement = announcementRepo.findById(announcementId).orElse(null);
+                AnnouncementDTO announcementDTO =  modelMapper.map(announcement, AnnouncementDTO.class);
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Success");
+                responseDTO.setContent(announcementDTO);
+            }else{
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("No data found");
+                responseDTO.setContent(null);
+            }
+
+            return responseDTO;
+
+        }catch (Exception e){
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(e.getMessage());
+            responseDTO.setContent(null);
+            return responseDTO;
+
+        }
+
+    }
+
+    public ResponseDTO updateAnnouncement(AnnouncementDTO announcementDTO){
+        try{
+            if(announcementRepo.existsById(announcementDTO.getAnnouncement_id())){
+                Announcements savedAnnouncement =  announcementRepo.save(modelMapper.map(announcementDTO, Announcements.class));
+                AnnouncementDTO updatedAnnouncementDTO = modelMapper.map(savedAnnouncement, AnnouncementDTO.class);
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Success");
+                responseDTO.setContent(updatedAnnouncementDTO);
+            }else{
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("No data found");
+                responseDTO.setContent(null);
+
+            }
+
+            return responseDTO;
+
+        }catch(Exception e){
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(e.getMessage());
+            responseDTO.setContent(null);
+            return responseDTO;
+        }
+
+
+    }
+
+    public ResponseDTO deleteAnnouncement(AnnouncementDTO announcementDTO){
+        try{
+            if(announcementRepo.existsById(announcementDTO.getAnnouncement_id())){
+                announcementRepo.deleteById(announcementDTO.getAnnouncement_id());
+                //announcementRepo.delete(modelMapper.map(announcementDTO, Announcements.class));
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Announcement deleted Successfully");
+                responseDTO.setContent(null);
+            }else{
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("No data found");
+                responseDTO.setContent(null);
+            }
+
+            return responseDTO;
+        }catch(Exception e){
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(e.getMessage());
+            responseDTO.setContent(e);
+            return responseDTO;
+
+        }
+
+
     }
 }
