@@ -24,13 +24,13 @@ public class Meeting {
     private LocalDate date;
     private LocalTime time;
 
-    public enum MeetingType{
-        ONLINE,
-        PHYSICAL
-    }
+   public enum MeetingType{
+       ONLINE,
+       PHYSICAL
+   }
 
-    @Enumerated(EnumType.STRING)
-    private MeetingType meeting_type;
+   @Enumerated(EnumType.STRING)
+   private MeetingType meeting_type;
 
     public enum ParticipantType{
         EVERYONE,

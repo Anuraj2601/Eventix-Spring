@@ -1,7 +1,10 @@
 package com.example.eventix.controller;
 
+import com.example.eventix.dto.MeetingDTO;
+import com.example.eventix.dto.ResponseDTO;
 import com.example.eventix.service.MeetingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,28 +16,28 @@ public class MeetingController {
     private MeetingService meetingService;
 
     @GetMapping("/getAllMeetings")
-    public String getAllMeetings() {
-        return "All meetings";
+    public ResponseEntity<ResponseDTO> getAllMeetings() {
+        return ResponseEntity.ok().body(meetingService.getAllMeetings());
     }
 
     @GetMapping("/getMeeting/{meeting_id}")
-    public String getMeeting(){
-        return "meeting";
+    public ResponseEntity<ResponseDTO> getMeeting(@PathVariable int meeting_id){
+        return ResponseEntity.ok().body(meetingService.getMeeting(meeting_id));
     }
 
     @PostMapping("/saveMeeting")
-    public String saveMeeting(){
-        return "save Meeting";
+    public ResponseEntity<ResponseDTO> saveMeeting(@RequestBody MeetingDTO meetingDTO){
+        return ResponseEntity.ok().body(meetingService.saveMeeting(meetingDTO));
     }
 
     @PutMapping("/updateMeeting")
-    public String updateMeeting(){
-        return "update Meeting";
+    public ResponseEntity<ResponseDTO> updateMeeting(@RequestBody MeetingDTO meetingDTO){
+        return ResponseEntity.ok().body(meetingService.updateMeeting(meetingDTO));
     }
 
     @DeleteMapping("/deleteMeeting/{meeting_id}")
-    public String deleteMeeting(){
-        return "delete Meeting";
+    public ResponseEntity<ResponseDTO> deleteMeeting(@PathVariable int meeting_id){
+        return ResponseEntity.ok().body(meetingService.deleteMeeting(meeting_id));
     }
 
 }

@@ -35,7 +35,7 @@ public class AnnouncementService {
                 Announcements savedAnnouncement =  announcementRepo.save(modelMapper.map(announcementDTO, Announcements.class));
                 AnnouncementDTO savedAnnouncementDTO = modelMapper.map(savedAnnouncement, AnnouncementDTO.class);
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
-                responseDTO.setMessage("Success");
+                responseDTO.setMessage("Announcement Saved Successfully");
                 responseDTO.setContent(savedAnnouncementDTO);
 
             }
@@ -59,12 +59,12 @@ public class AnnouncementService {
             if(!announcementsList.isEmpty()){
                 List<AnnouncementDTO> announcementDTOList = modelMapper.map(announcementsList, new TypeToken<List<AnnouncementDTO>>(){}.getType());
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
-                responseDTO.setMessage("Success");
+                responseDTO.setMessage("Retrieved All Announcements Successfully");
                 responseDTO.setContent(announcementDTOList);
 
             }else{
                 responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
-                responseDTO.setMessage("No data found");
+                responseDTO.setMessage("No Announcements Found");
                 responseDTO.setContent(null);
 
             }
@@ -90,11 +90,11 @@ public class AnnouncementService {
                 Announcements announcement = announcementRepo.findById(announcementId).orElse(null);
                 AnnouncementDTO announcementDTO =  modelMapper.map(announcement, AnnouncementDTO.class);
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
-                responseDTO.setMessage("Success");
+                responseDTO.setMessage("Announcement Retrieved Successfully");
                 responseDTO.setContent(announcementDTO);
             }else{
                 responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
-                responseDTO.setMessage("No data found");
+                responseDTO.setMessage("No Announcement found");
                 responseDTO.setContent(null);
             }
 
@@ -113,14 +113,14 @@ public class AnnouncementService {
     public ResponseDTO updateAnnouncement(AnnouncementDTO announcementDTO){
         try{
             if(announcementRepo.existsById(announcementDTO.getAnnouncement_id())){
-                Announcements savedAnnouncement =  announcementRepo.save(modelMapper.map(announcementDTO, Announcements.class));
-                AnnouncementDTO updatedAnnouncementDTO = modelMapper.map(savedAnnouncement, AnnouncementDTO.class);
+                Announcements updatedAnnouncement =  announcementRepo.save(modelMapper.map(announcementDTO, Announcements.class));
+                AnnouncementDTO updatedAnnouncementDTO = modelMapper.map(updatedAnnouncement, AnnouncementDTO.class);
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
-                responseDTO.setMessage("Success");
+                responseDTO.setMessage("Announcement Updated Successfully");
                 responseDTO.setContent(updatedAnnouncementDTO);
             }else{
                 responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
-                responseDTO.setMessage("No data found");
+                responseDTO.setMessage("No Announcement Found");
                 responseDTO.setContent(null);
 
             }
@@ -147,7 +147,7 @@ public class AnnouncementService {
                 responseDTO.setContent(null);
             }else{
                 responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
-                responseDTO.setMessage("No data found");
+                responseDTO.setMessage("No Announcement Found");
                 responseDTO.setContent(null);
             }
 
