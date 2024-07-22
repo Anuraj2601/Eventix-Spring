@@ -137,10 +137,10 @@ public class AnnouncementService {
 
     }
 
-    public ResponseDTO deleteAnnouncement(AnnouncementDTO announcementDTO){
+    public ResponseDTO deleteAnnouncement(int announcement_id){
         try{
-            if(announcementRepo.existsById(announcementDTO.getAnnouncement_id())){
-                announcementRepo.deleteById(announcementDTO.getAnnouncement_id());
+            if(announcementRepo.existsById(announcement_id)){
+                announcementRepo.deleteById(announcement_id);
                 //announcementRepo.delete(modelMapper.map(announcementDTO, Announcements.class));
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Announcement deleted Successfully");
@@ -152,6 +152,7 @@ public class AnnouncementService {
             }
 
             return responseDTO;
+
         }catch(Exception e){
             responseDTO.setStatusCode(VarList.RSP_ERROR);
             responseDTO.setMessage(e.getMessage());

@@ -1,9 +1,9 @@
 package com.example.eventix.service;
 
-import com.example.eventix.dto.AnnouncementDTO;
+
 import com.example.eventix.dto.MeetingDTO;
 import com.example.eventix.dto.ResponseDTO;
-import com.example.eventix.entity.Announcements;
+
 import com.example.eventix.entity.Meeting;
 import com.example.eventix.repository.MeetingRepo;
 import com.example.eventix.util.VarList;
@@ -65,7 +65,7 @@ public class MeetingService {
                 responseDTO.setContent(meetingDTOList);
 
             }else{
-                responseDTO.setStatusCode(VarList.RSP_DUPLICATED);
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
                 responseDTO.setMessage("No Meetings Found");
                 responseDTO.setContent(null);
 
@@ -94,7 +94,7 @@ public class MeetingService {
                 responseDTO.setContent(meetingDTO);
 
             }else{
-               responseDTO.setStatusCode(VarList.RSP_DUPLICATED);
+               responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
                responseDTO.setMessage("No Meeting Found");
                responseDTO.setContent(null);
 
@@ -123,7 +123,7 @@ public class MeetingService {
 
 
             }else{
-                responseDTO.setStatusCode(VarList.RSP_DUPLICATED);
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
                 responseDTO.setMessage("No Meeting Found");
                 responseDTO.setContent(null);
 
@@ -149,7 +149,7 @@ public class MeetingService {
 
 
             }else{
-                responseDTO.setStatusCode(VarList.RSP_DUPLICATED);
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
                 responseDTO.setMessage("No Meeting Found");
                 responseDTO.setContent(null);
 

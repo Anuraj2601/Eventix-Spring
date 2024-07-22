@@ -38,9 +38,9 @@ public class AnnouncementController {
         return ResponseEntity.ok().body(announcementService.updateAnnouncement(announcementDTO));
     }
 
-    @DeleteMapping("/deleteAnnouncement")
-    public ResponseEntity<ResponseDTO> deleteAnnouncement(@RequestBody AnnouncementDTO announcementDTO){
-        return ResponseEntity.ok().body(announcementService.deleteAnnouncement(announcementDTO));
+    @DeleteMapping("/deleteAnnouncement/{announcement_id}")
+    public ResponseEntity<ResponseDTO> deleteAnnouncement(@PathVariable int announcement_id){
+        return ResponseEntity.ok().body(announcementService.deleteAnnouncement(announcement_id));
     }
 
 }
