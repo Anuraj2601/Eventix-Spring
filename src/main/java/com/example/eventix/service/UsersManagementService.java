@@ -5,19 +5,37 @@ import com.example.eventix.dto.ReqRes;
 import com.example.eventix.entity.Users;
 import com.example.eventix.repository.UsersRepo;
 import jakarta.mail.MessagingException;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
+import static com.example.eventix.constant.Constant.PHOTO_DIRECTORY;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 @Service
+@Slf4j
+@Transactional(rollbackOn = Exception.class)
 public class UsersManagementService {
 
     @Autowired
@@ -38,6 +56,9 @@ public class UsersManagementService {
     @Autowired
     private EmailUtil emailUtil;
 
+    @Autowired
+    private FileUploadUtil fileUploadUtil;
+
     private boolean isValidRegNoFormat(String regNo) {
 
         return regNo.matches("^(202\\d/[a-zA-Z]{2}/\\d{3})|(2021/[a-zA-Z]{2}/\\d{3})$");
@@ -45,19 +66,15 @@ public class UsersManagementService {
 
     // Helper method to validate email format
     private boolean isValidEmailFormat(String email) {
-
-        return email.matches("^(202\\dis\\d{3}) | @stu\\.ucsc\\.cmb\\.ac\\.lk$");
+        return email.matches("^202\\d{1}(is|cs)\\d{3}@stu\\.ucsc\\.cmb\\.ac\\.lk$");
     }
+
+
 
     public ReqRes register(ReqRes registrationRequest) {
         ReqRes resp = new ReqRes();
 
-        String otp = otpUtil.generateOtp();
-        try {
-            emailUtil.sendOtpEmail(registrationRequest.getEmail(), otp);
-        } catch (MessagingException e) {
-            throw new RuntimeException("Unable to send otp please try again");
-        }
+
 
         try {
 
@@ -90,6 +107,13 @@ public class UsersManagementService {
                 return resp;
             }
 
+            String otp = otpUtil.generateOtp();
+            try {
+                emailUtil.sendOtpEmail(registrationRequest.getEmail(), otp);
+            } catch (MessagingException e) {
+                throw new RuntimeException("Unable to send otp please try again");
+            }
+
             Users user = new Users();
             user.setEmail(registrationRequest.getEmail());
             user.setOtp(otp);
@@ -99,6 +123,30 @@ public class UsersManagementService {
             user.setLastname(registrationRequest.getLastname());
             user.setRole(registrationRequest.getRole());
             user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+
+
+            /*if(file != null && !file.isEmpty()) {
+                String fileName = "profile_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
+                user.setImageData(FileUploadUtil.compressImage(file.getBytes()));
+                //fileUploadUtil.saveFile(fileName, file.getBytes());
+                user.setImageFileName(fileName);
+                user.setImageContentType(file.getContentType());
+            } /*else {
+                byte[] defaultImageBytes = getDefaultImageBytes();
+                String defaultFileName = "default_profile_image.png";
+                fileUploadUtil.saveDefaultImage(defaultFileName, defaultImageBytes);
+                user.setImageFileName(defaultFileName);
+                user.setImageContentType("image/png");
+
+            }
+
+                byte[] defaultImageBytes = getDefaultImageBytes();
+                String defaultFileName = "default_profile_image.png";
+                fileUploadUtil.saveDefaultImage(defaultFileName, defaultImageBytes);
+                user.setImageFileName(defaultFileName);
+                user.setImageContentType("image/png");
+                */
+
             Users usersResult = usersRepo.save(user);
 
             if(usersResult.getId() > 0) {
@@ -113,6 +161,11 @@ public class UsersManagementService {
             resp.setError(e.getMessage());
         }
         return resp;
+    }
+
+    private byte[] getDefaultImageBytes() throws IOException {
+        InputStream is = getClass().getResourceAsStream("/static/images/default_profile_image.png");
+        return IOUtils.toByteArray(is);
     }
 
     public ReqRes verifyAccount(String email, String otp) {
@@ -268,6 +321,8 @@ public class UsersManagementService {
                     existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
                 }
 
+
+
                 Users savedUser = usersRepo.save(existingUser);
                 reqRes.setUsers(savedUser);
                 reqRes.setStatusCode(200);
@@ -326,4 +381,30 @@ public class UsersManagementService {
         }
 
     }
+
+    public String uploadPhoto(Integer id, MultipartFile file) {
+        log.info("Saving picture for userID: {}", id);
+        Users user = usersRepo.findById(id).orElseThrow(()  -> new RuntimeException("User Not found with this id: " + id));
+        String photoUrl = photoFunction.apply(id, file);
+        user.setPhotoUrl(photoUrl);
+        usersRepo.save(user);
+        return photoUrl;
+    }
+
+    private final Function<String, String> fileExtension = filename -> Optional.of(filename).filter(name -> name.contains("."))
+            .map(name -> "." + name.substring(filename.lastIndexOf(".") + 1)).orElse(".png");
+
+    private final BiFunction<Integer, MultipartFile, String> photoFunction = (id, image) -> {
+        String filename = id + fileExtension.apply(image.getOriginalFilename());
+        try {
+            Path fileStorageLocation = Paths.get(PHOTO_DIRECTORY).toAbsolutePath().normalize();
+            if (!Files.exists(fileStorageLocation)) {
+                Files.createDirectories(fileStorageLocation);
+            }
+            Files.copy(image.getInputStream(),fileStorageLocation.resolve(filename), REPLACE_EXISTING);
+            return ServletUriComponentsBuilder.fromCurrentContextPath().path("/static/image/" + id + fileExtension.apply(image.getOriginalFilename())).toUriString();
+        } catch (Exception exception) {
+            throw new RuntimeException("Unable to save image");
+        }
+    };
 }

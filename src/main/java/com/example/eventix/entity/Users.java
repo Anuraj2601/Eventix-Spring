@@ -1,8 +1,7 @@
 package com.example.eventix.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Generated;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +13,9 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Users implements UserDetails {
 
     @Id
@@ -32,6 +34,12 @@ public class Users implements UserDetails {
     @Column(columnDefinition = "varchar(255) default 'student' ")
     private String role;
 
+    /*private String imageFileName;
+    private String imageContentType;
+    @Lob
+    @Column(name = "imagedata", length = 1000)
+    private byte[] imageData;*/
+    private String photoUrl;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

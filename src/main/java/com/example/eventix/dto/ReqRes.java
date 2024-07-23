@@ -28,6 +28,8 @@ public class ReqRes {
     private boolean active;
     private String otp;
     private LocalDateTime otpGeneratedTime;
+    private String imageFileName;
+    private String imageContentType;
     private Users users;
     private List<Users> usersList;
 }
