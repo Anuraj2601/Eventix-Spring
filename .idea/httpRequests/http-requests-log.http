@@ -1,3 +1,48 @@
+POST http://localhost:8080/president/addSponsor?data={{"sponsor_name" : "Code Brand",
+Content-Length: 187
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2024.1.4
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+    "sponsor_description": "They are Golden Sponsor for this EVent",
+    "cotact_email": "codebrand@gmail.com",
+    "contact_person": "Raj",
+    "amount" : 20000
+    }}&
+    file=ueCDXZfJ
+
+###
+
+POST http://localhost:8080/president/addSponsor?data={{"sponsor_name" : "Code Brand",
+Content-Length: 187
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2024.1.4
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+    "sponsor_description": "They are Golden Sponsor for this EVent",
+    "cotact_email": "codebrand@gmail.com",
+    "contact_person": "Raj",
+    "amount" : 20000
+    }}&
+    file=lCWqgFqV
+
+###
+
+POST http://localhost:8080/president/addSponsor?data={{"sponsor_name" : "Code Brand",
+Content-Length: 187
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2024.1.4
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+    "sponsor_description": "They are Golden Sponsor for this EVent",
+    "cotact_email": "codebrand@gmail.com",
+    "contact_person": "Raj",
+    "amount" : 20000
+    }}&
+    file=CAIvezXs
+
+###
+
 POST http://localhost:8080/auth/register?image=1TJe2GcN
 User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2024.1.4
 Accept-Encoding: br, deflate, gzip, x-gzip

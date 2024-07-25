@@ -3,11 +3,15 @@ package com.example.eventix.dto;
 import com.example.eventix.entity.Users;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -28,8 +32,8 @@ public class ReqRes {
     private boolean active;
     private String otp;
     private LocalDateTime otpGeneratedTime;
-    private String imageFileName;
-    private String imageContentType;
+//    private String imageFileName;
+//    private String imageContentType;
     private Users users;
     private List<Users> usersList;
 }

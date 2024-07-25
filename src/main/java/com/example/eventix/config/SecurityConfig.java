@@ -40,10 +40,13 @@ public class SecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(request-> request.requestMatchers("/auth/**","/public/**").permitAll()
+
                         .requestMatchers(HttpMethod.PUT, "/verify-account").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/regenerate-otp").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/photo").permitAll()
                         .requestMatchers(HttpMethod.GET,"/static/**").permitAll()
+                        .requestMatchers("/president/").hasAnyAuthority("president")
+
                         .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
                         .requestMatchers("/user/**").hasAnyAuthority("USER")
                         .requestMatchers("/adminuser/**").hasAnyAuthority("ADMIN","USER")
