@@ -15,7 +15,7 @@ public class EmailUtil {
     private JavaMailSender javaMailSender;
 
     public void sendOtpEmail(String email, String otp) throws MessagingException {
-
+        System.out.println("Sending OTP email to " + email);
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
         mimeMessageHelper.setTo(email);

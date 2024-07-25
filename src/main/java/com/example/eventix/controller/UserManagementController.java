@@ -30,7 +30,6 @@ public class UserManagementController {
 
     @PostMapping("/auth/register")
     public ResponseEntity<ReqRes> register(@RequestBody ReqRes reg) {
-
         return ResponseEntity.ok(usersManagementService.register(reg));
     }
 
