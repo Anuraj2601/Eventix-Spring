@@ -74,22 +74,23 @@ public class UsersManagementService {
     public ReqRes register(ReqRes registrationRequest) {
         ReqRes resp = new ReqRes();
 
-
+        System.out.println("test pass");
+        System.out.println(registrationRequest.getEmail());
 
         try {
 
-            if (!isValidRegNoFormat(registrationRequest.getRegNo())) {
-                resp.setStatusCode(400);
-                resp.setMessage("Invalid registration number format. It should be in the format 202X/is/000 or 2021/cs/000.");
-                return resp;
-            }
+//            if (!isValidRegNoFormat(registrationRequest.getRegNo())) {
+//                resp.setStatusCode(400);
+//                resp.setMessage("Invalid registration number format. It should be in the format 202X/is/000 or 2021/cs/000.");
+//                return resp;
+//            }
 
             // Validate email format
-            if (!isValidEmailFormat(registrationRequest.getEmail())) {
-                resp.setStatusCode(400);
-                resp.setMessage("Invalid email format. It should be in the format 202Xis000@stu.ucsc.cmb.ac.lk.");
-                return resp;
-            }
+//            if (!isValidEmailFormat(registrationRequest.getEmail())) {
+//                resp.setStatusCode(400);
+//                resp.setMessage("Invalid email format. It should be in the format 202Xis000@stu.ucsc.cmb.ac.lk.");
+//                return resp;
+//            }
 
 
             Optional<Users> existingUserByRegNo = usersRepo.findByRegNo(registrationRequest.getRegNo());
@@ -106,14 +107,18 @@ public class UsersManagementService {
                 resp.setMessage("Email already registered");
                 return resp;
             }
+            System.out.println("test2");
 
             String otp = otpUtil.generateOtp();
             try {
+                System.out.println("test otp");
                 emailUtil.sendOtpEmail(registrationRequest.getEmail(), otp);
+                System.out.println("test otp sent");
             } catch (MessagingException e) {
                 throw new RuntimeException("Unable to send otp please try again");
             }
 
+            System.out.println("test3");
             Users user = new Users();
             user.setEmail(registrationRequest.getEmail());
             user.setOtp(otp);
@@ -224,7 +229,7 @@ public class UsersManagementService {
 
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-            var user = usersRepo.findByEmail(loginRequest.getEmail()).orElseThrow();
+            Users user = usersRepo.findByEmail(loginRequest.getEmail()).orElseThrow();
 
             if(!user.isActive()){
                 response.setStatusCode(400);
