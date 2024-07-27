@@ -16,6 +16,6 @@ public class AnnouncementDTO {
     private int announcement_id;
     private String title;
     private String content;
-    private Announcements.AnnouncementType type = Announcements.AnnouncementType.ONLY_MEMBERS;
+    private Announcements.AnnouncementType type;
     private LocalDateTime date_posted;
 }

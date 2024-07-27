@@ -29,7 +29,7 @@ public class Announcements {
         ONLY_MEMBERS
     }
     @Enumerated(EnumType.STRING)
-    private AnnouncementType type = AnnouncementType.ONLY_MEMBERS;
+    private AnnouncementType type;
 
     @CreationTimestamp
     @Column(name = "date_posted", updatable = false)

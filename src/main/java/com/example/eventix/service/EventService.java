@@ -8,13 +8,16 @@ import com.example.eventix.entity.Meeting;
 import com.example.eventix.repository.EventRepo;
 import com.example.eventix.util.VarList;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @Transactional
 public class EventService {
@@ -164,4 +167,14 @@ public class EventService {
             return responseDTO;
         }
     }
+
+//    public String uploadPhoto(int event_id, MultipartFile file) {
+//        log.info("Saving picture for user ID: {}", event_id);
+//        ResponseDTO responseDTO = getEvent(event_id);
+//        String imageUrl = photoFunction.apply(event_id, file);
+//        responseDTO.setContent(imageUrl);
+//        eventRepo.save(modelMapper.map(studentDTO, Student.class));
+//        return photoUrl;
+//
+//    }
 }

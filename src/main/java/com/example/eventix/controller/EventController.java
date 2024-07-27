@@ -7,6 +7,7 @@ import com.example.eventix.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -42,5 +43,10 @@ public class EventController {
     public ResponseEntity<ResponseDTO> deleteEvent(@PathVariable int event_id){
         return ResponseEntity.ok().body(eventService.deleteEvent(event_id));
     }
+
+//    @PutMapping(value = "/photo")
+//    public ResponseEntity<String> uploadPhoto(@RequestParam("id") int id, @RequestParam("file") MultipartFile file) {
+//        return ResponseEntity.ok().body(eventService.uploadPhoto(id, file));
+//    }
 
 }
