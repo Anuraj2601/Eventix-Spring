@@ -13,7 +13,7 @@ public class Event_SponsorDTO {
     private String sponsor_description;
     private String sponsor_name;
     private String company_logo;
-    private Event_Sponsor.SponsorType sponsorType = Event_Sponsor.SponsorType.GOLD;
+    private Event_Sponsor.SponsorType sponsorType;
     private String contact_person;
     private String contact_email;
     private int amount;

@@ -105,12 +105,13 @@ public class Event_SponsorService {
         }
     }
 
-    public ResponseDTO updateSponsor(Event_SponsorDTO event_sponsorDTO, MultipartFile file) {
+    public ResponseDTO updateSponsor(Integer sponsorId,Event_SponsorDTO event_sponsorDTO, MultipartFile file) {
         try {
-            if(event_sponsorRepo.existsById(event_sponsorDTO.getSponsor_id())) {
-                int id = event_sponsorDTO.getSponsor_id();
-                event_sponsorDTO.setCompany_logo(photoFunction.apply(id,file));
-                Event_Sponsor savedSponsor = event_sponsorRepo.save(modelMapper.map(event_sponsorDTO, Event_Sponsor.class));
+            if(event_sponsorRepo.existsById(sponsorId)) {
+                Event_Sponsor existingSponsor = event_sponsorRepo.findById(sponsorId).orElseThrow(() -> new RuntimeException("Sponsor not found"));
+
+                event_sponsorDTO.setCompany_logo(photoFunction.apply(sponsorId,file));
+                Event_Sponsor savedSponsor = event_sponsorRepo.save(existingSponsor);
                 Event_SponsorDTO updatedSponsorDTO = modelMapper.map(savedSponsor, Event_SponsorDTO.class);
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Success");
@@ -130,10 +131,10 @@ public class Event_SponsorService {
         }
     }
 
-    public ResponseDTO deleteSponsor(Event_SponsorDTO event_sponsorDTO) {
+    public ResponseDTO deleteSponsor(Integer sponsorId) {
         try {
-            if(event_sponsorRepo.existsById(event_sponsorDTO.getSponsor_id())) {
-                event_sponsorRepo.deleteById(event_sponsorDTO.getSponsor_id());
+            if(event_sponsorRepo.existsById(sponsorId)) {
+                event_sponsorRepo.deleteById(sponsorId);
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Sponsor deleted Successfully");
                 responseDTO.setContent(null);
