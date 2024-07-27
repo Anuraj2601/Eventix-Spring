@@ -21,7 +21,7 @@ public class Event_SponsorController {
     }
 
     @GetMapping("/getSponsor/{sponsor_id}")
-    public ResponseEntity<ResponseDTO> getSponsorById(@PathVariable int sponsor_id) {
+    public ResponseEntity<ResponseDTO> getSponsorById(@PathVariable Integer sponsor_id) {
         return ResponseEntity.ok().body(eventSponsorService.getSponsor(sponsor_id));
     }
 
@@ -31,14 +31,14 @@ public class Event_SponsorController {
         return ResponseEntity.ok().body(eventSponsorService.saveSponsor(event_sponsorDTO,file));
     }
 
-    @PutMapping(value = "/updateSponsor", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ResponseDTO> updateSponsor(@RequestPart("data") Event_SponsorDTO eventSponsorDTO,@RequestPart(value = "file", required = false) MultipartFile file) {
-        return ResponseEntity.ok().body(eventSponsorService.updateSponsor(eventSponsorDTO,file));
+    @PutMapping(value = "/updateSponsor/{sponsor_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseDTO> updateSponsor(@PathVariable Integer sponsor_id ,@RequestPart("data") Event_SponsorDTO eventSponsorDTO,@RequestPart(value = "file", required = false) MultipartFile file) {
+        return ResponseEntity.ok().body(eventSponsorService.updateSponsor(sponsor_id ,eventSponsorDTO,file));
     }
 
-    @DeleteMapping("/deleteSponsor")
-    public ResponseEntity<ResponseDTO> deleteSponsor(@RequestBody Event_SponsorDTO eventSponsorDTO) {
-        return ResponseEntity.ok().body(eventSponsorService.deleteSponsor(eventSponsorDTO));
+    @DeleteMapping("/deleteSponsor/{sponsor_id}")
+    public ResponseEntity<ResponseDTO> deleteSponsor(@PathVariable Integer sponsor_id) {
+        return ResponseEntity.ok().body(eventSponsorService.deleteSponsor(sponsor_id));
     }
 
 }
