@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/president")
+@CrossOrigin(origins = "http://localhost:5173")
 public class Event_SponsorController {
     @Autowired
     private Event_SponsorService eventSponsorService;
