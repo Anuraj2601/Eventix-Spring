@@ -25,7 +25,7 @@ public class Event_Sponsor {
         PLATINUM
     }
     @Enumerated(EnumType.STRING)
-    private SponsorType sponsorType = SponsorType.GOLD;
+    private SponsorType sponsorType;
 
     private String sponsor_description;
 
