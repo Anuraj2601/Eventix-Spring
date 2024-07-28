@@ -34,9 +34,9 @@ public class AnnouncementController {
         return ResponseEntity.ok().body(announcementService.saveAnnouncement(announcementDTO));
     }
 
-    @PutMapping("/updateAnnouncement")
-    public ResponseEntity<ResponseDTO> updateAnnouncement(@RequestBody AnnouncementDTO announcementDTO){
-        return ResponseEntity.ok().body(announcementService.updateAnnouncement(announcementDTO));
+    @PutMapping(value ="/updateAnnouncement/{announcement_id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseDTO> updateAnnouncement(@PathVariable int announcement_id, @RequestBody AnnouncementDTO announcementDTO){
+        return ResponseEntity.ok().body(announcementService.updateAnnouncement(announcement_id, announcementDTO));
     }
 
     @DeleteMapping("/deleteAnnouncement/{announcement_id}")

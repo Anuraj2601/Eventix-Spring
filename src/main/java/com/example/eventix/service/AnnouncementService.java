@@ -110,9 +110,9 @@ public class AnnouncementService {
 
     }
 
-    public ResponseDTO updateAnnouncement(AnnouncementDTO announcementDTO){
+    public ResponseDTO updateAnnouncement(int announcement_id, AnnouncementDTO announcementDTO){
         try{
-            if(announcementRepo.existsById(announcementDTO.getAnnouncement_id())){
+            if(announcementRepo.existsById(announcement_id)){
                 Announcements updatedAnnouncement =  announcementRepo.save(modelMapper.map(announcementDTO, Announcements.class));
                 AnnouncementDTO updatedAnnouncementDTO = modelMapper.map(updatedAnnouncement, AnnouncementDTO.class);
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
