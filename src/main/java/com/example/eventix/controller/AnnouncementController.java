@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/president")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:5173")
 public class AnnouncementController {
 
     @Autowired
