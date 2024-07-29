@@ -4,12 +4,13 @@ import com.example.eventix.dto.MeetingDTO;
 import com.example.eventix.dto.ResponseDTO;
 import com.example.eventix.service.MeetingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/v1/meetings")
-@CrossOrigin
+@RequestMapping("/president")
+@CrossOrigin(origins = "http://localhost:5173")
 public class MeetingController {
 
     @Autowired
@@ -30,9 +31,9 @@ public class MeetingController {
         return ResponseEntity.ok().body(meetingService.saveMeeting(meetingDTO));
     }
 
-    @PutMapping("/updateMeeting")
-    public ResponseEntity<ResponseDTO> updateMeeting(@RequestBody MeetingDTO meetingDTO){
-        return ResponseEntity.ok().body(meetingService.updateMeeting(meetingDTO));
+    @PutMapping(value="/updateMeeting/{meeting_id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseDTO> updateMeeting(@PathVariable int meeting_id, @RequestBody MeetingDTO meetingDTO){
+        return ResponseEntity.ok().body(meetingService.updateMeeting(meeting_id, meetingDTO));
     }
 
     @DeleteMapping("/deleteMeeting/{meeting_id}")

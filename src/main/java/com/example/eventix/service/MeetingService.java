@@ -112,9 +112,9 @@ public class MeetingService {
         }
     }
 
-    public ResponseDTO updateMeeting(MeetingDTO meetingDTO){
+    public ResponseDTO updateMeeting(int meeting_id, MeetingDTO meetingDTO){
         try{
-            if(meetingRepo.existsById(meetingDTO.getMeeting_id())){
+            if(meetingRepo.existsById(meeting_id)){
                 Meeting updatedMeeting =  meetingRepo.save(modelMapper.map(meetingDTO, Meeting.class));
                 MeetingDTO updatedMeetingDTO = modelMapper.map(updatedMeeting, MeetingDTO.class);
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
