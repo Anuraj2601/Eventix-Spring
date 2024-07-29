@@ -110,8 +110,15 @@ public class Event_SponsorService {
             if(event_sponsorRepo.existsById(sponsorId)) {
                 Event_Sponsor existingSponsor = event_sponsorRepo.findById(sponsorId).orElseThrow(() -> new RuntimeException("Sponsor not found"));
 
-                event_sponsorDTO.setCompany_logo(photoFunction.apply(sponsorId,file));
-                Event_Sponsor savedSponsor = event_sponsorRepo.save(existingSponsor);
+                existingSponsor.setSponsor_description(event_sponsorDTO.getSponsor_description());
+                existingSponsor.setSponsor_name(event_sponsorDTO.getSponsor_name());
+                existingSponsor.setAmount(event_sponsorDTO.getAmount());
+                existingSponsor.setSponsorType(event_sponsorDTO.getSponsorType());
+                existingSponsor.setContact_email(event_sponsorDTO.getContact_email());
+                existingSponsor.setContact_person(event_sponsorDTO.getContact_person());
+                existingSponsor.setCompany_logo(photoFunction.apply(sponsorId,file));
+               Event_Sponsor savedSponsor = event_sponsorRepo.save(existingSponsor);
+                //Event_Sponsor savedSponsor = event_sponsorRepo.save(modelMapper.map(event_sponsorDTO, Event_Sponsor.class));
                 Event_SponsorDTO updatedSponsorDTO = modelMapper.map(savedSponsor, Event_SponsorDTO.class);
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Success");
