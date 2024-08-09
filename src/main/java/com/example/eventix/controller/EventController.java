@@ -5,6 +5,7 @@ import com.example.eventix.dto.ResponseDTO;
 import com.example.eventix.entity.Event;
 import com.example.eventix.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,14 +30,14 @@ public class EventController {
         return ResponseEntity.ok().body(eventService.getEvent(event_id));
     }
 
-    @PostMapping("/saveEvent")
-    public ResponseEntity<ResponseDTO> saveEvent(@RequestBody EventDTO eventDTO){
-        return ResponseEntity.ok().body(eventService.saveEvent(eventDTO));
+    @PostMapping(value ="/saveEvent", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseDTO> saveEvent(@RequestPart("data") EventDTO eventDTO, @RequestPart(value = "file", required = false) MultipartFile file){
+        return ResponseEntity.ok().body(eventService.saveEvent(eventDTO, file));
     }
 
-    @PutMapping("/updateEvent")
-    public ResponseEntity<ResponseDTO> updateEvent(@RequestBody EventDTO eventDTO){
-        return ResponseEntity.ok().body(eventService.updateEvent(eventDTO));
+    @PutMapping(value = "/updateEvent/{event_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseDTO> updateEvent(@PathVariable int event_id, @RequestPart("data") EventDTO eventDTO, @RequestPart(value = "file", required = false) MultipartFile file){
+        return ResponseEntity.ok().body(eventService.updateEvent(event_id, eventDTO, file));
     }
 
     @DeleteMapping("/deleteEvent/{event_id}")
