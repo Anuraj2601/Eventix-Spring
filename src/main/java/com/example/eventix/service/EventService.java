@@ -14,8 +14,19 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
+import static com.example.eventix.constant.Constant.PHOTO_DIRECTORY;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 @Slf4j
 @Service
@@ -31,7 +42,7 @@ public class EventService {
     @Autowired
     private ResponseDTO responseDTO;
 
-    public ResponseDTO saveEvent(EventDTO eventDTO) {
+    public ResponseDTO saveEvent(EventDTO eventDTO, MultipartFile file) {
         try{
             if(eventRepo.existsById(eventDTO.getEvent_id())){
                 responseDTO.setStatusCode(VarList.RSP_DUPLICATED);
@@ -39,6 +50,7 @@ public class EventService {
                 responseDTO.setContent(eventDTO);
 
             }else{
+                eventDTO.setImageUrl(photoFunction.apply(0,file));
                 Event savedEvent = eventRepo.save(modelMapper.map(eventDTO, Event.class));
                 EventDTO savedEventDTO = modelMapper.map(savedEvent, EventDTO.class);
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
@@ -115,9 +127,11 @@ public class EventService {
         }
     }
 
-    public ResponseDTO updateEvent(EventDTO eventDTO){
+    public ResponseDTO updateEvent(int event_id, EventDTO eventDTO, MultipartFile file){
         try{
-            if(eventRepo.existsById(eventDTO.getEvent_id())){
+            if(eventRepo.existsById(event_id)){
+
+                eventDTO.setImageUrl(photoFunction.apply(0,file));
                 Event updatedEvent =  eventRepo.save(modelMapper.map(eventDTO, Event.class));
                 EventDTO updatedEventDTO = modelMapper.map(updatedEvent, EventDTO.class);
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
@@ -168,13 +182,26 @@ public class EventService {
         }
     }
 
-//    public String uploadPhoto(int event_id, MultipartFile file) {
-//        log.info("Saving picture for user ID: {}", event_id);
-//        ResponseDTO responseDTO = getEvent(event_id);
-//        String imageUrl = photoFunction.apply(event_id, file);
-//        responseDTO.setContent(imageUrl);
-//        eventRepo.save(modelMapper.map(studentDTO, Student.class));
-//        return photoUrl;
-//
-//    }
+
+    private final Function<String, String> fileExtension = filename -> Optional.of(filename).filter(name -> name.contains("."))
+            .map(name -> "." + name.substring(filename.lastIndexOf(".") + 1)).orElse(".png");
+
+    private final BiFunction<Integer,MultipartFile,String> photoFunction = (id, image) -> {
+        String originalFilename = image.getOriginalFilename();
+        String fileExtension1 = fileExtension.apply(originalFilename);
+
+        String randomFileName = UUID.randomUUID().toString() + fileExtension1;
+        try {
+            Path fileStorageLocation = Paths.get(PHOTO_DIRECTORY).toAbsolutePath().normalize();
+            if (!Files.exists(fileStorageLocation)) {
+                Files.createDirectories(fileStorageLocation);
+            }
+            Files.copy(image.getInputStream(),fileStorageLocation.resolve(randomFileName), REPLACE_EXISTING);
+            return ServletUriComponentsBuilder.fromCurrentContextPath().path("/static/image/events/" + randomFileName).toUriString();
+        } catch (Exception exception) {
+            throw new RuntimeException("Unable to save image");
+        }
+    };
+
+
 }
