@@ -1,5 +1,4 @@
 package com.example.eventix.entity;
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
