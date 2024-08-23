@@ -1,11 +1,14 @@
 package com.example.eventix.controller;
 
+import com.example.eventix.dto.Event_SponsorDTO;
 import com.example.eventix.dto.PostDTO;
 import com.example.eventix.dto.ResponseDTO;
 import com.example.eventix.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/president")
@@ -25,14 +28,14 @@ public class PostController {
         return ResponseEntity.ok().body(postService.getPost(post_id));
     }
 
-    @PostMapping("/savePost")
-    public ResponseEntity<ResponseDTO> savePost(@RequestBody PostDTO postDTO) {
-        return ResponseEntity.ok().body(postService.savePost(postDTO));
+    @PostMapping(value="/savePost", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseDTO> savePost(@RequestPart("data") PostDTO postDTO, @RequestPart(value = "file", required = false) MultipartFile file ) {
+        return ResponseEntity.ok().body(postService.savePost(postDTO, file));
     }
 
-    @PutMapping("/updatePost/{post_id}")
-    public ResponseEntity<ResponseDTO> updatePost(@PathVariable int post_id, @RequestBody PostDTO postDTO) {
-        return ResponseEntity.ok().body(postService.updatePost(post_id, postDTO));
+    @PutMapping(value="/updatePost/{post_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseDTO> updatePost(@PathVariable int post_id, @RequestPart("data") PostDTO postDTO, @RequestPart(value = "file", required = false) MultipartFile file ) {
+        return ResponseEntity.ok().body(postService.updatePost(post_id, postDTO, file));
     }
 
     @DeleteMapping("/deletePost/{post_id}")
