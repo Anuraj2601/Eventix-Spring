@@ -30,7 +30,7 @@ public class Post {
     }
 
     @Enumerated(EnumType.STRING)
-    private postType post_status;
+    private postType post_status = postType.PENDING;
 
     @CreationTimestamp
     @Column(name = "date_posted", updatable = false)
@@ -39,4 +39,6 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "club_id")
     private Clubs club;
+
+
 }
