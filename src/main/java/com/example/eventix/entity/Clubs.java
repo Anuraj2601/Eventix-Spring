@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Data
@@ -31,4 +32,16 @@ public class Clubs {
     private LocalDateTime created_at;
 
     private String club_in_charge;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "club_president_id", referencedColumnName = "id")
+    private Users users;
+
+    @OneToMany(mappedBy = "clubs")
+    private Set<Meeting> meetings;
+
+    @OneToMany(mappedBy = "club")
+    private Set<Announcements> announcements;
+
+    
 }

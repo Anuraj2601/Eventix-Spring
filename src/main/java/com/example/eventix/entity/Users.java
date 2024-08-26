@@ -41,6 +41,9 @@ public class Users implements UserDetails {
     private byte[] imageData;*/
     private String photoUrl;
 
+    @OneToOne(mappedBy = "users")
+    private Clubs clubs;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role));
