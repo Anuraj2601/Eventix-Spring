@@ -41,7 +41,9 @@ public class Meeting {
     @Enumerated(EnumType.STRING)
     private ParticipantType participant_type;
 
-
+    @ManyToOne
+    @JoinColumn(name = "club_id", nullable = false)
+    private Clubs clubs;
 
 
 }
