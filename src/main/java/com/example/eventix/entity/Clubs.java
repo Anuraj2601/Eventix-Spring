@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.List;
 
 @Entity
 @Data
@@ -43,5 +44,4 @@ public class Clubs {
     @OneToMany(mappedBy = "club")
     private Set<Announcements> announcements;
 
-    
 }
