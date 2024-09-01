@@ -1,5 +1,4 @@
 package com.example.eventix.entity;
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,5 +26,6 @@ public class Event {
     private String benefits;
     private String imageUrl;
     private boolean IUDStatus;
+    private String IUD_file;
 
 }

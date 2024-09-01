@@ -35,5 +35,7 @@ public class Announcements {
     @Column(name = "date_posted", updatable = false)
     private LocalDateTime date_posted;
 
-
+    @ManyToOne
+    @JoinColumn(name = "club_id",nullable = false)
+    private Clubs club;
 }
