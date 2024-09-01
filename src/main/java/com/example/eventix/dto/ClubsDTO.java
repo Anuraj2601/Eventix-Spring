@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,4 +19,7 @@ public class ClubsDTO {
     private boolean is_deleted;
     private LocalDateTime created_at;
     private String club_in_charge;
+
+    private Set<MeetingDTO> meetings;
+    private Set<AnnouncementDTO> announcements;
 }
