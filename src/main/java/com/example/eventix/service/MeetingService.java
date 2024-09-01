@@ -4,7 +4,9 @@ package com.example.eventix.service;
 import com.example.eventix.dto.MeetingDTO;
 import com.example.eventix.dto.ResponseDTO;
 
+import com.example.eventix.entity.Clubs;
 import com.example.eventix.entity.Meeting;
+import com.example.eventix.repository.ClubsRepo;
 import com.example.eventix.repository.MeetingRepo;
 import com.example.eventix.util.VarList;
 import jakarta.transaction.Transactional;
@@ -27,6 +29,8 @@ public class MeetingService {
 
     @Autowired
     private ResponseDTO responseDTO;
+    @Autowired
+    private ClubsRepo clubsRepo;
 
     public ResponseDTO saveMeeting(MeetingDTO meetingDTO) {
         try{
@@ -36,7 +40,11 @@ public class MeetingService {
                 responseDTO.setContent(meetingDTO);
 
             }else{
-                Meeting savedMeeting = meetingRepo.save(modelMapper.map(meetingDTO, Meeting.class));
+                Clubs club = clubsRepo.findById(meetingDTO.getClubId()).orElseThrow(() -> new RuntimeException("Club not found"));
+                Meeting meeting = modelMapper.map(meetingDTO, Meeting.class);
+                meeting.setClubs(club);
+
+                Meeting savedMeeting = meetingRepo.save(meeting);
                 MeetingDTO savedMeetingDTO = modelMapper.map(savedMeeting, MeetingDTO.class);
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Meeting Saved Successfully");
