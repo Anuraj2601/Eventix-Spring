@@ -30,6 +30,7 @@ public class Users implements UserDetails {
     private boolean active;
     private String otp;
     private LocalDateTime otpGeneratedTime;
+    private String bio;
 
     @Column(columnDefinition = "varchar(255) default 'student' ")
     private String role;
