@@ -1,8 +1,3 @@
-//package com.example.eventix.config;
-//
-//public class WebConfig {
-//}
-
 package com.example.eventix.config;
 
 import org.springframework.context.annotation.Configuration;
