@@ -1,9 +1,8 @@
 package com.example.eventix.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.CurrentTimestamp;
 
@@ -14,7 +13,9 @@ import java.util.Date;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Setter
+@Getter
+@ToString
 @Table(name = "announcements")
 public class Announcements {
 
@@ -35,5 +36,8 @@ public class Announcements {
     @Column(name = "date_posted", updatable = false)
     private LocalDateTime date_posted;
 
-
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name = "club_id",nullable = false)
+    private Clubs club;
 }
