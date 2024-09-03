@@ -18,4 +18,6 @@ public class AnnouncementDTO {
     private String content;
     private Announcements.AnnouncementType type;
     private LocalDateTime date_posted;
+
+    private int clubId;
 }

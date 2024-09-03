@@ -18,4 +18,5 @@ public class MeetingDTO {
     private LocalTime time;
     private Meeting.MeetingType meeting_type;
     private Meeting.ParticipantType participant_type;
+    private int clubId;
 }
