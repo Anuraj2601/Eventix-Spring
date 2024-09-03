@@ -28,4 +28,8 @@ public class Event {
     private boolean IUDStatus;
     private String IUD_file;
 
+    @ManyToOne
+    @JoinColumn(name = "club_id")
+    private Clubs club;
+
 }
