@@ -46,8 +46,14 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT,"/regenerate-otp").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/photo").permitAll()
                         .requestMatchers(HttpMethod.GET,"/static/**").permitAll()
-                        .requestMatchers("/president/").hasAnyAuthority("president")
-                        .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
+
+//                         .requestMatchers("/president/").hasAnyAuthority("president")
+//                         .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
+
+                        .requestMatchers("/president/**").hasAnyAuthority("president")
+
+                        .requestMatchers("/admin/**").hasAnyAuthority("ADMIN", "president")
+
                         .requestMatchers("/user/**").hasAnyAuthority("USER")
                         .requestMatchers("/adminuser/**").hasAnyAuthority("ADMIN","USER")
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
