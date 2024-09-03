@@ -1,9 +1,8 @@
 package com.example.eventix.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.sql.Time;
 import java.time.LocalDate;
@@ -13,7 +12,9 @@ import java.util.Date;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Setter
+@Getter
+@ToString
 @Table(name = "meetings")
 public class Meeting {
 
@@ -43,7 +44,7 @@ public class Meeting {
 
     @ManyToOne
     @JoinColumn(name = "club_id", nullable = false)
+    @JsonBackReference
     private Clubs clubs;
-
 
 }
