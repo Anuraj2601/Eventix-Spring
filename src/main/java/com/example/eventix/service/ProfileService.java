@@ -80,94 +80,7 @@ public class ProfileService {
         }
     }
 
-//    public String updateProfilePhoto(String email, MultipartFile file) throws IOException {
-//        Optional<Users> userOptional = userRepository.findByEmail(email);
-//        if (userOptional.isPresent()) {
-//            Users user = userOptional.get();
-//
-//            // Define the path to save the uploaded file
-//            String uploadDirectory = "uploads/profile-photos/";
-//            String fileName = email + "_" + file.getOriginalFilename();
-//            Path filePath = Paths.get(uploadDirectory, fileName);
-//
-//            // Ensure the directory exists
-//            Files.createDirectories(filePath.getParent());
-//
-//            // Save the file to the defined path
-//            Files.write(filePath, file.getBytes());
-//
-//            // Store the URL/path to the image in the database
-//            String photoUrl = filePath.toString();
-//            user.setPhotoUrl(photoUrl);
-//
-//            userRepository.save(user);
-//
-//            return photoUrl;
-//        } else {
-//            throw new RuntimeException("User with email " + email + " not found.");
-//        }
-//    }
 
-//    public String updateProfilePhoto(String email, MultipartFile file) throws IOException {
-//        Optional<Users> userOptional = userRepository.findByEmail(email);
-//        if (userOptional.isPresent()) {
-//            Users user = userOptional.get();
-//
-//            // Define the path to save the uploaded file on the server
-//            String uploadDirectory = "uploads/profile-photos/";
-//            String fileName = email + "_" + file.getOriginalFilename();
-//            Path filePath = Paths.get(uploadDirectory, fileName);
-//
-//            // Ensure the directory exists
-//            Files.createDirectories(filePath.getParent());
-//
-//            // Save the file to the defined path
-//            Files.write(filePath, file.getBytes());
-//
-//            // Construct the URL to access the image
-//            String baseUrl = "http://localhost:8080/";  // Update this if your base URL is different
-//            String photoUrl = baseUrl + uploadDirectory + fileName;
-//
-//            // Store the URL in the database
-//            user.setPhotoUrl(photoUrl);
-//
-//            userRepository.save(user);
-//
-//            return photoUrl;
-//        } else {
-//            throw new RuntimeException("User with email " + email + " not found.");
-//        }
-//    }
-//public String updateProfilePhoto(String email, MultipartFile file) throws IOException {
-//    Optional<Users> userOptional = userRepository.findByEmail(email);
-//    if (userOptional.isPresent()) {
-//        Users user = userOptional.get();
-//
-//        // Define the path to save the uploaded file on the server
-//        String uploadDirectory = "uploads/profile-photos/";
-//        String fileName = file.getOriginalFilename(); // Use the original file name
-//        Path filePath = Paths.get(uploadDirectory, fileName);
-//
-//        // Ensure the directory exists
-//        Files.createDirectories(filePath.getParent());
-//
-//        // Save the file to the defined path
-//        Files.write(filePath, file.getBytes());
-//
-//        // Construct the URL to access the image
-//        String baseUrl = "http://localhost:8080/";  // Update this if your base URL is different
-//        String photoUrl = baseUrl + uploadDirectory + fileName;
-//
-//        // Store the URL in the database
-//        user.setPhotoUrl(photoUrl);
-//
-//        userRepository.save(user);
-//
-//        return photoUrl;
-//    } else {
-//        throw new RuntimeException("User with email " + email+ " not found.");
-//    }
-//}
 public String updateProfilePhoto(String email, MultipartFile file) throws IOException {
     Optional<Users> userOptional = userRepository.findByEmail(email);
     if (userOptional.isPresent()) {
@@ -198,7 +111,6 @@ public String updateProfilePhoto(String email, MultipartFile file) throws IOExce
         throw new RuntimeException("User with email " + email + " not found.");
     }
 }
-
 
 
 }
