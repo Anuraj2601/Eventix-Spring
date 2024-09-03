@@ -22,6 +22,6 @@ public class UserService implements UserDetailsService {
 
     public ProfileDTO getProfile(String email) {
         Users user = usersRepo.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return new ProfileDTO(user.getFirstname(), user.getLastname(), user.getEmail(), user.getRegNo(), user.getRole(), user.getBio());
+        return new ProfileDTO(user.getFirstname(), user.getLastname(), user.getEmail(), user.getRegNo(), user.getRole(), user.getBio(), user.getPhotoUrl() );
     }
 }

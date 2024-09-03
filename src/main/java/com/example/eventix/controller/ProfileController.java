@@ -3,10 +3,12 @@ package com.example.eventix.controller;
 import com.example.eventix.dto.ProfileDTO;
 import com.example.eventix.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
@@ -32,13 +34,6 @@ public class ProfileController {
         return ResponseEntity.ok(profile);
     }
 
-//    @PostMapping("/profile/bio")
-//    public ResponseEntity<?> updateBio(@RequestBody String bio) {
-//        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        String email = userDetails.getUsername();
-//        profileService.updateBio(email, bio);
-//        return ResponseEntity.ok("Bio updated successfully");
-//    }
 
     // Endpoint to update the bio
     @PutMapping("/profile/bio")
@@ -53,6 +48,22 @@ public class ProfileController {
         // Return a success response
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/profile/photo")
+    public ResponseEntity<?> updateProfilePhoto(@RequestParam("profileImage") MultipartFile file) {
+        // Get the authenticated user
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = userDetails.getUsername();
+
+        try {
+            // Call the service to handle the file upload and update the user record
+            String photoUrl = profileService.updateProfilePhoto(email, file);
+            return ResponseEntity.ok(photoUrl);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update profile photo");
+        }
+    }
+
 
 
 

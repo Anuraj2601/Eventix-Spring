@@ -10,7 +10,7 @@ public class ProfileDTO {
     private String bio;
 
     // Default Constructor
-    public ProfileDTO() {}
+    public ProfileDTO(String firstname, String lastname, String email, String regNo, String role, String bio, String photoUrl) {}
 
     // Parameterized Constructor
     public ProfileDTO(String firstname, String lastname, String email, String regNo, String photoUrl , String bio) {

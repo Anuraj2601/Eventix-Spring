@@ -50,7 +50,11 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 import org.springframework.web.multipart.MultipartFile;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Service
 public class ProfileService {
@@ -67,31 +71,6 @@ public class ProfileService {
         return null;
     }
 
-//    public void updateBio(String email, String newBio) {
-//        Optional<Users> userOptional = userRepository.findByEmail(email);  // Correct usage of instance variable
-//        if (userOptional.isPresent()) {
-//            Users user = userOptional.get();
-//            user.setBio(newBio);
-//            userRepository.save(user);  // Correct usage of instance variable
-//        } else {
-//            // Handle the case where the user is not found, maybe throw an exception or log a warning
-//            System.out.println("User with email " + email + " not found.");
-//        }
-//    }
-
-    // Method to update the bio
-//    public void updateBio(String email, String newBio) {
-//        Optional<Users> userOptional = userRepository.findByEmail(email);
-//        if (userOptional.isPresent()) {
-//            Users user = userOptional.get();
-//            user.setBio(newBio);
-//            userRepository.save(user); // Save the updated user
-//        } else {
-//            // Handle the case where the user is not found, maybe throw an exception or log a warning
-//            System.out.println("User with email " + email + " not found.");
-//        }
-//    }
-
     public void updateBio(String email, String newBio) {
         Optional<Users> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
@@ -101,21 +80,125 @@ public class ProfileService {
         }
     }
 
-//    public void updateProfilePhoto(String email, MultipartFile file) throws IOException {
+//    public String updateProfilePhoto(String email, MultipartFile file) throws IOException {
 //        Optional<Users> userOptional = userRepository.findByEmail(email);
 //        if (userOptional.isPresent()) {
 //            Users user = userOptional.get();
 //
-//            // Convert the MultipartFile to a byte array
-//            byte[] imageBytes = file.getBytes();
+//            // Define the path to save the uploaded file
+//            String uploadDirectory = "uploads/profile-photos/";
+//            String fileName = email + "_" + file.getOriginalFilename();
+//            Path filePath = Paths.get(uploadDirectory, fileName);
 //
-//            // Store the image bytes in the database
-//            user.setPhotoUrl(imageBytes); // Assuming `photoUrl` is a byte[] in the `Users` entity
+//            // Ensure the directory exists
+//            Files.createDirectories(filePath.getParent());
+//
+//            // Save the file to the defined path
+//            Files.write(filePath, file.getBytes());
+//
+//            // Store the URL/path to the image in the database
+//            String photoUrl = filePath.toString();
+//            user.setPhotoUrl(photoUrl);
 //
 //            userRepository.save(user);
+//
+//            return photoUrl;
 //        } else {
 //            throw new RuntimeException("User with email " + email + " not found.");
 //        }
 //    }
+
+//    public String updateProfilePhoto(String email, MultipartFile file) throws IOException {
+//        Optional<Users> userOptional = userRepository.findByEmail(email);
+//        if (userOptional.isPresent()) {
+//            Users user = userOptional.get();
+//
+//            // Define the path to save the uploaded file on the server
+//            String uploadDirectory = "uploads/profile-photos/";
+//            String fileName = email + "_" + file.getOriginalFilename();
+//            Path filePath = Paths.get(uploadDirectory, fileName);
+//
+//            // Ensure the directory exists
+//            Files.createDirectories(filePath.getParent());
+//
+//            // Save the file to the defined path
+//            Files.write(filePath, file.getBytes());
+//
+//            // Construct the URL to access the image
+//            String baseUrl = "http://localhost:8080/";  // Update this if your base URL is different
+//            String photoUrl = baseUrl + uploadDirectory + fileName;
+//
+//            // Store the URL in the database
+//            user.setPhotoUrl(photoUrl);
+//
+//            userRepository.save(user);
+//
+//            return photoUrl;
+//        } else {
+//            throw new RuntimeException("User with email " + email + " not found.");
+//        }
+//    }
+//public String updateProfilePhoto(String email, MultipartFile file) throws IOException {
+//    Optional<Users> userOptional = userRepository.findByEmail(email);
+//    if (userOptional.isPresent()) {
+//        Users user = userOptional.get();
+//
+//        // Define the path to save the uploaded file on the server
+//        String uploadDirectory = "uploads/profile-photos/";
+//        String fileName = file.getOriginalFilename(); // Use the original file name
+//        Path filePath = Paths.get(uploadDirectory, fileName);
+//
+//        // Ensure the directory exists
+//        Files.createDirectories(filePath.getParent());
+//
+//        // Save the file to the defined path
+//        Files.write(filePath, file.getBytes());
+//
+//        // Construct the URL to access the image
+//        String baseUrl = "http://localhost:8080/";  // Update this if your base URL is different
+//        String photoUrl = baseUrl + uploadDirectory + fileName;
+//
+//        // Store the URL in the database
+//        user.setPhotoUrl(photoUrl);
+//
+//        userRepository.save(user);
+//
+//        return photoUrl;
+//    } else {
+//        throw new RuntimeException("User with email " + email+ " not found.");
+//    }
+//}
+public String updateProfilePhoto(String email, MultipartFile file) throws IOException {
+    Optional<Users> userOptional = userRepository.findByEmail(email);
+    if (userOptional.isPresent()) {
+        Users user = userOptional.get();
+
+        // Define the path to save the uploaded file in the static directory
+        String uploadDirectory = "src/main/resources/static/uploads/profile-photos/";
+        String fileName = file.getOriginalFilename(); // Use the original file name
+        Path filePath = Paths.get(uploadDirectory, fileName);
+
+        // Ensure the directory exists
+        Files.createDirectories(filePath.getParent());
+
+        // Save the file to the defined path
+        Files.write(filePath, file.getBytes());
+
+        // Construct the URL to access the image
+        String baseUrl = "http://localhost:8080/uploads/profile-photos/"; // Update this if your base URL is different
+        String photoUrl = baseUrl + fileName;
+
+        // Store the URL in the database
+        user.setPhotoUrl(photoUrl);
+
+        userRepository.save(user);
+
+        return photoUrl;
+    } else {
+        throw new RuntimeException("User with email " + email + " not found.");
+    }
+}
+
+
 
 }
