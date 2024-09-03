@@ -1,5 +1,6 @@
 package com.example.eventix.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,7 +13,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-@Data
+@Setter
+@Getter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -30,6 +33,7 @@ public class Users implements UserDetails {
     private boolean active;
     private String otp;
     private LocalDateTime otpGeneratedTime;
+    private String bio;
 
     @Column(columnDefinition = "varchar(255) default 'student' ")
     private String role;
@@ -40,6 +44,10 @@ public class Users implements UserDetails {
     @Column(name = "imagedata", length = 1000)
     private byte[] imageData;*/
     private String photoUrl;
+
+    @OneToOne(mappedBy = "users")
+    @JsonManagedReference
+    private Clubs clubs;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

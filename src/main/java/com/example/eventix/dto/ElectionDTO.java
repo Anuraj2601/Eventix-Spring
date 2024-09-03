@@ -16,6 +16,7 @@ public class ElectionDTO {
     private LocalDateTime appCloses;
     private LocalDateTime votingOpens;
     private LocalDateTime votingCloses;
+    private int club_id;
     private boolean isAppClosed;
     private boolean isVotingClosed;
 }

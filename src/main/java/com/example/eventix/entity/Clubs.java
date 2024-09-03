@@ -1,16 +1,21 @@
 package com.example.eventix.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.List;
 
 @Entity
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Table(name = "clubs")
 public class Clubs {
     @Id
@@ -31,4 +36,18 @@ public class Clubs {
     private LocalDateTime created_at;
 
     private String club_in_charge;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "club_president_id", referencedColumnName = "id")
+    @JsonBackReference
+    private Users users;
+
+    @OneToMany(mappedBy = "clubs",fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private Set<Meeting> meetings;
+
+    @OneToMany(mappedBy = "club",fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private Set<Announcements> announcements;
+
 }

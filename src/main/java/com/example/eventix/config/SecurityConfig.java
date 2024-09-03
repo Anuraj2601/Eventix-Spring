@@ -42,11 +42,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request-> request.requestMatchers("/auth/**","/public/**","/clubs/**").permitAll()
 
                         .requestMatchers(HttpMethod.PUT, "/verify-account").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/regenerate-otp").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/photo").permitAll()
                         .requestMatchers(HttpMethod.GET,"/static/**").permitAll()
                         .requestMatchers("/president/").hasAnyAuthority("president")
-
                         .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
                         .requestMatchers("/user/**").hasAnyAuthority("USER")
                         .requestMatchers("/adminuser/**").hasAnyAuthority("ADMIN","USER")

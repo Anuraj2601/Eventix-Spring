@@ -30,4 +30,9 @@ public class Election {
     private LocalDateTime votingCloses;
     private boolean isAppClosed = false;
     private boolean isVotingClosed = false;
+
+
+    @ManyToOne
+    @JoinColumn(name = "club_id")
+    private Clubs club;
 }
