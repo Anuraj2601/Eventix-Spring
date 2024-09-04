@@ -37,6 +37,7 @@ public class Clubs {
 
     private String club_in_charge;
 
+    @ToString.Exclude
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "club_president_id", referencedColumnName = "id")
     @JsonBackReference

@@ -30,6 +30,7 @@ public class PostController {
 
     @PostMapping(value="/savePost", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseDTO> savePost(@RequestPart("data") PostDTO postDTO, @RequestPart(value = "file", required = false) MultipartFile file ) {
+        System.out.println("Published User ID in post controller: " + postDTO);
         return ResponseEntity.ok().body(postService.savePost(postDTO, file));
     }
 

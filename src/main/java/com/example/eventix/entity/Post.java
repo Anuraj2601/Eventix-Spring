@@ -1,5 +1,6 @@
 package com.example.eventix.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -40,5 +41,7 @@ public class Post {
     @JoinColumn(name = "club_id")
     private Clubs club;
 
-
+    @ManyToOne
+    @JoinColumn(name = "published_user_id", referencedColumnName = "id")   //published user id
+    private Users published_user;
 }

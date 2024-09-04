@@ -4,7 +4,9 @@ package com.example.eventix.service;
 import com.example.eventix.dto.PostDTO;
 import com.example.eventix.dto.ResponseDTO;
 import com.example.eventix.entity.Post;
+import com.example.eventix.entity.Users;
 import com.example.eventix.repository.PostRepo;
+import com.example.eventix.repository.UsersRepo;
 import com.example.eventix.util.VarList;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -34,6 +36,9 @@ public class PostService {
     private PostRepo postRepo;
 
     @Autowired
+    private UsersRepo usersRepo;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
@@ -48,7 +53,18 @@ public class PostService {
 
             }else{
                 postDTO.setPost_image(photoFunction.apply(0,file));
-                Post savedPost = postRepo.save(modelMapper.map(postDTO, Post.class));
+                //System.out.println("Published user id in post service before save"+ postDTO);
+
+                //Manually setting up the published user id
+                Post post = modelMapper.map(postDTO, Post.class);
+                Users user = usersRepo.findById(postDTO.getPublished_user_id())
+                        .orElseThrow(() -> new RuntimeException("User not found"));
+                post.setPublished_user(user);
+
+                //System.out.println("Published user id in post service after mapping" + post);
+                //Post savedPost = postRepo.save(modelMapper.map(postDTO, Post.class));
+                Post savedPost = postRepo.save(post);
+                //System.out.println("Published user id in post service saved post"+ savedPost);
                 PostDTO savedPostDTO = modelMapper.map(savedPost, PostDTO.class);
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Post Saved Successfully");
@@ -193,7 +209,7 @@ public class PostService {
                 Files.createDirectories(fileStorageLocation);
             }
             Files.copy(image.getInputStream(),fileStorageLocation.resolve(randomFileName), REPLACE_EXISTING);
-            return ServletUriComponentsBuilder.fromCurrentContextPath().path("/static/image/posts/" + randomFileName).toUriString();
+            return ServletUriComponentsBuilder.fromCurrentContextPath().path("/static/image/" + randomFileName).toUriString();
         } catch (Exception exception) {
             throw new RuntimeException("Unable to save image");
         }

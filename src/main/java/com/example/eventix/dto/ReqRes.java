@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -37,4 +38,6 @@ public class ReqRes {
 //    private String imageContentType;
     private Users users;
     private List<Users> usersList;
+
+   // private Set<PostDTO> postsList;
 }
