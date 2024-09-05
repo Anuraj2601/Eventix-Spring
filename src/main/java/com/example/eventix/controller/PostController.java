@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/president")
+@RequestMapping("/member")
 @CrossOrigin(origins = "http://localhost:5173")
 public class PostController {
 
@@ -30,6 +30,7 @@ public class PostController {
 
     @PostMapping(value="/savePost", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseDTO> savePost(@RequestPart("data") PostDTO postDTO, @RequestPart(value = "file", required = false) MultipartFile file ) {
+        System.out.println("Published User ID in post controller: " + postDTO);
         return ResponseEntity.ok().body(postService.savePost(postDTO, file));
     }
 
