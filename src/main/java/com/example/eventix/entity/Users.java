@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -45,6 +46,7 @@ public class Users implements UserDetails {
     private byte[] imageData;*/
     private String photoUrl;
 
+    @ToString.Exclude
     @OneToOne(mappedBy = "users")
     @JsonManagedReference
     private Clubs clubs;
@@ -78,4 +80,8 @@ public class Users implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+//    @OneToMany(mappedBy = "published_user")
+//    @JsonManagedReference
+//    private Set<Post> postsList;
 }

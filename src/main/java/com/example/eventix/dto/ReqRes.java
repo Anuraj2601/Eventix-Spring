@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -17,6 +18,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ReqRes {
 
+    private Integer id;
     private int statusCode;
     private String error;
     private String message;
@@ -36,4 +38,6 @@ public class ReqRes {
 //    private String imageContentType;
     private Users users;
     private List<Users> usersList;
+
+   // private Set<PostDTO> postsList;
 }
