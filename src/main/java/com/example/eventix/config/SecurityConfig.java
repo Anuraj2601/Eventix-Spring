@@ -52,7 +52,7 @@ public class SecurityConfig {
 
                         .requestMatchers("/president/**").hasAnyAuthority("president")
 
-                        .requestMatchers("/admin/**").hasAnyAuthority("ADMIN", "president")
+                        .requestMatchers("/admin/**").hasAnyAuthority("ADMIN", "president", "member", "oc")
 
                         .requestMatchers("/user/**").hasAnyAuthority("USER")
                         .requestMatchers("/adminuser/**").hasAnyAuthority("ADMIN","USER")
