@@ -21,6 +21,7 @@ import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 public class UserManagementController {
 
 
