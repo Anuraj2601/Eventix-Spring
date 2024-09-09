@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(request-> request.requestMatchers("/auth/**","/public/**","/clubs/**").permitAll()
 
+                        .requestMatchers("/api/messages/**").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/verify-account").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/regenerate-otp").permitAll()
