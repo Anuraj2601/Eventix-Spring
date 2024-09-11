@@ -1,57 +1,41 @@
-//package com.example.eventix.controller;
-//
-//public class MessageController {
-//}
 package com.example.eventix.controller;
 
 import com.example.eventix.entity.Message;
 import com.example.eventix.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/messages")
 public class MessageController {
 
     @Autowired
     private MessageService messageService;
 
-    // Create a new message
-    @PostMapping
-    public ResponseEntity<Message> createMessage(@RequestBody Message message) {
-        Message createdMessage = messageService.createMessage(message);
-        return ResponseEntity.ok(createdMessage);
-    }
-
-    // Get all messages
+    // Get all non-deleted messages
     @GetMapping
-    public ResponseEntity<List<Message>> getAllMessages() {
-        List<Message> messages = messageService.getAllMessages();
-        return ResponseEntity.ok(messages);
+    public List<Message> getAllMessages() {
+        return messageService.getAllMessages();
     }
 
-    // Get a message by ID
-    @GetMapping("/{id}")
-    public ResponseEntity<Message> getMessageById(@PathVariable Long id) {
-        return messageService.getMessageById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    // Send a new message
+    @PostMapping("/send")
+    public Message sendMessage(@RequestBody Message message) {
+        return messageService.sendMessage(message.getContent(),message.getSender(), message.getReceiver());
     }
 
-    // Update a message by ID
-    @PutMapping("/{id}")
-    public ResponseEntity<Message> updateMessage(@PathVariable Long id, @RequestBody Message messageDetails) {
-        Message updatedMessage = messageService.updateMessage(id, messageDetails);
-        return ResponseEntity.ok(updatedMessage);
+    // Edit a message
+    @PutMapping("/edit/{id}")
+    public Message editMessage(@PathVariable Long id, @RequestBody String newContent) {
+        return messageService.editMessage(id, newContent);
     }
 
-    // Delete a message by ID
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMessage(@PathVariable Long id) {
+    // Soft delete a message
+    @DeleteMapping("/delete/{id}")
+    public void deleteMessage(@PathVariable Long id) {
         messageService.deleteMessage(id);
-        return ResponseEntity.noContent().build();
     }
 }
