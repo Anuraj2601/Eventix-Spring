@@ -48,10 +48,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/photo").permitAll()
                         .requestMatchers(HttpMethod.GET,"/static/**").permitAll()
 
+
 //                         .requestMatchers("/president/").hasAnyAuthority("president")
 //                         .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
 
                         .requestMatchers("/president/**").hasAnyAuthority("president")
+                        .requestMatchers("/student/**").hasAnyAuthority("student")
 
                         .requestMatchers("/admin/**").hasAnyAuthority("ADMIN", "president", "member", "oc")
 

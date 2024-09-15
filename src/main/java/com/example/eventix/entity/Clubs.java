@@ -18,9 +18,9 @@ import java.util.List;
 @ToString
 @Table(name = "clubs")
 public class Clubs {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private int club_id;
 
     private String club_name;
@@ -43,11 +43,11 @@ public class Clubs {
     @JsonBackReference
     private Users users;
 
-    @OneToMany(mappedBy = "clubs",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "clubs", fetch = FetchType.EAGER)
     @JsonManagedReference
     private Set<Meeting> meetings;
 
-    @OneToMany(mappedBy = "club",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "club", fetch = FetchType.EAGER)
     @JsonManagedReference
     private Set<Announcements> announcements;
 
