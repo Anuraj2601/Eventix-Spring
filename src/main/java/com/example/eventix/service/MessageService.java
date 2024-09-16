@@ -25,6 +25,10 @@ public class MessageService {
         Message message = new Message(content, sender, receiver, LocalDateTime.now(), true, false);
         return messageRepository.save(message);
     }
+    // Fetch all messages that are not deleted
+    public List<Message> getAllMessagesForCurrentUser(String currentUser) {
+        return messageRepository.findBySenderOrReceiver(currentUser, currentUser);
+    }
 
     // Utility method to get the current logged-in user's username
     private String getCurrentUsername() {
@@ -57,4 +61,7 @@ public class MessageService {
         message.setDeleted(true);
         messageRepository.save(message);
     }
+
+
 }
+

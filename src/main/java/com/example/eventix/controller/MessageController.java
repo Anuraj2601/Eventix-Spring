@@ -15,11 +15,17 @@ public class MessageController {
     @Autowired
     private MessageService messageService;
 
-    // Get all non-deleted messages
+   //  Get all non-deleted messages
     @GetMapping
     public List<Message> getAllMessages() {
         return messageService.getAllMessages();
     }
+
+//    @GetMapping("/conversation")
+//    public List<Message> getMessages(@RequestParam String sender, @RequestParam String receiver) {
+//        return messageService.getConversationBetweenUsers(sender, receiver);
+//    }
+
 
     // Send a new message
     @PostMapping("/send")
@@ -39,3 +45,4 @@ public class MessageController {
         messageService.deleteMessage(id);
     }
 }
+
