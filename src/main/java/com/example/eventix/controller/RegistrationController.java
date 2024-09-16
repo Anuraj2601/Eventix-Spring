@@ -41,7 +41,7 @@ public class RegistrationController {
 
     @PutMapping(value="/updateRegistration/{registration_id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseDTO> updateRegistration(@PathVariable int registration_id, @RequestBody RegistrationDTO registrationDTO) {
-        registrationDTO.setRegistration_id(registration_id); // Ensure the ID is set for update
+        registrationDTO.setRegistrationId(registration_id); // Ensure the ID is set for update
         RegistrationDTO updatedRegistration = registrationService.saveRegistration(registrationDTO);
         ResponseDTO response = new ResponseDTO(200, "Registration successfully updated", updatedRegistration);
         return ResponseEntity.ok().body(response);

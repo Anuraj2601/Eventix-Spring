@@ -17,26 +17,11 @@ public class Registration {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "registration_id") // Use registration_id for the column name
-    private int registration_id; // Field name should match column name
-
-    @Column(name = "full_name")
-    private String fullName;
-
-    @Column(name = "email")
-    private String email;
-
-    @Column(name = "register_no")
-    private String registerNo;
-
-    @Column(name = "index_no")
-    private String indexNo;
+    @Column(name = "registration_id")
+    private int registrationId;
 
     @Column(name = "team")
     private String team;
-
-    @Column(name = "year_of_study")
-    private String yearOfStudy;
 
     @Column(name = "interview_slot")
     private LocalDateTime interviewSlot;
@@ -50,6 +35,22 @@ public class Registration {
     @JsonBackReference
     private Clubs club;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "email")
+    @JsonBackReference
+    private Users user;
+
     @Column(name = "accepted", nullable = false, columnDefinition = "int default 0")
-    private int accepted = 0; // Default value set to 0
+    private int accepted = 0;
+
+    @Column(name = "position", nullable = false, columnDefinition = "varchar(255) default 'student'")
+    private String position = "student";
+
+    @PrePersist
+    @PreUpdate
+    private void updatePosition() {
+        if (this.accepted == 1) {
+            this.position = "member";
+        }
+    }
 }

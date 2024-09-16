@@ -1,20 +1,81 @@
 package com.example.eventix.dto;
 
-import lombok.Data;
-
 import java.time.LocalDateTime;
 
-@Data
 public class RegistrationDTO {
-    private int registration_id; // Use registration_id to match the field name in entity
-    private String fullName;
-    private String email;
-    private String registerNo;
-    private String indexNo;
+
+    private int registrationId;
+    private String email; // Changed from userId to email
+    private int clubId;
     private String team;
-    private String yearOfStudy;
     private LocalDateTime interviewSlot;
     private String reason;
-    private int club_id; // Ensure this matches the field in the Clubs entity
-    private int accepted; // Add this line to the DTO
+    private int accepted;
+    private String position;
+
+    // Getters and setters
+
+    public int getRegistrationId() {
+        return registrationId;
+    }
+
+    public void setRegistrationId(int registrationId) {
+        this.registrationId = registrationId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public int getClubId() {
+        return clubId;
+    }
+
+    public void setClubId(int clubId) {
+        this.clubId = clubId;
+    }
+
+    public String getTeam() {
+        return team;
+    }
+
+    public void setTeam(String team) {
+        this.team = team;
+    }
+
+    public LocalDateTime getInterviewSlot() {
+        return interviewSlot;
+    }
+
+    public void setInterviewSlot(LocalDateTime interviewSlot) {
+        this.interviewSlot = interviewSlot;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public int getAccepted() {
+        return accepted;
+    }
+
+    public void setAccepted(int accepted) {
+        this.accepted = accepted;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
 }
