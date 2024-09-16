@@ -1,44 +1,3 @@
-//package com.example.eventix.service;
-//
-//import com.example.eventix.dto.ProfileDTO;
-//import com.example.eventix.entity.Users;
-//import com.example.eventix.repository.UsersRepo;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Service;
-//
-//import java.util.Optional;
-//
-//@Service
-//public class ProfileService {
-//
-//    @Autowired
-//    private UsersRepo userRepository;
-//
-//    public ProfileDTO getProfileByEmail(String email) {
-//        Optional<Users> user = userRepository.findByEmail(email);
-//        if (user.isPresent()) {
-//            Users u = user.get();
-//            return new ProfileDTO(u.getFirstname(), u.getLastname(), u.getEmail(), u.getRegNo(), u.getPhotoUrl(), u.getBio());
-//        }
-//        return null;
-//    }
-//
-//    public void updateBio(String email, String newBio) {
-//        Optional<Users> userOptional = UsersRepo.findByEmail(email);
-//        if (userOptional.isPresent()) {
-//            Users user = userOptional.get();
-//            user.setBio(newBio);
-//            UsersRepo.save(user); // Save the updated user
-//        } else {
-//            // Handle the case where the user is not found, maybe throw an exception or log a warning
-//            System.out.println("User with email " + email + " not found.");
-//        }
-//    }
-//
-//}
-
-
-
 package com.example.eventix.service;
 
 import com.example.eventix.dto.ProfileDTO;
@@ -98,7 +57,7 @@ public String updateProfilePhoto(String email, MultipartFile file) throws IOExce
         Files.write(filePath, file.getBytes());
 
         // Construct the URL to access the image
-        String baseUrl = "http://localhost:8080/uploads/profile-photos/"; // Update this if your base URL is different
+        String baseUrl = "http://localhost:8080/uploads/profile-photos/";
         String photoUrl = baseUrl + fileName;
 
         // Store the URL in the database
