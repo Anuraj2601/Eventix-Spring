@@ -96,9 +96,9 @@ public class PostService {
                 List<PostDTO> postDTOList = modelMapper.map(postsList, new TypeToken<List<PostDTO>>(){}.getType());
 
                 // Manually set the published_user_id for each PostDTO
-//                for (int i = 0; i < postsList.size(); i++) {
-//                    postDTOList.get(i).setPublished_user_id(postsList.get(i).getPublished_user().getId());
-//                }
+                for (int i = 0; i < postsList.size(); i++) {
+                    postDTOList.get(i).setPublished_user_id(postsList.get(i).getPublished_user().getId());
+                }
 
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Retrieved All Posts Successfully");
@@ -248,6 +248,40 @@ public class PostService {
             responseDTO.setContent(e);
             return responseDTO;
         }
+    }
+
+    public ResponseDTO updatePostStatus(int post_id, String status){
+
+        try{
+            if(postRepo.existsById(post_id)){
+                Post existingPost = postRepo.findById(post_id).orElseThrow(() -> new RuntimeException("Post not found"));
+
+                //existingPost.setPost_status(status);
+                Post.postType postStatusEnum = Post.postType.valueOf(status.toUpperCase());
+                existingPost.setPost_status(postStatusEnum);  // Set the post status
+
+                postRepo.save(existingPost);  // Save the updated post
+
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Post status updated successfully");
+                responseDTO.setContent(existingPost);
+
+            }else{
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("No Post Found");
+                responseDTO.setContent(null);
+            }
+
+            return responseDTO;
+
+        }catch(Exception e){
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(e.getMessage());
+            responseDTO.setContent(e);
+            return responseDTO;
+
+        }
+
     }
 
     private final Function<String, String> fileExtension = filename -> Optional.of(filename).filter(name -> name.contains("."))

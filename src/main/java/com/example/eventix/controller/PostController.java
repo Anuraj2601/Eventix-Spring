@@ -43,4 +43,9 @@ public class PostController {
     public ResponseEntity<ResponseDTO> deletePost(@PathVariable int post_id) {
         return ResponseEntity.ok().body(postService.deletePost(post_id));
     }
+
+    @PutMapping(value = "/updatePostStatus/{post_id}/{status}")
+    public ResponseEntity<ResponseDTO> updatePostStatus(@PathVariable int post_id, @PathVariable String status){
+        return ResponseEntity.ok().body(postService.updatePostStatus(post_id, status));
+    }
 }

@@ -42,6 +42,6 @@ public class Post {
     private Clubs club;
 
     @ManyToOne
-    @JoinColumn(name = "published_user_id", referencedColumnName = "id")   //published user id
+    @JoinColumn(name = "published_user_id", referencedColumnName = "id", updatable = false)   //published user id
     private Users published_user;
 }
