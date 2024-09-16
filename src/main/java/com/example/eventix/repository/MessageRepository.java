@@ -15,5 +15,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     // Find non-deleted messages
     List<Message> findByIsDeletedFalse();
 
+// Find messages where the user is either the sender or the receiver
+    List<Message> findBySenderOrReceiver(String sender, String receiver);
 
 }

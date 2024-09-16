@@ -27,5 +27,4 @@ public class Event {
     private String imageUrl;
     private boolean IUDStatus;
     private String IUD_file;
-
 }
