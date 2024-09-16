@@ -250,6 +250,40 @@ public class PostService {
         }
     }
 
+    public ResponseDTO updatePostStatus(int post_id, String status){
+
+        try{
+            if(postRepo.existsById(post_id)){
+                Post existingPost = postRepo.findById(post_id).orElseThrow(() -> new RuntimeException("Post not found"));
+
+                //existingPost.setPost_status(status);
+                Post.postType postStatusEnum = Post.postType.valueOf(status.toUpperCase());
+                existingPost.setPost_status(postStatusEnum);  // Set the post status
+
+                postRepo.save(existingPost);  // Save the updated post
+
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Post status updated successfully");
+                responseDTO.setContent(existingPost);
+
+            }else{
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("No Post Found");
+                responseDTO.setContent(null);
+            }
+
+            return responseDTO;
+
+        }catch(Exception e){
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(e.getMessage());
+            responseDTO.setContent(e);
+            return responseDTO;
+
+        }
+
+    }
+
     private final Function<String, String> fileExtension = filename -> Optional.of(filename).filter(name -> name.contains("."))
             .map(name -> "." + name.substring(filename.lastIndexOf(".") + 1)).orElse(".png");
 
