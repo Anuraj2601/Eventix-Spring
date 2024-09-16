@@ -96,9 +96,9 @@ public class PostService {
                 List<PostDTO> postDTOList = modelMapper.map(postsList, new TypeToken<List<PostDTO>>(){}.getType());
 
                 // Manually set the published_user_id for each PostDTO
-//                for (int i = 0; i < postsList.size(); i++) {
-//                    postDTOList.get(i).setPublished_user_id(postsList.get(i).getPublished_user().getId());
-//                }
+                for (int i = 0; i < postsList.size(); i++) {
+                    postDTOList.get(i).setPublished_user_id(postsList.get(i).getPublished_user().getId());
+                }
 
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Retrieved All Posts Successfully");
