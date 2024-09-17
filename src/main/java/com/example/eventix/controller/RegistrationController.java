@@ -47,6 +47,7 @@ public class RegistrationController {
         return ResponseEntity.ok().body(response);
     }
 
+
     @DeleteMapping("/deleteRegistration/{registration_id}")
     public ResponseEntity<ResponseDTO> deleteRegistration(@PathVariable int registration_id) {
         registrationService.deleteRegistration(registration_id);
