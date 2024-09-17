@@ -58,7 +58,7 @@ public class SecurityConfig {
 
                         .requestMatchers("/admin/**").hasAnyAuthority("ADMIN", "president", "member", "oc")
 
-                        .requestMatchers("/user/**").hasAnyAuthority("USER")
+                        .requestMatchers("/user/**").hasAnyAuthority("USER","student", "president")
                         .requestMatchers("/adminuser/**").hasAnyAuthority("ADMIN","USER")
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .anyRequest().permitAll())
