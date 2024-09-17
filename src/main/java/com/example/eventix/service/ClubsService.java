@@ -178,6 +178,55 @@ public class ClubsService {
             return responseDTO;
         }
     }
+
+    public ResponseDTO updateClubState(Integer clubId, boolean newState) {
+        try {
+            if (clubsRepo.existsById(clubId)) {
+                Clubs club = clubsRepo.findById(clubId)
+                        .orElseThrow(() -> new RuntimeException("Club not found"));
+                club.setState(newState);
+                clubsRepo.save(club);
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Successfully updated club state");
+                responseDTO.setContent(null);
+            } else {
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("Club not found");
+                responseDTO.setContent(null);
+            }
+            return responseDTO;
+        } catch (Exception e) {
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(e.getMessage());
+            responseDTO.setContent(null);
+            return responseDTO;
+        }
+    }
+
+
+    public ResponseDTO getClubById(Integer clubId) {
+        try {
+            if (clubsRepo.existsById(clubId)) {
+                Clubs club = clubsRepo.findById(clubId).orElse(null);
+                ClubsDTO clubsDTO = modelMapper.map(club, ClubsDTO.class);
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Successfully retrieved club details");
+                responseDTO.setContent(clubsDTO);
+            } else {
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("Club not found");
+                responseDTO.setContent(null);
+            }
+            return responseDTO;
+        } catch (Exception e) {
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(e.getMessage());
+            responseDTO.setContent(null);
+            return responseDTO;
+        }
+    }
+
+
 }
 
 

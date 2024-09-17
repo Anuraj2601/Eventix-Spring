@@ -36,6 +36,9 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.example.eventix.dto.UserProfileDTO;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,6 +49,22 @@ import java.util.stream.Collectors;
 public class UserController {
     @Autowired
     private UserService userService;
+
+    @GetMapping("/profiles")
+    public List<UserProfileDTO> getAllUserProfiles() {
+        return userService.getAllUserProfiles();
+    }
+
+    @GetMapping("/profile")
+    public UserProfileDTO getUserProfileByEmail(@RequestParam String email) {
+        return userService.getUserProfileByEmail(email);
+    }
+
+//    @GetMapping
+//    public List<Users> getAllUsers() {
+//
+//        return userService.getAllUsers();
+//    }
 
     @GetMapping
     public List<Users> getAllUsers() {

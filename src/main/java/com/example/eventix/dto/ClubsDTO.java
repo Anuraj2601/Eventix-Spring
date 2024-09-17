@@ -19,7 +19,6 @@ public class ClubsDTO {
     private boolean is_deleted;
     private LocalDateTime created_at;
     private String club_in_charge;
-
     private Set<MeetingDTO> meetings;
     private Set<AnnouncementDTO> announcements;
 }
