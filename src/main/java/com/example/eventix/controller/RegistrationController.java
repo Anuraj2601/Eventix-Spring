@@ -25,7 +25,6 @@ public class RegistrationController {
         return ResponseEntity.ok().body(response);
     }
 
-
     @GetMapping("/getRegistration/{registration_id}")
     public ResponseEntity<ResponseDTO> getRegistration(@PathVariable int registration_id) {
         RegistrationDTO registration = registrationService.getRegistration(registration_id);
