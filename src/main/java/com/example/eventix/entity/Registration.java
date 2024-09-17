@@ -31,7 +31,7 @@ public class Registration {
     private String reason;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "club_id")
+    @JoinColumn(name = "club_id") // Ensure this column matches with the field name in Clubs
     @JsonBackReference
     private Clubs club;
 

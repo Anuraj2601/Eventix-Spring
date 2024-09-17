@@ -54,14 +54,14 @@ public class SecurityConfig {
 //                         .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
 
                         .requestMatchers("/president/**").hasAnyAuthority("president")
-                        .requestMatchers("/student/**", "/president/**").hasAnyAuthority("student", "president")
+                        .requestMatchers("/student/**").hasAnyAuthority("student", "president")
 
                         .requestMatchers("/admin/**").hasAnyAuthority("ADMIN", "president", "member", "oc")
 
                         .requestMatchers("/user/**").hasAnyAuthority("USER")
                         .requestMatchers("/adminuser/**").hasAnyAuthority("ADMIN","USER")
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
                 .sessionManagement(manager->manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
                         jwtAuthFilter, UsernamePasswordAuthenticationFilter.class
