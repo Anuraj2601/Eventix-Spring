@@ -35,13 +35,9 @@ public class RegistrationService {
         registration.setReason(registrationDTO.getReason());
 
         // Only set 'accepted' if provided, else default will be used
-        if (registrationDTO.getAccepted() != 0) {
-            registration.setAccepted(registrationDTO.getAccepted());
-        }
+        registration.setAccepted(registrationDTO.getAccepted());
         // Only set 'position' if provided, else default will be used
-        if (registrationDTO.getPosition() != null && !registrationDTO.getPosition().isEmpty()) {
-            registration.setPosition(registrationDTO.getPosition());
-        }
+        registration.setPosition(registrationDTO.getPosition());
 
         Optional<Clubs> club = clubsRepository.findById(registrationDTO.getClubId()); // Use clubId here
         if (club.isPresent()) {
