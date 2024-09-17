@@ -19,5 +19,5 @@ public class AnnouncementDTO {
     private Announcements.AnnouncementType type;
     private LocalDateTime date_posted;
 
-    private int clubId;
+    private int club_id;
 }
