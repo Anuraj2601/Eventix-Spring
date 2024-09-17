@@ -39,14 +39,14 @@ public class RegistrationService {
         // Only set 'position' if provided, else default will be used
         registration.setPosition(registrationDTO.getPosition());
 
-        Optional<Clubs> club = clubsRepository.findById(registrationDTO.getClubId()); // Use clubId here
+        Optional<Clubs> club = clubsRepository.findById(registrationDTO.getClubId());
         if (club.isPresent()) {
             registration.setClub(club.get());
         } else {
             throw new RuntimeException("Club not found");
         }
 
-        Optional<Users> user = usersRepository.findByEmail(registrationDTO.getEmail()); // Use email here
+        Optional<Users> user = usersRepository.findByEmail(registrationDTO.getEmail());
         if (user.isPresent()) {
             registration.setUser(user.get());
         } else {
@@ -88,10 +88,11 @@ public class RegistrationService {
         dto.setTeam(registration.getTeam());
         dto.setInterviewSlot(registration.getInterviewSlot());
         dto.setReason(registration.getReason());
-        dto.setClubId(registration.getClub().getClub_id()); // Use getClub_id() here
-        dto.setEmail(registration.getUser().getEmail()); // Use getEmail() here
+        dto.setClubId(registration.getClub().getClub_id()); // Updated field name
+        dto.setEmail(registration.getUser().getEmail()); // Use getEmail()
         dto.setAccepted(registration.getAccepted());
         dto.setPosition(registration.getPosition());
         return dto;
     }
+
 }
