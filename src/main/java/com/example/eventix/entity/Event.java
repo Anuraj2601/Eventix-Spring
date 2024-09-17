@@ -27,4 +27,9 @@ public class Event {
     private String imageUrl;
     private boolean IUDStatus;
     private String IUD_file;
+
+    @ManyToOne
+    @JoinColumn(name = "club_id")
+    private Clubs club;
+
 }
