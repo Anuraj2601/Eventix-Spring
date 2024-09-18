@@ -35,4 +35,9 @@ public class Election {
     @ManyToOne
     @JoinColumn(name = "club_id")
     private Clubs club;
+
+    public int getElection_id() {
+        return election_id;
+    }
+
 }

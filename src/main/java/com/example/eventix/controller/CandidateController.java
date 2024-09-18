@@ -52,15 +52,45 @@ public class CandidateController {
         Optional<Candidate> candidateOptional = candidateService.findById(id);
         if (candidateOptional.isPresent()) {
             Candidate candidate = candidateOptional.get();
-            candidate.setContribution(candidateDTO.getContribution());
-            candidate.setPosition(candidateDTO.getPosition());
-            candidate.setUserEmail(candidateDTO.getUserEmail());
-            candidate.setSelected(candidateDTO.getSelected());
-            candidate.setVotes(candidateDTO.getVotes());
 
+            // Update fields that are provided
+            if (candidateDTO.getContribution() != null) {
+                candidate.setContribution(candidateDTO.getContribution());
+            }
+            if (candidateDTO.getPosition() != null) {
+                candidate.setPosition(candidateDTO.getPosition());
+            }
+            if (candidateDTO.getUserEmail() != null) {
+                candidate.setUserEmail(candidateDTO.getUserEmail());
+            }
+            if (candidateDTO.getSelected() != null) {
+                candidate.setSelected(candidateDTO.getSelected());
+                // Avoid updating votes if only selected is modified
+                if (candidateDTO.getVotes() != null) {
+                    // You may include validation here if needed
+                    candidate.setVotes(candidateDTO.getVotes());
+                }
+            } else {
+                // Update the votes field only if a new value is provided and not null
+                if (candidateDTO.getVotes() != null) {
+                    candidate.setVotes(candidateDTO.getVotes());
+                }
+            }
+
+            // Save the updated candidate
             Candidate updatedCandidate = candidateService.save(candidate);
-            candidateDTO.setId(updatedCandidate.getId());
-            return ResponseEntity.ok(candidateDTO);
+
+            // Convert the updated candidate to DTO
+            CandidateDTO updatedCandidateDTO = new CandidateDTO();
+            updatedCandidateDTO.setId(updatedCandidate.getId());
+            updatedCandidateDTO.setContribution(updatedCandidate.getContribution());
+            updatedCandidateDTO.setPosition(updatedCandidate.getPosition());
+            updatedCandidateDTO.setUserEmail(updatedCandidate.getUserEmail());
+            updatedCandidateDTO.setSelected(updatedCandidate.getSelected());
+            updatedCandidateDTO.setVotes(updatedCandidate.getVotes());
+
+            // Return the updated candidate DTO
+            return ResponseEntity.ok(updatedCandidateDTO);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
@@ -95,14 +125,17 @@ public class CandidateController {
             candidateDTO.setContribution(candidate.getContribution());
             candidateDTO.setPosition(candidate.getPosition());
             candidateDTO.setUserEmail(candidate.getUserEmail());
-            candidateDTO.setElectionId(candidate.getElection().getElection_id());
+            candidateDTO.setElectionId(candidate.getElection().getElection_id()); // Correct field
             candidateDTO.setClubId(candidate.getClubId());
             candidateDTO.setSelected(candidate.getSelected());
             candidateDTO.setVotes(candidate.getVotes());
+            candidateDTO.setName(candidate.getName()); // Ensure this is populated
+            candidateDTO.setImageUrl(candidate.getImageUrl()); // Ensure this is populated
             return candidateDTO;
         }).toList();
         return ResponseEntity.ok(candidateDTOs);
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCandidate(@PathVariable Long id) {
@@ -113,4 +146,15 @@ public class CandidateController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<CandidateDTO> updateCandidateSelection(
+            @PathVariable Long id,
+            @RequestParam String selected) {
+        CandidateDTO updatedCandidate = candidateService.updateCandidateSelection(id, selected);
+        return ResponseEntity.ok(updatedCandidate);
+    }
+
+
 }

@@ -17,4 +17,6 @@ public class CandidateDTO {
     private Integer clubId;     // Derived from the Election entity's Club
     private String selected;    // New field
     private Integer votes;      // New field
+    private String name;        // New field
+    private String imageUrl;    // New field
 }

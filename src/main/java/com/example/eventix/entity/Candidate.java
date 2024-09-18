@@ -24,7 +24,7 @@ public class Candidate {
     @JoinColumn(name = "election_id", nullable = false)
     private Election election;
 
-    private Integer clubId; // Remove @Transient annotation
+    private Integer clubId;
 
     @Column(name = "selected", nullable = false)
     private String selected = "applied"; // Default text value
@@ -32,8 +32,18 @@ public class Candidate {
     @Column(name = "votes", nullable = false)
     private Integer votes = 0; // Default value
 
+    // New fields
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "image_url")
+    private String imageUrl;
+
     // Method to increment votes
     public void incrementVotes() {
         this.votes += 1;
     }
+
+    // Method to populate name and imageUrl based on userEmail
+
 }
