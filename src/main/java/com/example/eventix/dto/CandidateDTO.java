@@ -19,4 +19,6 @@ public class CandidateDTO {
     private Integer votes;      // New field
     private String name;        // New field
     private String imageUrl;    // New field
+    private String oc;          // New field to store JSON data for event names
+    private Integer performance; // New field to store performance percentage or integer
 }

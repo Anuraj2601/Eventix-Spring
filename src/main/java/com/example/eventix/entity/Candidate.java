@@ -32,6 +32,12 @@ public class Candidate {
     @Column(name = "votes", nullable = false)
     private Integer votes = 0; // Default value
 
+    @Column(name = "oc", columnDefinition = "json")
+    private String oc; // JSON column to store event names; nullable by default
+
+    @Column(name = "performance")
+    private Integer performance;
+
     // New fields
     @Column(name = "name")
     private String name;

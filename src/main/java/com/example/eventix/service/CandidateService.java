@@ -74,7 +74,9 @@ public class CandidateService {
                 candidate.getSelected(),
                 candidate.getVotes(),
                 candidate.getName(),
-                candidate.getImageUrl()
+                candidate.getImageUrl(),
+                candidate.getOc(),           // Pass the JSON data for event names
+                candidate.getPerformance()   // Pass the performance percentage or integer
         );
     }
 

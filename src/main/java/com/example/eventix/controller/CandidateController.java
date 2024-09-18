@@ -131,6 +131,8 @@ public class CandidateController {
             candidateDTO.setVotes(candidate.getVotes());
             candidateDTO.setName(candidate.getName()); // Ensure this is populated
             candidateDTO.setImageUrl(candidate.getImageUrl()); // Ensure this is populated
+            candidateDTO.setOc(candidate.getOc()); // Fetch and set the oc column value
+            candidateDTO.setPerformance(candidate.getPerformance()); // Fetch and set the performance column value
             return candidateDTO;
         }).toList();
         return ResponseEntity.ok(candidateDTOs);
