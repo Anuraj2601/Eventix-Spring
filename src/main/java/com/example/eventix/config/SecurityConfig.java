@@ -47,6 +47,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT,"/regenerate-otp").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/photo").permitAll()
                         .requestMatchers(HttpMethod.GET,"/static/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/president/getAllElections").hasAnyAuthority("member", "oc", "president")
 
 
 //                         .requestMatchers("/president/").hasAnyAuthority("president")
