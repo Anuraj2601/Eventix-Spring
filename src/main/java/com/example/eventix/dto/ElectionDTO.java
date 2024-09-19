@@ -19,4 +19,5 @@ public class ElectionDTO {
     private int club_id;
     private boolean isAppClosed;
     private boolean isVotingClosed;
+    private Boolean released;
 }

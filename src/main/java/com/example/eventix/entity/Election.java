@@ -31,6 +31,9 @@ public class Election {
     private boolean isAppClosed = false;
     private boolean isVotingClosed = false;
 
+    @Column(name = "released", nullable = true, columnDefinition = "BIT DEFAULT 0")
+    private Boolean released;
+
 
     @ManyToOne
     @JoinColumn(name = "club_id")

@@ -173,4 +173,40 @@ public class ElectionService {
         return electionRepo.findById(electionId);
     }
 
+    public ResponseDTO releaseElection(int electionId) {
+        try {
+            // Check if the election exists
+            if (electionRepo.existsById(electionId)) {
+                // Find the election by ID
+                Election election = electionRepo.findById(electionId).orElse(null);
+
+                if (election != null) {
+                    // Set the released status to true
+                    election.setReleased(true);
+                    // Save the updated election
+                    electionRepo.save(election);
+
+                    responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                    responseDTO.setMessage("Election Released Successfully");
+                    responseDTO.setContent(null);
+                } else {
+                    responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                    responseDTO.setMessage("No Election Found");
+                    responseDTO.setContent(null);
+                }
+            } else {
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("No Election Found");
+                responseDTO.setContent(null);
+            }
+
+            return responseDTO;
+        } catch (Exception e) {
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(e.getMessage());
+            responseDTO.setContent(null);
+            return responseDTO;
+        }
+    }
+
 }
