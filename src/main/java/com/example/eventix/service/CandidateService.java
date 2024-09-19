@@ -79,7 +79,13 @@ public class CandidateService {
                 candidate.getPerformance()   // Pass the performance percentage or integer
         );
     }
-
+    public void incrementVotes(List<Long> candidateIds) {
+        List<Candidate> candidates = candidateRepository.findAllById(candidateIds);
+        for (Candidate candidate : candidates) {
+            candidate.setVotes(candidate.getVotes() + 1);
+        }
+        candidateRepository.saveAll(candidates);
+    }
 
 
 }

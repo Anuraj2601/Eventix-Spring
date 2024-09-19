@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/candidates")
 public class CandidateController {
@@ -157,6 +158,14 @@ public class CandidateController {
         CandidateDTO updatedCandidate = candidateService.updateCandidateSelection(id, selected);
         return ResponseEntity.ok(updatedCandidate);
     }
+
+    @PatchMapping("/vote")
+    public ResponseEntity<Void> incrementVotes(@RequestBody List<Long> candidateIds) {
+        candidateService.incrementVotes(candidateIds);
+        return ResponseEntity.ok().build();
+    }
+
+
 
 
 }
