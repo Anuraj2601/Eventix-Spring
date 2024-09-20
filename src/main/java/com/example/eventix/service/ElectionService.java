@@ -1,10 +1,14 @@
 package com.example.eventix.service;
 
 import com.example.eventix.dto.AnnouncementDTO;
+import com.example.eventix.dto.WinningCandidateDTO;
 import com.example.eventix.dto.ElectionDTO;
+
 import com.example.eventix.dto.ResponseDTO;
 import com.example.eventix.entity.Election;
+import com.example.eventix.repository.RegistrationRepo;
 import com.example.eventix.repository.ElectionRepo;
+
 import com.example.eventix.util.VarList;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -22,6 +26,9 @@ public class ElectionService {
 
     @Autowired
     private ElectionRepo electionRepo;
+
+    @Autowired
+    private RegistrationRepo registrationRepo;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -208,5 +215,37 @@ public class ElectionService {
             return responseDTO;
         }
     }
+
+    public ResponseDTO getElectionReleased(int electionId) {
+        try {
+            // Check if the election exists
+            if (electionRepo.existsById(electionId)) {
+                // Find the election by ID
+                Election election = electionRepo.findById(electionId).orElse(null);
+
+                if (election != null) {
+                    // Create a DTO for the response with the released status
+                    responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                    responseDTO.setMessage("Election Released Status Retrieved Successfully");
+                    responseDTO.setContent(election.getReleased());
+                } else {
+                    responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                    responseDTO.setMessage("No Election Found");
+                    responseDTO.setContent(null);
+                }
+            } else {
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("No Election Found");
+                responseDTO.setContent(null);
+            }
+            return responseDTO;
+        } catch (Exception e) {
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(e.getMessage());
+            responseDTO.setContent(null);
+            return responseDTO;
+        }
+    }
+
 
 }
