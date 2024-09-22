@@ -47,7 +47,7 @@ public class ElectionController {
     public ResponseEntity<ResponseDTO> releaseElection(@PathVariable int election_id) {
         electionService.releaseElection(election_id);
         return ResponseEntity.ok().build();
-        
+
     }
 
     @GetMapping("/getElectionReleased/{election_id}")
