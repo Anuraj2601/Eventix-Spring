@@ -42,4 +42,19 @@ public class ElectionController {
     }
 
 
+
+    @PatchMapping("/releaseElection/{election_id}")
+    public ResponseEntity<ResponseDTO> releaseElection(@PathVariable int election_id) {
+        electionService.releaseElection(election_id);
+        return ResponseEntity.ok().build();
+
+    }
+
+    @GetMapping("/getElectionReleased/{election_id}")
+    public ResponseEntity<ResponseDTO> getElectionReleased(@PathVariable int election_id) {
+        return ResponseEntity.ok().body(electionService.getElectionReleased(election_id));
+    }
+
+
+
 }
