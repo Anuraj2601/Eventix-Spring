@@ -21,4 +21,5 @@ public class ClubsDTO {
     private String club_in_charge;
     private Set<MeetingDTO> meetings;
     private Set<AnnouncementDTO> announcements;
+    private int club_president_id;
 }

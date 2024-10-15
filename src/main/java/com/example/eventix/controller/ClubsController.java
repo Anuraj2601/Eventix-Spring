@@ -30,6 +30,7 @@ public class ClubsController {
     @PostMapping(value = "/addClub", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseDTO> addClub(@RequestPart("data") ClubsDTO clubsDTO,
                                                @RequestPart(value = "file", required = false) MultipartFile file) {
+        System.out.println("club DTO: " + clubsDTO);
         return ResponseEntity.ok().body(clubsService.saveClub(clubsDTO, file));
     }
 
