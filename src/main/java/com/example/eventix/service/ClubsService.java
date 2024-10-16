@@ -98,23 +98,23 @@ public class ClubsService {
                 clubsDTO.setClub_image(photoFunction.apply(0,file));
 
                 //Manually setting up the club president id
-                Clubs club = modelMapper.map(clubsDTO, Clubs.class);
-                Users user = usersRepo.findById(clubsDTO.getClub_president_id())
-                        .orElseThrow(() -> new RuntimeException("User not found"));
-                club.setUsers(user);
-
-                Clubs savedClub = clubsRepo.save(club);
-                ClubsDTO savedClubDTO = modelMapper.map(savedClub, ClubsDTO.class);
-                savedClubDTO.setClub_president_id(user.getId());
-                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
-                responseDTO.setMessage("Success Saved Club");
-                responseDTO.setContent(savedClubDTO);
-
-//                Clubs savedClub = clubsRepo.save(modelMapper.map(clubsDTO, Clubs.class));
+//                Clubs club = modelMapper.map(clubsDTO, Clubs.class);
+//                Users user = usersRepo.findById(clubsDTO.getClub_president_id())
+//                        .orElseThrow(() -> new RuntimeException("User not found"));
+//                club.setUsers(user);
+//
+//                Clubs savedClub = clubsRepo.save(club);
 //                ClubsDTO savedClubDTO = modelMapper.map(savedClub, ClubsDTO.class);
+//                savedClubDTO.setClub_president_id(user.getId());
 //                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
 //                responseDTO.setMessage("Success Saved Club");
 //                responseDTO.setContent(savedClubDTO);
+
+                Clubs savedClub = clubsRepo.save(modelMapper.map(clubsDTO, Clubs.class));
+                ClubsDTO savedClubDTO = modelMapper.map(savedClub, ClubsDTO.class);
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Success Saved Club");
+                responseDTO.setContent(savedClubDTO);
             }
             return responseDTO;
 
