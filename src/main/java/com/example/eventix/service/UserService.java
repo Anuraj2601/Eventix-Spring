@@ -1,10 +1,14 @@
 package com.example.eventix.service;
 
+import com.example.eventix.dto.PostDTO;
 import com.example.eventix.dto.ProfileDTO;
+import com.example.eventix.dto.ResponseDTO;
 import com.example.eventix.dto.UserProfileDTO;
 
+import com.example.eventix.entity.Post;
 import com.example.eventix.entity.Users;
 import com.example.eventix.repository.UsersRepo;
+import com.example.eventix.util.VarList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,6 +23,9 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private UsersRepo usersRepo;
+
+    @Autowired
+    private ResponseDTO responseDTO;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -42,5 +49,36 @@ public class UserService implements UserDetailsService {
     }
     public List<Users> getAllUsers() {
         return usersRepo.findAll();
+    }
+
+    public ResponseDTO getUserByEmail(String email) {
+
+        try{
+            if(usersRepo.findByEmail(email).isPresent()){
+                Users user = usersRepo.findByEmail(email).orElse(null);
+                //PostDTO postDTO =  modelMapper.map(post, PostDTO.class);
+                //postDTO.setPublished_user_id(post.getPublished_user().getId());
+
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("User Retrieved Successfully");
+                responseDTO.setContent(user);
+
+            }else{
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("No User Found");
+                responseDTO.setContent(null);
+
+
+            }
+
+            return responseDTO;
+
+        }catch(Exception e){
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(e.getMessage());
+            responseDTO.setContent(null);
+            return responseDTO;
+        }
+
     }
 }

@@ -3,7 +3,10 @@ package com.example.eventix.service;
 import com.example.eventix.dto.ClubsDTO;
 import com.example.eventix.dto.ResponseDTO;
 import com.example.eventix.entity.Clubs;
+import com.example.eventix.entity.Post;
+import com.example.eventix.entity.Users;
 import com.example.eventix.repository.ClubsRepo;
+import com.example.eventix.repository.UsersRepo;
 import com.example.eventix.util.VarList;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -33,6 +36,9 @@ public class ClubsService {
 
     @Autowired
     private ClubsRepo clubsRepo;
+
+    @Autowired
+    private UsersRepo usersRepo;
 
     @Autowired
     private ResponseDTO responseDTO;
@@ -90,6 +96,20 @@ public class ClubsService {
                 responseDTO.setContent(clubsDTO);
             } else {
                 clubsDTO.setClub_image(photoFunction.apply(0,file));
+
+                //Manually setting up the club president id
+//                Clubs club = modelMapper.map(clubsDTO, Clubs.class);
+//                Users user = usersRepo.findById(clubsDTO.getClub_president_id())
+//                        .orElseThrow(() -> new RuntimeException("User not found"));
+//                club.setUsers(user);
+//
+//                Clubs savedClub = clubsRepo.save(club);
+//                ClubsDTO savedClubDTO = modelMapper.map(savedClub, ClubsDTO.class);
+//                savedClubDTO.setClub_president_id(user.getId());
+//                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+//                responseDTO.setMessage("Success Saved Club");
+//                responseDTO.setContent(savedClubDTO);
+
                 Clubs savedClub = clubsRepo.save(modelMapper.map(clubsDTO, Clubs.class));
                 ClubsDTO savedClubDTO = modelMapper.map(savedClub, ClubsDTO.class);
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);

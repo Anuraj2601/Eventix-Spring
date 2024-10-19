@@ -27,9 +27,11 @@
 //}
 package com.example.eventix.controller;
 
+import com.example.eventix.dto.ResponseDTO;
 import com.example.eventix.entity.Users;
 import com.example.eventix.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -77,5 +79,12 @@ public class UserController {
                 .stream()
                 .filter(user -> !user.getEmail().equals(currentUserEmail)) // Filter out the current user
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/getUserByEmail")
+    public ResponseEntity<ResponseDTO> getUserByEmail(@RequestParam String email){
+        //return userService.getUserByEmail(email);
+        return ResponseEntity.ok().body(userService.getUserByEmail(email));
+
     }
 }

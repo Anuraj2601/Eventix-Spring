@@ -52,10 +52,11 @@ public class SecurityConfig {
 
 //                         .requestMatchers("/president/").hasAnyAuthority("president")
 //                         .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/president/getAllAnnouncements").hasAnyAuthority("member", "oc", "president", "student", "ADMIN")
                         .requestMatchers("/president/releaseElection/**").hasAnyAuthority("president")
 
                         .requestMatchers("/president/**").hasAnyAuthority("president")
-                        .requestMatchers("/student/**").hasAnyAuthority("student", "president", "member", "oc")
+                        .requestMatchers("/student/**").hasAnyAuthority("student", "president", "member", "oc", "ADMIN")
 
                         .requestMatchers("/admin/**").hasAnyAuthority("ADMIN", "president", "member", "oc", "student")
 
