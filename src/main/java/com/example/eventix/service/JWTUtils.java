@@ -98,4 +98,8 @@ public class JWTUtils {
     public boolean isTokenExpired(String token) {
         return extractClaims(token, Claims::getExpiration).before(new Date());
     }
+
+    public Integer extractUserId(String token) {
+        return extractClaims(token, claims -> claims.get("user_id", Integer.class));
+    }
 }

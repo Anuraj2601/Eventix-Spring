@@ -22,4 +22,6 @@ public class ClubsDTO {
     private Set<MeetingDTO> meetings;
     private Set<AnnouncementDTO> announcements;
     private int club_president_id;
+//    private int club_secretary_id;
+//    private int club_treasurer_id;
 }
