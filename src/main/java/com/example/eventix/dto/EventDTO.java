@@ -23,4 +23,6 @@ public class EventDTO {
 
     private boolean iud_status;
     private boolean budget_status;
+
+    private int club_id;
 }

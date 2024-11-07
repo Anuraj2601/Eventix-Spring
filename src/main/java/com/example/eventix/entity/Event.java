@@ -29,8 +29,8 @@ public class Event {
     private boolean iud_status;
     private boolean budget_status;
 
-//    @ManyToOne
-//    @JoinColumn(name = "club_id")
-//    private Clubs club;
+    @ManyToOne
+    @JoinColumn(name = "club_id")
+    private Clubs club;
 
 }
