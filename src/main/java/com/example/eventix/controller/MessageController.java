@@ -21,12 +21,6 @@ public class MessageController {
         return messageService.getAllMessages();
     }
 
-//    @GetMapping("/conversation")
-//    public List<Message> getMessages(@RequestParam String sender, @RequestParam String receiver) {
-//        return messageService.getConversationBetweenUsers(sender, receiver);
-//    }
-
-
     // Send a new message
     @PostMapping("/send")
     public Message sendMessage(@RequestBody Message message) {
@@ -45,4 +39,3 @@ public class MessageController {
         messageService.deleteMessage(id);
     }
 }
-
