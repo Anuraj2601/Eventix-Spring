@@ -51,6 +51,12 @@ public class JWTAuthFilter extends OncePerRequestFilter {
                 token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 securityContext.setAuthentication(token);
                 SecurityContextHolder.setContext(securityContext);
+
+                // Retrieve user_id and add it to response headers
+                Integer userId = jwtUtils.extractUserId(jwtToken);
+                if (userId != null) {
+                    response.setHeader("X-User-Id", userId.toString());  // Set user_id in response header
+                }
             }
         }
         filterChain.doFilter(request, response);

@@ -15,11 +15,12 @@ public class EventDTO {
     private String name;
     private String venue;
     private LocalDate date;
-    private LocalTime time;
-    private double budget;
+    //private LocalTime time;
     private String purpose;
     private String benefits;
-    private String imageUrl;
-    private boolean IUDStatus;
-    private String IUD_file;
+    private String event_image;
+    private String budget_pdf;
+
+    private boolean iud_status;
+    private boolean budget_status;
 }
