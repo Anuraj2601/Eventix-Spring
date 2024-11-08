@@ -190,35 +190,6 @@ public class EventService {
     };
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public ResponseDTO getAllEvents(){
         try{
             List<Event> eventsList = eventRepo.findAll();
@@ -247,6 +218,33 @@ public class EventService {
 
         }
     }
+
+
+    public ResponseDTO getEventsByClubId(int clubId) {
+        try {
+            List<Event> eventsList = eventRepo.findEventsByClubId(clubId);
+            if (!eventsList.isEmpty()) {
+                List<EventDTO> eventDTOList = modelMapper.map(eventsList, new TypeToken<List<EventDTO>>(){}.getType());
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Events Retrieved Successfully");
+                responseDTO.setContent(eventDTOList);
+            } else {
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("No Events Found for this Club");
+                responseDTO.setContent(null);
+            }
+            return responseDTO;
+        } catch (Exception e) {
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(e.getMessage());
+            responseDTO.setContent(null);
+            return responseDTO;
+        }
+    }
+
+
+
+
 
     public ResponseDTO getEvent(int event_id){
         try{
