@@ -27,6 +27,11 @@ public class EventController {
         return ResponseEntity.ok().body(eventService.getAllEvents());
     }
 
+    @GetMapping("/getEventsByClub/{clubId}")
+    public ResponseEntity<ResponseDTO> getEventsByClubId(@PathVariable int clubId) {
+        return ResponseEntity.ok().body(eventService.getEventsByClubId(clubId));
+    }
+
 //    @GetMapping("/getEvent/{event_id}")
 //    public ResponseEntity<ResponseDTO> getEvent(@PathVariable int event_id){
 //        return ResponseEntity.ok().body(eventService.getEvent(event_id));
