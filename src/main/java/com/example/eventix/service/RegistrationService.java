@@ -92,6 +92,7 @@ public class RegistrationService {
         dto.setEmail(registration.getUser().getEmail()); // Use getEmail()
         dto.setAccepted(registration.getAccepted());
         dto.setPosition(registration.getPosition());
+        dto.setUserId(registration.getUser().getId());
         return dto;
     }
 
