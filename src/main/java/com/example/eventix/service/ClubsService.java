@@ -78,7 +78,6 @@ public class ClubsService {
                 responseDTO.setMessage("No data found");
                 responseDTO.setContent(null);
             }
-
             return responseDTO;
         } catch( Exception e ) {
             responseDTO.setStatusCode(VarList.RSP_ERROR);

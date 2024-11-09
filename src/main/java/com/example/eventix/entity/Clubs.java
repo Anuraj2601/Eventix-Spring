@@ -37,11 +37,31 @@ public class Clubs {
 
     private String club_in_charge;
 
+//    private int club_president_id;
+
+//    @ToString.Exclude
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "club_president_id", referencedColumnName = "id")
+//    @JsonBackReference
+//    private Users users;
+
     @ToString.Exclude
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "club_president_id", referencedColumnName = "id")
     @JsonBackReference
-    private Users users;
+    private Users president; // Renamed for clarity
+
+//    @ToString.Exclude
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "club_secretary_id", referencedColumnName = "id")
+//    @JsonBackReference
+//    private Users secretary; // Secretary field
+//
+//    @ToString.Exclude
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "club_treasurer_id", referencedColumnName = "id")
+//    @JsonBackReference
+//    private Users treasurer; // Treasurer field
 
     @OneToMany(mappedBy = "clubs", fetch = FetchType.EAGER)
     @JsonManagedReference

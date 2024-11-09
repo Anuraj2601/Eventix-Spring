@@ -1,5 +1,6 @@
 package com.example.eventix.dto;
 
+import com.example.eventix.entity.Users;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,5 +22,7 @@ public class ClubsDTO {
     private String club_in_charge;
     private Set<MeetingDTO> meetings;
     private Set<AnnouncementDTO> announcements;
-    private int club_president_id;
+    private Users president;
+//    private int club_secretary_id;
+//    private int club_treasurer_id;
 }
