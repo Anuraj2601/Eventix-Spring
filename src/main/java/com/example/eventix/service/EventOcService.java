@@ -52,6 +52,9 @@ public class EventOcService {
                 EventOc savedEventOc = eventOcRepo.save(eventOc);
                 EventOcDTO savedEventOcDTO = modelMapper.map(savedEventOc, EventOcDTO.class);
 
+                // Manually set user_id
+                savedEventOcDTO.setUser_id(savedEventOc.getMember().getId());
+
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Event Oc Saved Successfully");
                 responseDTO.setContent(savedEventOcDTO);
@@ -83,6 +86,12 @@ public class EventOcService {
             List<EventOc> eventOcsList = eventOcRepo.findAll();
             if(!eventOcsList.isEmpty()){
                 List<EventOcDTO> eventOcDTOList = modelMapper.map(eventOcsList, new TypeToken<List<EventOcDTO>>(){}.getType());
+
+                // Manually set the published_user_id for each PostDTO
+                for (int i = 0; i < eventOcsList.size(); i++) {
+                    eventOcDTOList.get(i).setUser_id(eventOcsList.get(i).getMember().getId());
+                }
+
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Retrieved All event Ocs Successfully");
                 responseDTO.setContent(eventOcDTOList);
@@ -115,6 +124,9 @@ public class EventOcService {
             if(eventOcRepo.existsById(eventOcId)){
                 EventOc eventOc = eventOcRepo.findById(eventOcId).orElse(null);
                 EventOcDTO eventOcDTO =  modelMapper.map(eventOc, EventOcDTO.class);
+
+                // Manually set user_id
+                eventOcDTO.setUser_id(eventOc.getMember().getId());
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Event Oc Retrieved Successfully");
                 responseDTO.setContent(eventOcDTO);
@@ -141,6 +153,10 @@ public class EventOcService {
             if(eventOcRepo.existsById(eventOc_id)){
                 EventOc updatedEventOc =  eventOcRepo.save(modelMapper.map(eventOcDTO, EventOc.class));
                 EventOcDTO updatedEventOcDTO = modelMapper.map(updatedEventOc, EventOcDTO.class);
+
+                // Manually set user_id
+                //updatedEventOcDTO.setUser_id(updatedEventOc.getMember().getId());
+
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Event Oc Updated Successfully");
                 responseDTO.setContent(updatedEventOcDTO);
