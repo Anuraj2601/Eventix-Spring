@@ -136,12 +136,12 @@ public class ClubsService {
 
         String randomFileName = UUID.randomUUID().toString() + fileExtension1;
         try {
-            Path fileStorageLocation = Paths.get(PHOTO_DIRECTORY).toAbsolutePath().normalize();
+            Path fileStorageLocation = Paths.get("src/main/resources/static/clubs").toAbsolutePath().normalize();
             if (!Files.exists(fileStorageLocation)) {
                 Files.createDirectories(fileStorageLocation);
             }
             Files.copy(image.getInputStream(),fileStorageLocation.resolve(randomFileName), REPLACE_EXISTING);
-            return ServletUriComponentsBuilder.fromCurrentContextPath().path("/static/image/" + randomFileName).toUriString();
+            return ServletUriComponentsBuilder.fromCurrentContextPath().path("/static/clubs/" + randomFileName).toUriString();
         } catch (Exception exception) {
             throw new RuntimeException("Unable to save image");
         }
