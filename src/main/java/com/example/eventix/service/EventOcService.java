@@ -4,6 +4,8 @@ import com.example.eventix.dto.EventOcDTO;
 import com.example.eventix.dto.ResponseDTO;
 import com.example.eventix.entity.EventOc;
 import com.example.eventix.repository.EventOcRepo;
+import com.example.eventix.repository.EventRepo;
+import com.example.eventix.repository.UsersRepo;
 import com.example.eventix.util.VarList;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -21,6 +23,12 @@ public class EventOcService {
     private EventOcRepo eventOcRepo;
 
     @Autowired
+    private UsersRepo usersRepo;
+
+    @Autowired
+    private EventRepo eventRepo;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
@@ -34,11 +42,26 @@ public class EventOcService {
                 responseDTO.setContent(eventOcDTO);
 
             }else{
-                EventOc savedEventOc =  eventOcRepo.save(modelMapper.map(eventOcDTO, EventOc.class));
+
+                EventOc eventOc = modelMapper.map(eventOcDTO, EventOc.class);
+
+                eventOc.setMember(usersRepo.findById(eventOcDTO.getUser_id()).orElse(null));
+                eventOc.setEvent(eventRepo.findById(eventOcDTO.getEvent_id()).orElse(null));
+
+
+                EventOc savedEventOc = eventOcRepo.save(eventOc);
                 EventOcDTO savedEventOcDTO = modelMapper.map(savedEventOc, EventOcDTO.class);
+
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Event Oc Saved Successfully");
                 responseDTO.setContent(savedEventOcDTO);
+
+
+//                EventOc savedEventOc =  eventOcRepo.save(modelMapper.map(eventOcDTO, EventOc.class));
+//                EventOcDTO savedEventOcDTO = modelMapper.map(savedEventOc, EventOcDTO.class);
+//                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+//                responseDTO.setMessage("Event Oc Saved Successfully");
+//                responseDTO.setContent(savedEventOcDTO);
 
             }
 

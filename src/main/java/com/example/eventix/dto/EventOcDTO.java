@@ -14,6 +14,6 @@ public class EventOcDTO {
     private String team;
     private String event_name;
     private boolean is_removed;
-    private int user_id;
+    private Integer user_id;
     private int event_id;
 }

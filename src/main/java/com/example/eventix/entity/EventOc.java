@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Table(name = "event_oc")
 public class EventOc {
 
     @Id
@@ -20,7 +22,7 @@ public class EventOc {
 
     // Many EventOc entries can refer to the same User (one user, multiple OCs)
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id", updatable = false)
     private Users member;
 
     // Many EventOc entries can refer to the same Event (one event, multiple OCs)
