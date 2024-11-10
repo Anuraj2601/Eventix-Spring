@@ -152,7 +152,9 @@ public class EventOcService {
         try{
             if(eventOcRepo.existsById(eventOc_id)){
                 EventOc updatedEventOc =  eventOcRepo.save(modelMapper.map(eventOcDTO, EventOc.class));
+                //System.out.println("updated event OC" + updatedEventOc);
                 EventOcDTO updatedEventOcDTO = modelMapper.map(updatedEventOc, EventOcDTO.class);
+                //System.out.println("updated event OC DTO" + updatedEventOcDTO);
 
                 // Manually set user_id
                 //updatedEventOcDTO.setUser_id(updatedEventOc.getMember().getId());
