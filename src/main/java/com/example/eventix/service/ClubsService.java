@@ -44,10 +44,25 @@ public class ClubsService {
     private ResponseDTO responseDTO;
 
 
+    private String buildImageUrl(String imageName) {
+        return Optional.ofNullable(imageName)
+                .map(name -> ServletUriComponentsBuilder.fromCurrentContextPath()
+                        .path("/static/clubs/")
+                        .path(name)
+                        .toUriString())
+                .orElse(null);
+    }
+
     public ResponseDTO getAllClubs() {
         try {
             List<Clubs> clubsList = clubsRepo.findAll();
             if (!clubsList.isEmpty()) {
+                List<ClubsDTO> clubsDTOList = clubsList.stream().map(club -> {
+                    ClubsDTO clubsDTO = modelMapper.map(club, ClubsDTO.class);
+                    clubsDTO.setClub_image(buildImageUrl(club.getClub_image()));
+                    return clubsDTO;
+                }).toList();
+
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Success retrieved All clubs");
                 responseDTO.setContent(clubsList);
@@ -70,6 +85,10 @@ public class ClubsService {
             if (clubsRepo.existsById(clubId)) {
                 Clubs club = clubsRepo.findById(clubId).orElse(null);
                 ClubsDTO clubsDTO = modelMapper.map(club, ClubsDTO.class);
+
+                clubsDTO.setClub_image(buildImageUrl(club.getClub_image()));
+
+
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Success retrieved Club");
                 responseDTO.setContent(clubsDTO);
@@ -141,8 +160,9 @@ public class ClubsService {
                 Files.createDirectories(fileStorageLocation);
             }
             Files.copy(image.getInputStream(),fileStorageLocation.resolve(randomFileName), REPLACE_EXISTING);
-            return ServletUriComponentsBuilder.fromCurrentContextPath().path("/static/clubs/" + randomFileName).toUriString();
-        } catch (Exception exception) {
+            return ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path("/clubs/" + randomFileName)
+                    .toUriString();        } catch (Exception exception) {
             throw new RuntimeException("Unable to save image");
         }
     };
