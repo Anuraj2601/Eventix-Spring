@@ -82,28 +82,45 @@ public class ClubsService {
 
     public ResponseDTO getClub(Integer clubId) {
         try {
-            if (clubsRepo.existsById(clubId)) {
-                Clubs club = clubsRepo.findById(clubId).orElse(null);
-                ClubsDTO clubsDTO = modelMapper.map(club, ClubsDTO.class);
-
-                clubsDTO.setClub_image(buildImageUrl(club.getClub_image()));
-
-
-                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
-                responseDTO.setMessage("Success retrieved Club");
-                responseDTO.setContent(clubsDTO);
-            } else {
+            // Check if the club exists
+            if (!clubsRepo.existsById(clubId)) {
+                // If not, return a 'No data found' response
                 responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
                 responseDTO.setMessage("No data found");
                 responseDTO.setContent(null);
+                return responseDTO;
             }
-            return responseDTO;
-        } catch( Exception e ) {
+
+            // Get the club details
+            Clubs club = clubsRepo.findById(clubId).orElse(null);
+
+            // Handle null case if club is not found, even after checking existence
+            if (club == null) {
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("Club not found");
+                responseDTO.setContent(null);
+                return responseDTO;
+            }
+
+            // Map club entity to DTO
+            ClubsDTO clubsDTO = modelMapper.map(club, ClubsDTO.class);
+
+            // Handle image URL (ensure club image is not null)
+            String clubImage = club.getClub_image();
+            clubsDTO.setClub_image(buildImageUrl(clubImage != null ? clubImage : "default-image.jpg"));
+
+            // Set success response with the club DTO content
+            responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+            responseDTO.setMessage("Successfully retrieved Club");
+            responseDTO.setContent(clubsDTO);
+
+        } catch (Exception e) {
+            // Handle any unexpected exceptions
             responseDTO.setStatusCode(VarList.RSP_ERROR);
-            responseDTO.setMessage(e.getMessage());
+            responseDTO.setMessage("An error occurred: " + e.getMessage());
             responseDTO.setContent(null);
-            return responseDTO;
         }
+        return responseDTO;
     }
 
     public ResponseDTO saveClub(ClubsDTO clubsDTO, MultipartFile file) {
