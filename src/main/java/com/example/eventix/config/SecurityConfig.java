@@ -56,7 +56,7 @@ public class SecurityConfig {
                         .requestMatchers("/president/releaseElection/**").hasAnyAuthority("president")
 
                         .requestMatchers("/president/**").hasAnyAuthority("president")
-                        .requestMatchers("/student/**").hasAnyAuthority("student", "president", "member", "oc", "ADMIN")
+                        .requestMatchers("/student/**").hasAnyAuthority("student", "president", "member", "oc", "ADMIN", "treasurer")
 
                         .requestMatchers("/admin/**").hasAnyAuthority("ADMIN", "president", "member", "oc", "student")
 
