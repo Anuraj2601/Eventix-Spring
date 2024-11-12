@@ -115,8 +115,8 @@ public class EventService {
                 }
 
                 // Set default value for iud_status to false
-                eventDTO.setIud_status(false);
-                eventDTO.setBudget_status(false);
+                eventDTO.setIud_status(-1);
+                eventDTO.setBudget_status(-1);
 
                 // Save the event
                 Event savedEvent = eventRepo.save(modelMapper.map(eventDTO, Event.class));

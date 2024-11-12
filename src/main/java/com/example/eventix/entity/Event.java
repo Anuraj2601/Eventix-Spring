@@ -26,8 +26,8 @@ public class Event {
     private String event_image;
     private String budget_pdf;
 
-    private boolean iud_status;
-    private boolean budget_status;
+    private int iud_status;
+    private int budget_status;
 
     @ManyToOne
     @JoinColumn(name = "club_id")
