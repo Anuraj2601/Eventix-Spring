@@ -42,5 +42,10 @@ public class EventOcController {
         return ResponseEntity.ok().body(eventOcService.deleteEventOc(eventOc_id));
     }
 
+    @PutMapping(value = "/removeEventOc/{eventOc_id}")
+    public ResponseEntity<ResponseDTO> removeEventOc(@PathVariable int eventOc_id){
+        return ResponseEntity.ok().body(eventOcService.removeEventOc(eventOc_id));
+    }
+
 
 }

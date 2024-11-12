@@ -3,6 +3,7 @@ package com.example.eventix.service;
 import com.example.eventix.dto.EventOcDTO;
 import com.example.eventix.dto.ResponseDTO;
 import com.example.eventix.entity.EventOc;
+import com.example.eventix.entity.Post;
 import com.example.eventix.repository.EventOcRepo;
 import com.example.eventix.repository.EventRepo;
 import com.example.eventix.repository.UsersRepo;
@@ -206,6 +207,40 @@ public class EventOcService {
 
         }
 
+
+    }
+
+    public ResponseDTO removeEventOc(int eventOc_id){
+
+        try{
+            if(eventOcRepo.existsById(eventOc_id)){
+                EventOc existingEventOc = eventOcRepo.findById(eventOc_id).orElseThrow(() -> new RuntimeException("Event OC not found"));
+
+                //existingPost.setPost_status(status);
+                existingEventOc.set_removed(true);
+
+
+                eventOcRepo.save(existingEventOc);  // Save the updated event oc
+
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Event OC status updated successfully");
+                responseDTO.setContent(existingEventOc);
+
+            }else{
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("No Event OC Found");
+                responseDTO.setContent(null);
+            }
+
+            return responseDTO;
+
+        }catch(Exception e){
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(e.getMessage());
+            responseDTO.setContent(e);
+            return responseDTO;
+
+        }
 
     }
 
