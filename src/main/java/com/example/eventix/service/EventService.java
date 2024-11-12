@@ -78,6 +78,7 @@ public class EventService {
                 responseDTO.setStatusCode(VarList.RSP_DUPLICATED);
                 responseDTO.setMessage("Event already exists");
                 responseDTO.setContent(eventDTO);
+                return responseDTO;
             } else {
                 // Ensure budget file is provided
                 if (budgetFile == null || budgetFile.isEmpty()) {
@@ -87,15 +88,31 @@ public class EventService {
                     return responseDTO;
                 }
 
-                // Handle the optional image file
-                if (eventImage != null && !eventImage.isEmpty()) {
-                    eventDTO.setEvent_image(photoFunction.apply(0, eventImage));
-                } else {
-                    eventDTO.setEvent_image(null);
+                // Handle the optional image file with better exception handling
+                try {
+                    if (eventImage != null && !eventImage.isEmpty()) {
+                        eventDTO.setEvent_image(photoFunction.apply(0, eventImage));
+                    } else {
+                        eventDTO.setEvent_image(null);
+                    }
+                } catch (Exception e) {
+                    log.error("Error saving event image: {}", e.getMessage());
+                    responseDTO.setStatusCode(VarList.RSP_ERROR);
+                    responseDTO.setMessage("Failed to save event image");
+                    responseDTO.setContent(null);
+                    return responseDTO;
                 }
 
-                // Handle the mandatory budget file
-                eventDTO.setBudget_pdf(pdfFunction.apply(0, budgetFile));
+                // Handle the mandatory budget file with exception handling
+                try {
+                    eventDTO.setBudget_pdf(pdfFunction.apply(0, budgetFile));
+                } catch (Exception e) {
+                    log.error("Error saving budget file: {}", e.getMessage());
+                    responseDTO.setStatusCode(VarList.RSP_ERROR);
+                    responseDTO.setMessage("Failed to save budget file");
+                    responseDTO.setContent(null);
+                    return responseDTO;
+                }
 
                 // Set default value for iud_status to false
                 eventDTO.setIud_status(false);
@@ -104,16 +121,18 @@ public class EventService {
                 // Save the event
                 Event savedEvent = eventRepo.save(modelMapper.map(eventDTO, Event.class));
                 EventDTO savedEventDTO = modelMapper.map(savedEvent, EventDTO.class);
+
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Event Saved Successfully");
                 responseDTO.setContent(savedEventDTO);
+                return responseDTO;
             }
-            return responseDTO;
 
         } catch (Exception e) {
+            log.error("Error saving event: {}", e.getMessage());
             responseDTO.setStatusCode(VarList.RSP_ERROR);
             responseDTO.setMessage(e.getMessage());
-            responseDTO.setContent(eventDTO);
+            responseDTO.setContent(null);
             return responseDTO;
         }
     }
@@ -145,9 +164,10 @@ public class EventService {
             System.out.println("File saved as: " + fileStorageLocation.resolve(randomFileName).toString());
 
             // Return the URL of the saved file
-            return ServletUriComponentsBuilder.fromCurrentContextPath().path("/static/image/" + randomFileName).toUriString();
-        } catch (Exception exception) {
-            throw new RuntimeException("Unable to save image", exception);
+            return ServletUriComponentsBuilder.fromCurrentContextPath().path("/uploads/events/eventImages/" + randomFileName).toUriString();
+        } catch (Exception e) {
+            log.error("Failed to save image: {}", e.getMessage());
+            return null;
         }
 
     };
@@ -182,9 +202,10 @@ public class EventService {
             System.out.println("File saved as: " + fileStorageLocation.resolve(randomFileName).toString());
 
             // Return the URL of the saved file
-            return ServletUriComponentsBuilder.fromCurrentContextPath().path("/static/pdf/" + randomFileName).toUriString();
-        } catch (Exception exception) {
-            throw new RuntimeException("Unable to save budget file", exception);
+            return ServletUriComponentsBuilder.fromCurrentContextPath().path("/uploads/events/eventBudgets/" + randomFileName).toUriString();
+        } catch (Exception e) {
+            log.error("Failed to save PDF: {}", e.getMessage());
+            return null;
         }
 
     };
