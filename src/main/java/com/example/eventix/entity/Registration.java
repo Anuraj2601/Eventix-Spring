@@ -46,7 +46,21 @@ public class Registration {
     @Column(name = "position", nullable = false, columnDefinition = "varchar(255) default 'student'")
     private String position = "student";
 
+    @Column(name = "created_at", nullable = true, updatable = false)
+    private LocalDateTime createdAt;
+
     @PrePersist
+    private void onCreate() {
+        // Set the createdAt field to the current time before inserting the record if it's not already set
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
+
+        // Ensure position is set to "member" if accepted is 1
+        if (this.accepted == 1) {
+            this.position = "member";
+        }
+    }
     @PreUpdate
     private void updatePosition() {
         if (this.accepted == 1) {
