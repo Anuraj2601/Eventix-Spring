@@ -14,6 +14,8 @@ public class RegistrationDTO {
     private String position;
     private int userId;
 
+    private LocalDateTime createdAt;
+
     // Getters and setters
 
     public int getRegistrationId() {
@@ -80,11 +82,20 @@ public class RegistrationDTO {
         this.position = position;
     }
 
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+
     public int getUserId() {
         return userId;
     }
 
     public void setUserId(int userId) {
         this.userId = userId;
+
     }
 }
