@@ -90,9 +90,10 @@ public class EventRegistrationService {
             if(!eventRegistrationsList.isEmpty()){
                 List<EventRegistrationDTO> eventRegistrationDTOList = modelMapper.map(eventRegistrationsList, new TypeToken<List<EventRegistrationDTO>>(){}.getType());
 
-                // Manually set the published_user_id for each PostDTO
+                // Manually set the user id and Event_reg_id for each EventRegistrationDTO
                 for (int i = 0; i < eventRegistrationsList.size(); i++) {
                     eventRegistrationDTOList.get(i).setUser_id(eventRegistrationsList.get(i).getStudent().getId());
+                    eventRegistrationDTOList.get(i).setEReg_id(eventRegistrationsList.get(i).getE_reg_id());
                 }
 
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
@@ -130,6 +131,7 @@ public class EventRegistrationService {
 
                 // Manually set user_id
                 eventRegistrationDTO.setUser_id(eventRegistration.getStudent().getId());
+                eventRegistrationDTO.setEReg_id(eventRegistration.getE_reg_id());
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Event Registration Retrieved Successfully");
                 responseDTO.setContent(eventRegistrationDTO);
@@ -155,17 +157,35 @@ public class EventRegistrationService {
     public ResponseDTO updateEventRegistration(int eventRegId, EventRegistrationDTO eventRegistrationDTO){
         try{
             if(eventRegistrationRepo.existsById(eventRegId)){
-                EventRegistration updatedEventRegistration =  eventRegistrationRepo.save(modelMapper.map(eventRegistrationDTO, EventRegistration.class));
-                //System.out.println("updated event OC" + updatedEventOc);
-                EventRegistrationDTO updatedEventRegistrationDTO = modelMapper.map(updatedEventRegistration, EventRegistrationDTO.class);
-                //System.out.println("updated event OC DTO" + updatedEventOcDTO);
 
-                // Manually set user_id
-                //updatedEventOcDTO.setUser_id(updatedEventOc.getMember().getId());
+                EventRegistration existingEventRegistration = eventRegistrationRepo.findById(eventRegId).orElse(null);
+
+                if (existingEventRegistration == null) {
+                    responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                    responseDTO.setMessage("No Event Registration Found");
+                    responseDTO.setContent(null);
+                    return responseDTO;
+                }
+
+                modelMapper.map(eventRegistrationDTO, existingEventRegistration);
+
+                // Ensure the ID is set correctly to avoid creating a new entity
+                existingEventRegistration.setE_reg_id(eventRegId);
+
+
+                EventRegistration updatedEventRegistration =  eventRegistrationRepo.save(existingEventRegistration);
+
+                EventRegistrationDTO updatedEventRegistrationDTO = modelMapper.map(updatedEventRegistration, EventRegistrationDTO.class);
+
+
+                // Manually set user_id and event registration id
+                updatedEventRegistrationDTO.setUser_id(updatedEventRegistration.getStudent().getId());
+                updatedEventRegistrationDTO.setEReg_id(updatedEventRegistration.getE_reg_id());
 
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Event Registration Updated Successfully");
                 responseDTO.setContent(updatedEventRegistrationDTO);
+
             }else{
                 responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
                 responseDTO.setMessage("No Event Registration Found");
