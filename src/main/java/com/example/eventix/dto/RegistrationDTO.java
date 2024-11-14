@@ -89,7 +89,7 @@ public class RegistrationDTO {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-
+    }
     public int getUserId() {
         return userId;
     }
