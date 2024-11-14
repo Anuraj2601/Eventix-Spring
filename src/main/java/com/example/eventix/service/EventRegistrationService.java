@@ -37,7 +37,7 @@ public class EventRegistrationService {
 
     public ResponseDTO saveEventRegistration(EventRegistrationDTO eventRegistrationDTO){
         try{
-            if(eventRegistrationRepo.existsById(eventRegistrationDTO.getEvent_reg_id())){
+            if(eventRegistrationRepo.existsById(eventRegistrationDTO.getEReg_id())){
                 responseDTO.setStatusCode(VarList.RSP_DUPLICATED);
                 responseDTO.setMessage("Event Registration already exists");
                 responseDTO.setContent(eventRegistrationDTO);
@@ -55,6 +55,8 @@ public class EventRegistrationService {
 
                 // Manually set user_id
                 savedEventRegistrationDTO.setUser_id(savedEventRegistration.getStudent().getId());
+                savedEventRegistrationDTO.setEvent_id(savedEventRegistration.getEvent().getEvent_id());
+                savedEventRegistrationDTO.setEReg_id(savedEventRegistration.getE_reg_id());
 
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Event Registration Saved Successfully");

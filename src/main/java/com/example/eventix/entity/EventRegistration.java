@@ -14,7 +14,7 @@ public class EventRegistration {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int event_reg_id;
+    private int e_reg_id;
     private String reason;
     private String mobile_no;
     private boolean is_checked;

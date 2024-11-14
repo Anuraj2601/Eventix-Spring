@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class EventRegistrationDTO {
 
-    private int event_reg_id;
+    private int eReg_id;
     private String reason;
     private String mobile_no;
     private boolean is_checked;
