@@ -3,7 +3,6 @@ package com.example.eventix.service;
 import com.example.eventix.dto.EventOcDTO;
 import com.example.eventix.dto.ResponseDTO;
 import com.example.eventix.entity.EventOc;
-import com.example.eventix.entity.Post;
 import com.example.eventix.repository.EventOcRepo;
 import com.example.eventix.repository.EventRepo;
 import com.example.eventix.repository.UsersRepo;
@@ -15,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -80,6 +80,61 @@ public class EventOcService {
 
 
     }
+
+
+//    public ResponseDTO saveEventOc(EventOcDTO eventOcDTO) {
+//        try {
+//            Optional<EventOc> existingEventOc = eventOcRepo.findByMemberAndEvent(eventOcDTO.getUser_id(), eventOcDTO.getEvent_id());
+//
+//            if (existingEventOc.isPresent()) {
+//                EventOc eventOc = existingEventOc.get();
+//
+//                if (eventOc.is_removed()) {
+//                    // If is_removed is true, set it to false
+//                    eventOc.set_removed(false);
+//                    EventOc updatedEventOc = eventOcRepo.save(eventOc);
+//
+//                    EventOcDTO updatedEventOcDTO = modelMapper.map(updatedEventOc, EventOcDTO.class);
+//                    updatedEventOcDTO.setUser_id(updatedEventOc.getMember().getId());
+//
+//                    responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+//                    responseDTO.setMessage("Event Oc reactivated successfully");
+//                    responseDTO.setContent(updatedEventOcDTO);
+//                } else {
+//                    // If is_removed is already false, return a duplicate response
+//                    responseDTO.setStatusCode(VarList.RSP_DUPLICATED);
+//                    responseDTO.setMessage("Event Oc already exists");
+//                    responseDTO.setContent(eventOcDTO);
+//                }
+//
+//            } else {
+//                // If no existing EventOc, create a new one
+//                EventOc eventOc = modelMapper.map(eventOcDTO, EventOc.class);
+//
+//                eventOc.setMember(usersRepo.findById(eventOcDTO.getUser_id()).orElse(null));
+//                eventOc.setEvent(eventRepo.findById(eventOcDTO.getEvent_id()).orElse(null));
+//                eventOc.set_removed(false); // Ensure is_removed is set to false
+//
+//                EventOc savedEventOc = eventOcRepo.save(eventOc);
+//                EventOcDTO savedEventOcDTO = modelMapper.map(savedEventOc, EventOcDTO.class);
+//
+//                savedEventOcDTO.setUser_id(savedEventOc.getMember().getId());
+//
+//                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+//                responseDTO.setMessage("Event Oc saved successfully");
+//                responseDTO.setContent(savedEventOcDTO);
+//            }
+//
+//            return responseDTO;
+//
+//        } catch (Exception e) {
+//            responseDTO.setStatusCode(VarList.RSP_ERROR);
+//            responseDTO.setMessage(e.getMessage());
+//            responseDTO.setContent(null);
+//            return responseDTO;
+//        }
+//    }
+
 
     public ResponseDTO getAllEventOcs(){
 
