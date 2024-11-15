@@ -54,14 +54,14 @@ public class SecurityConfig {
 //                         .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
                         .requestMatchers("/president/getAllEvents").hasAnyAuthority("member", "oc", "president", "student", "ADMIN")
 
-                        .requestMatchers("/president/getAllEventOcs").hasAnyAuthority("member", "oc", "president", "student", "ADMIN")
+                        .requestMatchers("/president/getAllEventOcs").hasAnyAuthority("member", "oc", "president", "student", "treasurer","ADMIN", "secretary")
                         .requestMatchers("/president/getAllAnnouncements").hasAnyAuthority("member", "oc", "president", "student", "ADMIN")
                         .requestMatchers("/president/releaseElection/**").hasAnyAuthority("student","president")
 
                         .requestMatchers("/president/**").hasAnyAuthority("student", "president", "member", "oc", "ADMIN", "treasurer")
                         .requestMatchers("/student/**").hasAnyAuthority("student", "president", "member", "oc", "ADMIN", "treasurer")
 
-                        .requestMatchers("/admin/**").hasAnyAuthority("ADMIN", "president", "member", "oc", "student")
+                        .requestMatchers("/admin/**").hasAnyAuthority("ADMIN", "president", "member", "oc", "student" , "treasurer")
 
                         .requestMatchers("/user/**").hasAnyAuthority("USER","student", "president")
                         .requestMatchers("/adminuser/**").hasAnyAuthority("student", "ADMIN","USER")

@@ -81,6 +81,18 @@ public class UserController {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping("/getAllUsersIncludingCurrent")
+    public List<Users> getAllUsersIncludingCurrent() {
+        // Retrieve the currently logged-in user's email (or username)
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserEmail = authentication.getName(); // Assumes email is used as the username
+
+        // Fetch all users and filter out the current user
+        return userService.getAllUsers();
+    }
+
+
+
     @GetMapping("/getUserByEmail")
     public ResponseEntity<ResponseDTO> getUserByEmail(@RequestParam String email){
         //return userService.getUserByEmail(email);
