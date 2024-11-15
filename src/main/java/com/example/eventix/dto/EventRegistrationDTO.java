@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class EventRegistrationDTO {
 
     private int eReg_id;
+    private String email;
     private String reason;
     private String mobile_no;
     private boolean is_checked;
