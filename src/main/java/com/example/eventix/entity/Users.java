@@ -69,6 +69,11 @@ public class Users implements UserDetails {
 //    @JsonManagedReference
 //    private Clubs treasurerOfClub;
 
+
+    @Transient // This field is not persisted in the database
+    private boolean isCurrentUser;
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role));
