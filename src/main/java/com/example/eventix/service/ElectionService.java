@@ -36,6 +36,8 @@ public class ElectionService {
     @Autowired
     private ResponseDTO responseDTO;
 
+
+
     public ResponseDTO saveElection(ElectionDTO electionDTO) {
 
         try{
@@ -188,6 +190,8 @@ public class ElectionService {
                 Election election = electionRepo.findById(electionId).orElse(null);
 
                 if (election != null) {
+                    electionRepo.callReleaseElectionResults(electionId);
+
                     // Set the released status to true
                     election.setReleased(true);
                     // Save the updated election

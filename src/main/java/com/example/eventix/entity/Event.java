@@ -20,13 +20,14 @@ public class Event {
     private String name;
     private String venue;
     private LocalDate date;
-    private LocalTime time;
-    private double budget;
+    //private LocalTime time;
     private String purpose;
     private String benefits;
-    private String imageUrl;
-    private boolean IUDStatus;
-    private String IUD_file;
+    private String event_image;
+    private String budget_pdf;
+
+    private int iud_status;
+    private int budget_status;
 
     @ManyToOne
     @JoinColumn(name = "club_id")

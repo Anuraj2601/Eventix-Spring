@@ -46,10 +46,33 @@ public class Users implements UserDetails {
     private byte[] imageData;*/
     private String photoUrl;
 
+//    @ToString.Exclude
+//    @OneToOne(mappedBy = "users")
+//    @JsonManagedReference
+//    private Clubs clubs;
+
+    // Mapping for president role
     @ToString.Exclude
-    @OneToOne(mappedBy = "users")
+    @OneToOne(mappedBy = "president")
     @JsonManagedReference
-    private Clubs clubs;
+    private Clubs presidentOfClub;
+
+//    // Mapping for secretary role
+//    @ToString.Exclude
+//    @OneToOne(mappedBy = "secretary")
+//    @JsonManagedReference
+//    private Clubs secretaryOfClub;
+//
+//    // Mapping for treasurer role
+//    @ToString.Exclude
+//    @OneToOne(mappedBy = "treasurer")
+//    @JsonManagedReference
+//    private Clubs treasurerOfClub;
+
+
+    @Transient // This field is not persisted in the database
+    private boolean isCurrentUser;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

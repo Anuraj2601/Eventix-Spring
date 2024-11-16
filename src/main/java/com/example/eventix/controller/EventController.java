@@ -13,8 +13,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/event")
-@CrossOrigin
+@RequestMapping("/event/")
+
+@CrossOrigin("http://localhost:5173")
+
 public class EventController {
 
     @Autowired
@@ -25,29 +27,28 @@ public class EventController {
         return ResponseEntity.ok().body(eventService.getAllEvents());
     }
 
-    @GetMapping("/getEvent/{event_id}")
-    public ResponseEntity<ResponseDTO> getEvent(@PathVariable int event_id){
-        return ResponseEntity.ok().body(eventService.getEvent(event_id));
+    @GetMapping("/getEventsByClub/{clubId}")
+    public ResponseEntity<ResponseDTO> getEventsByClubId(@PathVariable int clubId) {
+        return ResponseEntity.ok().body(eventService.getEventsByClubId(clubId));
     }
 
-    @PostMapping(value ="/saveEvent", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ResponseDTO> saveEvent(@RequestPart("data") EventDTO eventDTO, @RequestPart(value = "file", required = false) MultipartFile file){
-        return ResponseEntity.ok().body(eventService.saveEvent(eventDTO, file));
-    }
-
-    @PutMapping(value = "/updateEvent/{event_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ResponseDTO> updateEvent(@PathVariable int event_id, @RequestPart("data") EventDTO eventDTO, @RequestPart(value = "file", required = false) MultipartFile file){
-        return ResponseEntity.ok().body(eventService.updateEvent(event_id, eventDTO, file));
-    }
-
-    @DeleteMapping("/deleteEvent/{event_id}")
-    public ResponseEntity<ResponseDTO> deleteEvent(@PathVariable int event_id){
-        return ResponseEntity.ok().body(eventService.deleteEvent(event_id));
-    }
-
-//    @PutMapping(value = "/photo")
-//    public ResponseEntity<String> uploadPhoto(@RequestParam("id") int id, @RequestParam("file") MultipartFile file) {
-//        return ResponseEntity.ok().body(eventService.uploadPhoto(id, file));
+//    @GetMapping("/getEvent/{event_id}")
+//    public ResponseEntity<ResponseDTO> getEvent(@PathVariable int event_id){
+//        return ResponseEntity.ok().body(eventService.getEvent(event_id));
 //    }
 
+    @PostMapping(value = "/saveEvent", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseDTO> saveEvent(@RequestPart("data") EventDTO eventDTO, @RequestPart(value = "eventImage", required = false) MultipartFile eventImage, @RequestPart(value = "budgetFile", required = true) MultipartFile budgetFile) {
+        return ResponseEntity.ok().body(eventService.saveEvent(eventDTO,eventImage,budgetFile));
+    }
+
+//    @PutMapping(value = "/updateEvent/{event_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity<ResponseDTO> updateEvent(@PathVariable int event_id, @RequestPart("data") EventDTO eventDTO, @RequestPart(value = "file", required = false) MultipartFile file){
+//        return ResponseEntity.ok().body(eventService.updateEvent(event_id, eventDTO, file));
+//    }
+//
+//    @DeleteMapping("/deleteEvent/{event_id}")
+//    public ResponseEntity<ResponseDTO> deleteEvent(@PathVariable int event_id){
+//        return ResponseEntity.ok().body(eventService.deleteEvent(event_id));
+//    }
 }
