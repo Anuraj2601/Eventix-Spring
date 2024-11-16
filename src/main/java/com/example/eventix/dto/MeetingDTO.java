@@ -19,4 +19,16 @@ public class MeetingDTO {
     private Meeting.MeetingType meeting_type;
     private Meeting.ParticipantType participant_type;
     private int clubId;
+
+    // Additional fields to handle QR code and VideoSDK link
+    private String qrCodeUrl;  // To store the generated QR code URL for physical meetings
+    private String meetingLink; // To store the VideoSDK meeting link for online meetings
+
+    public String getMeetingType() {
+        return meeting_type != null ? meeting_type.name() : null;  // Returns the name of the enum as a String
+    }
+
+    public String getMeetingId() {
+        return String.valueOf(meeting_id);
+    }
 }
