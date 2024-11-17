@@ -56,6 +56,7 @@ public class Meeting {
     @JsonBackReference
     private Clubs clubs;
 
+    @Column(name = "qr_code_url", columnDefinition = "LONGTEXT")
     private String qrCodeUrl;  // URL for the QR code (for physical meetings)
 
     private String meetingLink;

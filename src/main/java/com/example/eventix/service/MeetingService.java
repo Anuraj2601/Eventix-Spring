@@ -60,13 +60,16 @@ public class MeetingService {
                 // Handle physical and online meeting types
                 if ("PHYSICAL".equalsIgnoreCase(meetingDTO.getMeetingType())) {
                     // Generate QR code for physical meeting
-                    String qrCode = qrCodeService.generateQRCode("Meeting ID: " + meetingDTO.getMeetingId(), 200, 200);
-                    meetingDTO.setQrCodeUrl(qrCode); // Set the generated QR code URL
+                    // Generate a unique file name for the QR code based on meeting ID
+                    String fileName = "meeting-" + meetingDTO.getMeetingId();
+                    String qrCodeUrl = qrCodeService.generateQRCode("Meeting ID: " + meetingDTO.getMeetingId(), 200, 200, fileName);
+                    meetingDTO.setQrCodeUrl(qrCodeUrl); // Set the generated QR code URL
                 } else if ("ONLINE".equalsIgnoreCase(meetingDTO.getMeetingType())) {
                     // Generate VideoSDK link for online meeting
                     String meetingLink = createVideoSdkMeetingLink();
                     meetingDTO.setMeetingLink(meetingLink); // Set the generated VideoSDK link
                 }
+
 
                 // Save meeting entity
                 Meeting savedMeeting = meetingRepo.save(meeting);

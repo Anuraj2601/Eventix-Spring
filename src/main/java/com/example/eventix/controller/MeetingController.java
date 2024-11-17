@@ -32,14 +32,14 @@ public class MeetingController {
 
     @PostMapping("/saveMeeting")
     public ResponseEntity<ResponseDTO> saveMeeting(@RequestBody MeetingDTO meetingDTO) throws Exception {
-        // If it's a physical meeting, generate QR code
         if ("PHYSICAL".equalsIgnoreCase(meetingDTO.getMeetingType())) {
-            String qrCode = qrCodeService.generateQRCode("Meeting ID: " + meetingDTO.getMeetingId(), 200, 200);
-            meetingDTO.setQrCodeUrl(qrCode); // Set the generated QR code
+            // Generate a unique file name for the QR code
+            String fileName = "meeting-" + meetingDTO.getMeetingId();
+            String qrCodeUrl = qrCodeService.generateQRCode("Meeting ID: " + meetingDTO.getMeetingId(), 200, 200, fileName);
+            meetingDTO.setQrCodeUrl(qrCodeUrl); // Set the generated QR code URL
         } else if ("ONLINE".equalsIgnoreCase(meetingDTO.getMeetingType())) {
-            // If it's an online meeting, generate the VideoSDK meeting link
             String meetingLink = meetingService.createVideoSdkMeetingLink();
-            meetingDTO.setMeetingLink(meetingLink); // Set the generated VideoSDK link
+            meetingDTO.setMeetingLink(meetingLink);
         }
         return ResponseEntity.ok().body(meetingService.saveMeeting(meetingDTO));
     }
