@@ -4,10 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 
 @Entity
 @NoArgsConstructor
@@ -21,18 +19,27 @@ public class Meeting {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int meeting_id;
+
+    @Column(nullable = false)
     private String meeting_name;
+
+    @Column(nullable = false)
     private LocalDate date;
+
+    @Column(nullable = false)
     private LocalTime time;
 
-   public enum MeetingType{
-       ONLINE,
-       PHYSICAL
-   }
+    // Enum for the type of meeting (ONLINE or PHYSICAL)
+    public enum MeetingType{
+        ONLINE,
+        PHYSICAL
+    }
 
-   @Enumerated(EnumType.STRING)
-   private MeetingType meeting_type;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MeetingType meeting_type;
 
+    // Enum for the type of participants (EVERYONE, CLUB_MEMBERS, or CLUB_BOARD)
     public enum ParticipantType{
         EVERYONE,
         CLUB_MEMBERS,
@@ -40,11 +47,17 @@ public class Meeting {
     }
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private ParticipantType participant_type;
 
+    // Relationship with Clubs entity, indicating each meeting belongs to a club
     @ManyToOne
     @JoinColumn(name = "club_id", nullable = false)
     @JsonBackReference
     private Clubs clubs;
+
+    private String qrCodeUrl;  // URL for the QR code (for physical meetings)
+
+    private String meetingLink;
 
 }
