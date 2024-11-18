@@ -107,7 +107,8 @@ public class ClubsService {
 
             // Handle image URL (ensure club image is not null)
             String clubImage = club.getClub_image();
-            clubsDTO.setClub_image(buildImageUrl(clubImage != null ? clubImage : "default-image.jpg"));
+            clubsDTO.setClub_image(buildImageUrl(club.getClub_image()));
+            //clubsDTO.setClub_image(buildImageUrl(clubImage != null ? clubImage : "default-image.jpg"));
 
             // Set success response with the club DTO content
             responseDTO.setStatusCode(VarList.RSP_SUCCESS);
