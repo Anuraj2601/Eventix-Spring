@@ -106,8 +106,8 @@ public class ClubsService {
             ClubsDTO clubsDTO = modelMapper.map(club, ClubsDTO.class);
 
             // Handle image URL (ensure club image is not null)
-            String clubImage = club.getClub_image();
-            clubsDTO.setClub_image(buildImageUrl(club.getClub_image()));
+            //String clubImage = club.getClub_image();
+            //clubsDTO.setClub_image(buildImageUrl(club.getClub_image()));
             //clubsDTO.setClub_image(buildImageUrl(clubImage != null ? clubImage : "default-image.jpg"));
 
             // Set success response with the club DTO content
