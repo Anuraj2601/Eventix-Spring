@@ -51,4 +51,5 @@ public class EventController {
 //    public ResponseEntity<ResponseDTO> deleteEvent(@PathVariable int event_id){
 //        return ResponseEntity.ok().body(eventService.deleteEvent(event_id));
 //    }
+
 }
