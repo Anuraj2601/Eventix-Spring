@@ -33,4 +33,5 @@ public class Event {
     @JoinColumn(name = "club_id")
     private Clubs club;
 
+
 }
