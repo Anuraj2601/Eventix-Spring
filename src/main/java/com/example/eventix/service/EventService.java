@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.example.eventix.constant.Constant.*;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -239,6 +240,47 @@ public class EventService {
 
         }
     }
+
+
+    public ResponseDTO getAllEventsWithClubDetails() {
+        try {
+            List<Event> events = eventRepo.findAllEventsWithClubDetails(); // Fetch events with clubs
+            if (!events.isEmpty()) {
+                // Map events to DTOs including club and president details
+                List<EventDTO> eventDTOList = events.stream().map(event -> {
+                    EventDTO eventDTO = modelMapper.map(event, EventDTO.class);
+                    if (event.getClub() != null) {
+                        eventDTO.setClubImage(event.getClub().getClub_image()); // Map club image
+
+                        // Map club president's image
+                        if (event.getClub().getPresident() != null) {
+                            eventDTO.setClubPresidentImage(event.getClub().getPresident().getPhotoUrl());
+                            eventDTO.setClubPresidentName(event.getClub().getPresident().getFirstname());
+                        }
+                    }
+                    return eventDTO;
+                }).collect(Collectors.toList());
+
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Retrieved All Events with Club and President Details Successfully");
+                responseDTO.setContent(eventDTOList);
+            } else {
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("No Events Found");
+                responseDTO.setContent(null);
+            }
+            return responseDTO;
+        } catch (Exception e) {
+            log.error("Error retrieving events with club and president details: {}", e.getMessage());
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(e.getMessage());
+            responseDTO.setContent(null);
+            return responseDTO;
+        }
+    }
+
+
+
 
 
     public ResponseDTO getEventsByClubId(int clubId) {

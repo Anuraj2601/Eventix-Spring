@@ -25,4 +25,8 @@ public class EventDTO {
     private int budget_status;
 
     private int club_id;
+    private String clubImage;
+
+    private String clubPresidentImage;
+    private String clubPresidentName;
 }
