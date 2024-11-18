@@ -48,7 +48,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/photo").permitAll()
                         .requestMatchers(HttpMethod.GET,"/static/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/president/getAllElections").hasAnyAuthority("student","member", "oc", "president")
-
+                        .requestMatchers("/api/voters/election/**").permitAll()
 
 //                         .requestMatchers("/president/").hasAnyAuthority("president")
 //                         .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
