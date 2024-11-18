@@ -3,6 +3,7 @@ package com.example.eventix.controller;
 import com.example.eventix.dto.MeetingDTO;
 import com.example.eventix.dto.ResponseDTO;
 import com.example.eventix.service.MeetingService;
+import com.example.eventix.service.QRCodeService; // Add the service for QR code generation
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,9 @@ public class MeetingController {
     @Autowired
     private MeetingService meetingService;
 
+    @Autowired
+    private QRCodeService qrCodeService; // Autowire QR code service
+
     @GetMapping("/getAllMeetings")
     public ResponseEntity<ResponseDTO> getAllMeetings() {
         return ResponseEntity.ok().body(meetingService.getAllMeetings());
@@ -27,7 +31,16 @@ public class MeetingController {
     }
 
     @PostMapping("/saveMeeting")
-    public ResponseEntity<ResponseDTO> saveMeeting(@RequestBody MeetingDTO meetingDTO){
+    public ResponseEntity<ResponseDTO> saveMeeting(@RequestBody MeetingDTO meetingDTO) throws Exception {
+        if ("PHYSICAL".equalsIgnoreCase(meetingDTO.getMeetingType())) {
+            // Generate a unique file name for the QR code
+            String fileName = "meeting-" + meetingDTO.getMeetingId();
+            String qrCodeUrl = qrCodeService.generateQRCode("Meeting ID: " + meetingDTO.getMeetingId(), 200, 200, fileName);
+            meetingDTO.setQrCodeUrl(qrCodeUrl); // Set the generated QR code URL
+        } else if ("ONLINE".equalsIgnoreCase(meetingDTO.getMeetingType())) {
+            String meetingLink = meetingService.createVideoSdkMeetingLink();
+            meetingDTO.setMeetingLink(meetingLink);
+        }
         return ResponseEntity.ok().body(meetingService.saveMeeting(meetingDTO));
     }
 
@@ -40,5 +53,4 @@ public class MeetingController {
     public ResponseEntity<ResponseDTO> deleteMeeting(@PathVariable int meeting_id){
         return ResponseEntity.ok().body(meetingService.deleteMeeting(meeting_id));
     }
-
 }

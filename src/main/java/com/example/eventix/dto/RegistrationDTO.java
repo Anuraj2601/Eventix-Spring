@@ -12,6 +12,9 @@ public class RegistrationDTO {
     private String reason;
     private int accepted;
     private String position;
+    private int userId;
+
+    private LocalDateTime createdAt;
 
     // Getters and setters
 
@@ -77,5 +80,22 @@ public class RegistrationDTO {
 
     public void setPosition(String position) {
         this.position = position;
+    }
+
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+
     }
 }

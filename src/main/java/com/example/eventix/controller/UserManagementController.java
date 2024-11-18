@@ -25,7 +25,6 @@ import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 public class UserManagementController {
 
 
-
     @Autowired
     private UsersManagementService usersManagementService;
 
