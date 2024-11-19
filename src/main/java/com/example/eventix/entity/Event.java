@@ -27,7 +27,7 @@ public class Event {
     private String budget_pdf;
 
     private int iud_status;
-    private int budget_status;
+    private int budget_status; // -1: Pending, 0: Rejected, 1: Accepted
 
     @ManyToOne
     @JoinColumn(name = "club_id")
