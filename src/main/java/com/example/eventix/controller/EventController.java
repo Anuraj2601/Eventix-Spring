@@ -27,10 +27,31 @@ public class EventController {
         return ResponseEntity.ok().body(eventService.getAllEvents());
     }
 
+    @GetMapping("/getAllEventsWithClubs")
+    public ResponseEntity<ResponseDTO> getAllEventsWithClubs() {
+        return ResponseEntity.ok().body(eventService.getAllEventsWithClubDetails());
+    }
+
     @GetMapping("/getEventsByClub/{clubId}")
     public ResponseEntity<ResponseDTO> getEventsByClubId(@PathVariable int clubId) {
         return ResponseEntity.ok().body(eventService.getEventsByClubId(clubId));
     }
+
+    @PutMapping("/updateBudgetStatus/{eventId}")
+    public ResponseEntity<ResponseDTO> updateBudgetStatus(@PathVariable int eventId, @RequestParam("status") int status, @RequestParam("role") String role) {
+
+        // Ensure only the treasurer can perform this operation
+        if (!"treasurer".equalsIgnoreCase(role)) {
+            ResponseDTO responseDTO = new ResponseDTO();
+            //responseDTO.setStatusCode(VarList.RSP_UNAUTHORIZED);
+            responseDTO.setMessage("Only the treasurer can update the budget status.");
+            return ResponseEntity.status(403).body(responseDTO);
+        }
+
+        // Call service method to update the budget status
+        return ResponseEntity.ok().body(eventService.updateBudgetStatus(eventId, status));
+    }
+
 
 //    @GetMapping("/getEvent/{event_id}")
 //    public ResponseEntity<ResponseDTO> getEvent(@PathVariable int event_id){
@@ -51,4 +72,5 @@ public class EventController {
 //    public ResponseEntity<ResponseDTO> deleteEvent(@PathVariable int event_id){
 //        return ResponseEntity.ok().body(eventService.deleteEvent(event_id));
 //    }
+
 }

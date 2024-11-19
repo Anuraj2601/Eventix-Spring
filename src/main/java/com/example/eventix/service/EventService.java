@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.example.eventix.constant.Constant.*;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -241,6 +242,47 @@ public class EventService {
     }
 
 
+    public ResponseDTO getAllEventsWithClubDetails() {
+        try {
+            List<Event> events = eventRepo.findAllEventsWithClubDetails(); // Fetch events with clubs
+            if (!events.isEmpty()) {
+                // Map events to DTOs including club and president details
+                List<EventDTO> eventDTOList = events.stream().map(event -> {
+                    EventDTO eventDTO = modelMapper.map(event, EventDTO.class);
+                    if (event.getClub() != null) {
+                        eventDTO.setClubImage(event.getClub().getClub_image()); // Map club image
+
+                        // Map club president's image
+                        if (event.getClub().getPresident() != null) {
+                            eventDTO.setClubPresidentImage(event.getClub().getPresident().getPhotoUrl());
+                            eventDTO.setClubPresidentName(event.getClub().getPresident().getFirstname());
+                        }
+                    }
+                    return eventDTO;
+                }).collect(Collectors.toList());
+
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Retrieved All Events with Club and President Details Successfully");
+                responseDTO.setContent(eventDTOList);
+            } else {
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("No Events Found");
+                responseDTO.setContent(null);
+            }
+            return responseDTO;
+        } catch (Exception e) {
+            log.error("Error retrieving events with club and president details: {}", e.getMessage());
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(e.getMessage());
+            responseDTO.setContent(null);
+            return responseDTO;
+        }
+    }
+
+
+
+
+
     public ResponseDTO getEventsByClubId(int clubId) {
         try {
             List<Event> eventsList = eventRepo.findEventsByClubId(clubId);
@@ -293,6 +335,34 @@ public class EventService {
             return responseDTO;
 
         }
+    }
+
+
+    public ResponseDTO updateBudgetStatus(int eventId, int status) {
+        try {
+            // Find the event by ID
+            Optional<Event> eventOptional = eventRepo.findById(eventId);
+            if (eventOptional.isPresent()) {
+                Event event = eventOptional.get();
+                event.setBudget_status(status); // Update the budget status
+
+                // Save the updated event back to the repository
+                eventRepo.save(event);
+
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Budget status updated successfully.");
+                responseDTO.setContent(event); // Optionally return the updated event
+            } else {
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("Event not found.");
+                responseDTO.setContent(null);
+            }
+        } catch (Exception e) {
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage("Error updating budget status: " + e.getMessage());
+            responseDTO.setContent(null);
+        }
+        return responseDTO;
     }
 
 //    public ResponseDTO updateEvent(int event_id, EventDTO eventDTO, MultipartFile file){
@@ -370,6 +440,5 @@ public class EventService {
 //            throw new RuntimeException("Unable to save image");
 //        }
 //    };
-
 
 }

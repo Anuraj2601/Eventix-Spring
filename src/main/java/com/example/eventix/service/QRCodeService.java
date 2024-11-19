@@ -4,19 +4,29 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.common.BitMatrix;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.Hashtable;
+import javax.imageio.ImageIO;
 
 @Service
 public class QRCodeService {
 
-    // Generate QR Code
-    public String generateQRCode(String content, int width, int height) throws Exception {
+    // Directory to save QR codes
+    @Value("${qr.code.directory}")
+    private String qrCodeDirectory;
+
+    // Base URL for accessing QR codes
+    @Value("${qr.code.base.url}")
+    private String qrCodeBaseUrl;
+
+    // Generate QR Code and save it as an image file
+    public String generateQRCode(String content, int width, int height, String fileName) throws Exception {
         Hashtable<EncodeHintType, String> hints = new Hashtable<>();
         hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
 
@@ -31,13 +41,17 @@ public class QRCodeService {
             }
         }
 
-        // Convert the BufferedImage to a base64 string (to return as a URL)
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        javax.imageio.ImageIO.write(image, "PNG", byteArrayOutputStream);
-        byte[] byteArray = byteArrayOutputStream.toByteArray();
-        String encodedImage = java.util.Base64.getEncoder().encodeToString(byteArray);
+        // Define the directory and file where the QR code image will be saved
+        File outputFile = new File("src/main/resources/static/qr-codes/" + fileName + ".png");
 
-        // Return as a base64 string for embedding in a webpage or saving as an image
-        return "data:image/png;base64," + encodedImage;
+        // Create directories if they do not exist
+        outputFile.getParentFile().mkdirs();
+
+        // Save the QR code as an image file
+        ImageIO.write(image, "PNG", outputFile);
+
+        // Return the URL for accessing the QR code
+        return "http://localhost:8080/qr-codes/" + fileName + ".png";
     }
+
 }
