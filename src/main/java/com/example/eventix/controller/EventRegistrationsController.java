@@ -44,6 +44,11 @@ public class EventRegistrationsController {
         return ResponseEntity.ok().body(eventRegistrationService.deleteEventRegistration(eventRegId));
     }
 
+    @PutMapping(value = "/registrationCheckIn/{eventRegId}")
+    public ResponseEntity<ResponseDTO> registrationCheckIn(@PathVariable int eventRegId){
+        return ResponseEntity.ok().body(eventRegistrationService.registrationCheckIn(eventRegId));
+    }
+
 
 
 
