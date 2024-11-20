@@ -1,9 +1,9 @@
 package com.example.eventix.service;
 
-import com.example.eventix.dto.EventOcDTO;
 import com.example.eventix.dto.EventRegistrationDTO;
 import com.example.eventix.dto.ResponseDTO;
 import com.example.eventix.entity.EventRegistration;
+import com.example.eventix.entity.Post;
 import com.example.eventix.repository.EventRegistrationRepo;
 import com.example.eventix.repository.EventRepo;
 import com.example.eventix.repository.UsersRepo;
@@ -232,4 +232,39 @@ public class EventRegistrationService {
 
 
     }
+
+
+    public ResponseDTO registrationCheckIn(int eventRegId){
+
+        try{
+            if(eventRegistrationRepo.existsById(eventRegId)){
+                EventRegistration existingEvRegistration = eventRegistrationRepo.findById(eventRegId).orElseThrow(() -> new RuntimeException("No Event Registration found"));
+
+                existingEvRegistration.set_checked(true);
+
+                eventRegistrationRepo.save(existingEvRegistration);  // Save the updated post
+
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Event registration check in status updated successfully");
+                responseDTO.setContent(existingEvRegistration);
+
+            }else{
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("No Event registration Found");
+                responseDTO.setContent(null);
+            }
+
+            return responseDTO;
+
+        }catch(Exception e){
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(e.getMessage());
+            responseDTO.setContent(e);
+            return responseDTO;
+
+        }
+
+    }
+
+
 }
