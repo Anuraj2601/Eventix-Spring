@@ -29,6 +29,8 @@ public class Event {
     private int iud_status;
     private int budget_status; // -1: Pending, 0: Rejected, 1: Accepted
 
+    private boolean public_status; // true for public, false for private
+
     @ManyToOne
     @JoinColumn(name = "club_id")
     private Clubs club;
