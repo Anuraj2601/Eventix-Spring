@@ -49,6 +49,14 @@ public class Registration {
     @Column(name = "created_at", nullable = true, updatable = false)
     private LocalDateTime createdAt;
 
+    // New columns
+    @Column(name = "oc", columnDefinition = "json", nullable = true)
+    private String oc;  // JSON array will be stored as a String (to handle JSON in database)
+
+    @Column(name = "performance", nullable = true)
+    private Integer performance; // Performance as an integer, nullable
+
+
     @PrePersist
     private void onCreate() {
         // Set the createdAt field to the current time before inserting the record if it's not already set
