@@ -24,6 +24,8 @@ public class EventDTO {
     private int iud_status;
     private int budget_status;
 
+    private boolean public_status;
+
     private int club_id;
     private String clubImage;
 
