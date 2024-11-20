@@ -1,4 +1,5 @@
 package com.example.eventix.service;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.example.eventix.dto.EventOcDTO;
 import com.example.eventix.dto.ResponseDTO;
@@ -19,6 +20,9 @@ import java.util.Optional;
 @Service
 @Transactional
 public class EventOcService {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private EventOcRepo eventOcRepo;
@@ -59,6 +63,14 @@ public class EventOcService {
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Event Oc Saved Successfully");
                 responseDTO.setContent(savedEventOcDTO);
+                try {
+                    // Assuming oc_id is savedEventOc.getOc_id() and user_id is eventOcDTO.getUser_id()
+                    jdbcTemplate.update("CALL update_event_oc_in_candidates('insert', ?, ?)",
+                            savedEventOc.getOc_id(), eventOcDTO.getUser_id());
+                } catch (Exception e) {
+                    // Log the error or handle failure of the stored procedure
+                    System.err.println("Error calling stored procedure: " + e.getMessage());
+                }
 
 
 //                EventOc savedEventOc =  eventOcRepo.save(modelMapper.map(eventOcDTO, EventOc.class));
