@@ -18,7 +18,10 @@ public class MeetingDTO {
     private LocalTime time;
     private Meeting.MeetingType meeting_type;
     private Meeting.ParticipantType participant_type;
-    private int clubId;
+    private int club_id;
+
+    private String venue;  // Venue of the meeting
+
 
     // Additional fields to handle QR code and VideoSDK link
     private String qrCodeUrl;  // To store the generated QR code URL for physical meetings
@@ -32,3 +35,4 @@ public class MeetingDTO {
         return String.valueOf(meeting_id);
     }
 }
+

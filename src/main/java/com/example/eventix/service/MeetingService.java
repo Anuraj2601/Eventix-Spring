@@ -44,43 +44,40 @@ public class MeetingService {
 
     public ResponseDTO saveMeeting(MeetingDTO meetingDTO) {
         try {
+            // Check if meeting already exists
             if (meetingRepo.existsById(meetingDTO.getMeeting_id())) {
                 responseDTO.setStatusCode(VarList.RSP_DUPLICATED);
                 responseDTO.setMessage("Meeting already exists");
                 responseDTO.setContent(meetingDTO);
-            } else {
-                // Retrieve the club entity
-                Clubs club = clubsRepo.findById(meetingDTO.getClubId())
-                        .orElseThrow(() -> new RuntimeException("Club not found"));
-
-                // Map DTO to entity
-                Meeting meeting = modelMapper.map(meetingDTO, Meeting.class);
-                meeting.setClubs(club);
-
-                // Handle physical and online meeting types
-                if ("PHYSICAL".equalsIgnoreCase(meetingDTO.getMeetingType())) {
-                    // Generate QR code for physical meeting
-                    // Generate a unique file name for the QR code based on meeting ID
-                    String fileName = "meeting-" + meetingDTO.getMeetingId();
-                    String qrCodeUrl = qrCodeService.generateQRCode("Meeting ID: " + meetingDTO.getMeetingId(), 200, 200, fileName);
-                    meetingDTO.setQrCodeUrl(qrCodeUrl); // Set the generated QR code URL
-                } else if ("ONLINE".equalsIgnoreCase(meetingDTO.getMeetingType())) {
-                    // Generate VideoSDK link for online meeting
-                    String meetingLink = createVideoSdkMeetingLink();
-                    meetingDTO.setMeetingLink(meetingLink); // Set the generated VideoSDK link
-                }
-
-
-                // Save meeting entity
-                Meeting savedMeeting = meetingRepo.save(meeting);
-                MeetingDTO savedMeetingDTO = modelMapper.map(savedMeeting, MeetingDTO.class);
-
-                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
-                responseDTO.setMessage("Meeting Saved Successfully");
-                responseDTO.setContent(savedMeetingDTO);
+                return responseDTO;
             }
 
+            // Get the club by ID
+            Clubs club = clubsRepo.findById(meetingDTO.getClub_id())
+                    .orElseThrow(() -> new RuntimeException("Club not found"));
+
+            // Map DTO to entity
+            Meeting meeting = modelMapper.map(meetingDTO, Meeting.class);
+            meeting.setClubs(club);
+
+            // Handle meeting type (QR code for physical, meeting link for online)
+            if ("PHYSICAL".equalsIgnoreCase(meetingDTO.getMeetingType())) {
+                String qrCodeUrl = qrCodeService.generateQRCode("Meeting ID: " + meetingDTO.getMeetingId(), 200, 200, "meeting-" + meetingDTO.getMeetingId());
+                meetingDTO.setQrCodeUrl(qrCodeUrl); // Set QR code URL for physical meetings
+            } else if ("ONLINE".equalsIgnoreCase(meetingDTO.getMeetingType())) {
+                String meetingLink = createVideoSdkMeetingLink();
+                meetingDTO.setMeetingLink(meetingLink); // Set meeting link for online meetings
+            }
+
+            // Save meeting entity
+            Meeting savedMeeting = meetingRepo.save(meeting);
+            MeetingDTO savedMeetingDTO = modelMapper.map(savedMeeting, MeetingDTO.class);
+
+            responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+            responseDTO.setMessage("Meeting Saved Successfully");
+            responseDTO.setContent(savedMeetingDTO);
             return responseDTO;
+
         } catch (Exception e) {
             responseDTO.setStatusCode(VarList.RSP_ERROR);
             responseDTO.setMessage(e.getMessage());
@@ -93,7 +90,12 @@ public class MeetingService {
         try {
             List<Meeting> meetingsList = meetingRepo.findAll();
             if (!meetingsList.isEmpty()) {
-                List<MeetingDTO> meetingDTOList = modelMapper.map(meetingsList, new TypeToken<List<MeetingDTO>>() {}.getType());
+                List<MeetingDTO> meetingDTOList = meetingsList.stream().map(meeting -> {
+                    MeetingDTO meetingDTO = modelMapper.map(meeting, MeetingDTO.class);
+                    meetingDTO.setClub_id(meeting.getClubs().getClub_id()); // Map the club_id explicitly
+                    return meetingDTO;
+                }).toList();
+
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Retrieved All Meetings Successfully");
                 responseDTO.setContent(meetingDTOList);
@@ -111,6 +113,7 @@ public class MeetingService {
             return responseDTO;
         }
     }
+
 
     public ResponseDTO getMeeting(int meeting_id) {
         try {
@@ -135,9 +138,9 @@ public class MeetingService {
         }
     }
 
-    public ResponseDTO updateMeeting(int meeting_id, MeetingDTO meetingDTO) {
+    public ResponseDTO updateMeeting(int meetingId, MeetingDTO meetingDTO) {
         try {
-            if (meetingRepo.existsById(meeting_id)) {
+            if (meetingRepo.existsById(meetingId)) {
                 Meeting updatedMeeting = meetingRepo.save(modelMapper.map(meetingDTO, Meeting.class));
                 MeetingDTO updatedMeetingDTO = modelMapper.map(updatedMeeting, MeetingDTO.class);
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
@@ -148,7 +151,6 @@ public class MeetingService {
                 responseDTO.setMessage("No Meeting Found");
                 responseDTO.setContent(null);
             }
-
             return responseDTO;
         } catch (Exception e) {
             responseDTO.setStatusCode(VarList.RSP_ERROR);
@@ -157,7 +159,6 @@ public class MeetingService {
             return responseDTO;
         }
     }
-
     public ResponseDTO deleteMeeting(int meeting_id) {
         try {
             if (meetingRepo.existsById(meeting_id)) {

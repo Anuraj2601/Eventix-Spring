@@ -55,16 +55,16 @@ public class SecurityConfig {
                         .requestMatchers("/president/getAllEvents").hasAnyAuthority("member", "oc", "president", "student", "ADMIN")
 
                         .requestMatchers("/president/getAllEventOcs").hasAnyAuthority("member", "oc", "president", "student", "treasurer","ADMIN", "secretary")
-                        .requestMatchers("/president/getAllAnnouncements").hasAnyAuthority("member", "oc", "president", "student", "ADMIN")
+                        .requestMatchers("/president/getAllAnnouncements").hasAnyAuthority("member", "oc", "president", "student", "treasurer","ADMIN", "secretary")
                         .requestMatchers("/president/releaseElection/**").hasAnyAuthority("student","president")
 
-                        .requestMatchers("/president/**").hasAnyAuthority("student", "president", "member", "oc", "ADMIN", "treasurer")
-                        .requestMatchers("/student/**").hasAnyAuthority("student", "president", "member", "oc", "ADMIN", "treasurer")
+                        .requestMatchers("/president/**").hasAnyAuthority("member", "oc", "president", "student", "treasurer","ADMIN", "secretary")
+                        .requestMatchers("/student/**").hasAnyAuthority("member", "oc", "president", "student", "treasurer","ADMIN", "secretary")
 
-                        .requestMatchers("/admin/**").hasAnyAuthority("ADMIN", "president", "member", "oc", "student" , "treasurer")
+                        .requestMatchers("/admin/**").hasAnyAuthority("member", "oc", "president", "student", "treasurer","ADMIN", "secretary")
 
                         .requestMatchers("/user/**").hasAnyAuthority("USER","student", "president")
-                        .requestMatchers("/adminuser/**").hasAnyAuthority("student", "ADMIN","USER")
+                        .requestMatchers("/adminuser/**").hasAnyAuthority("member", "oc", "president", "student", "treasurer","ADMIN", "secretary","USER")
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .anyRequest().permitAll())
                 .sessionManagement(manager->manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
