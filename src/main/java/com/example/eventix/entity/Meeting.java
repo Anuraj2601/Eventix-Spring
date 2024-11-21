@@ -61,4 +61,7 @@ public class Meeting {
 
     private String meetingLink;
 
+    @Column(nullable = true)  // This is optional as String columns are nullable by default
+    private String venue;
+
 }
