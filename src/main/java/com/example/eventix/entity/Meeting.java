@@ -51,10 +51,11 @@ public class Meeting {
     private ParticipantType participant_type;
 
     // Relationship with Clubs entity, indicating each meeting belongs to a club
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "club_id", nullable = false)
-    @JsonBackReference
+    @JsonBackReference // Prevent infinite recursion during JSON serialization
     private Clubs clubs;
+
 
     @Column(name = "qr_code_url", columnDefinition = "LONGTEXT")
     private String qrCodeUrl;  // URL for the QR code (for physical meetings)

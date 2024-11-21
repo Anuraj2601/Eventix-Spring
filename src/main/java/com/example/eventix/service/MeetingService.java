@@ -90,7 +90,12 @@ public class MeetingService {
         try {
             List<Meeting> meetingsList = meetingRepo.findAll();
             if (!meetingsList.isEmpty()) {
-                List<MeetingDTO> meetingDTOList = modelMapper.map(meetingsList, new TypeToken<List<MeetingDTO>>() {}.getType());
+                List<MeetingDTO> meetingDTOList = meetingsList.stream().map(meeting -> {
+                    MeetingDTO meetingDTO = modelMapper.map(meeting, MeetingDTO.class);
+                    meetingDTO.setClub_id(meeting.getClubs().getClub_id()); // Map the club_id explicitly
+                    return meetingDTO;
+                }).toList();
+
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Retrieved All Meetings Successfully");
                 responseDTO.setContent(meetingDTOList);
@@ -108,6 +113,7 @@ public class MeetingService {
             return responseDTO;
         }
     }
+
 
     public ResponseDTO getMeeting(int meeting_id) {
         try {
@@ -132,9 +138,9 @@ public class MeetingService {
         }
     }
 
-    public ResponseDTO updateMeeting(int meeting_id, MeetingDTO meetingDTO) {
+    public ResponseDTO updateMeeting(int meetingId, MeetingDTO meetingDTO) {
         try {
-            if (meetingRepo.existsById(meeting_id)) {
+            if (meetingRepo.existsById(meetingId)) {
                 Meeting updatedMeeting = meetingRepo.save(modelMapper.map(meetingDTO, Meeting.class));
                 MeetingDTO updatedMeetingDTO = modelMapper.map(updatedMeeting, MeetingDTO.class);
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
@@ -145,7 +151,6 @@ public class MeetingService {
                 responseDTO.setMessage("No Meeting Found");
                 responseDTO.setContent(null);
             }
-
             return responseDTO;
         } catch (Exception e) {
             responseDTO.setStatusCode(VarList.RSP_ERROR);
@@ -154,7 +159,6 @@ public class MeetingService {
             return responseDTO;
         }
     }
-
     public ResponseDTO deleteMeeting(int meeting_id) {
         try {
             if (meetingRepo.existsById(meeting_id)) {
