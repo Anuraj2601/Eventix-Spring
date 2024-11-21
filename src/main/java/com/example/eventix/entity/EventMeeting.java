@@ -37,16 +37,7 @@ public class EventMeeting {
     @Column(nullable = false)
     private EventMeeting.MeetingType meeting_type;
 
-    // Enum for the type of participants (EVERYONE, CLUB_MEMBERS, or CLUB_BOARD)
-    public enum ParticipantType{
-        EVERYONE,
-        CLUB_MEMBERS,
-        CLUB_BOARD
-    }
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private EventMeeting.ParticipantType participant_type;
 
     private String venue;
 
@@ -55,5 +46,8 @@ public class EventMeeting {
     private Event event;
 
 
+    @ManyToOne
+    @JoinColumn(name = "club_id")
+    private Clubs club;
 
 }

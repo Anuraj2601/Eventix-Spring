@@ -18,7 +18,7 @@ public class EventMeetingDTO {
     private LocalDate date;
     private LocalTime time;
     private EventMeeting.MeetingType meeting_type;
-    private EventMeeting.ParticipantType participant_type;
     private String venue;
     private int event_id;
+    private int club_id;
 }
