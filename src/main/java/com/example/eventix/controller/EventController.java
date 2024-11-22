@@ -53,6 +53,22 @@ public class EventController {
     }
 
 
+    @PutMapping("/updateIudStatus/{eventId}")
+    public ResponseEntity<ResponseDTO> updateIudStatus(@PathVariable int eventId, @RequestParam("status") int status, @RequestParam("role") String role) {
+
+        // Ensure only the treasurer can perform this operation
+        if (!"admin".equalsIgnoreCase(role)) {
+            ResponseDTO responseDTO = new ResponseDTO();
+            //responseDTO.setStatusCode(VarList.RSP_UNAUTHORIZED);
+            responseDTO.setMessage("Only the Admin can update the budget status.");
+            return ResponseEntity.status(403).body(responseDTO);
+        }
+
+        // Call service method to update the budget status
+        return ResponseEntity.ok().body(eventService.updateIudStatus(eventId, status));
+    }
+
+
 //    @GetMapping("/getEvent/{event_id}")
 //    public ResponseEntity<ResponseDTO> getEvent(@PathVariable int event_id){
 //        return ResponseEntity.ok().body(eventService.getEvent(event_id));
