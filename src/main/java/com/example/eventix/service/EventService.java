@@ -365,6 +365,36 @@ public class EventService {
         return responseDTO;
     }
 
+
+    public ResponseDTO updateIudStatus(int eventId, int status) {
+        try {
+            // Find the event by ID
+            Optional<Event> eventOptional = eventRepo.findById(eventId);
+            if (eventOptional.isPresent()) {
+                Event event = eventOptional.get();
+                event.setIud_status(status); // Update the budget status
+
+                // Save the updated event back to the repository
+                eventRepo.save(event);
+
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("IUD status updated successfully.");
+                responseDTO.setContent(event); // Optionally return the updated event
+            } else {
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("Event not found.");
+                responseDTO.setContent(null);
+            }
+        } catch (Exception e) {
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage("Error updating IUD status: " + e.getMessage());
+            responseDTO.setContent(null);
+        }
+        return responseDTO;
+    }
+
+
+
 //    public ResponseDTO updateEvent(int event_id, EventDTO eventDTO, MultipartFile file){
 //        try{
 //            if(eventRepo.existsById(event_id)){
