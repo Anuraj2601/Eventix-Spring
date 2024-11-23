@@ -24,12 +24,12 @@ public class EventAnnouncement {
 
     private String content;
 
-    public enum AnnouncementType{
-        PUBLIC,
-        ONLY_MEMBERS
+    public enum EventAnnouncementType {
+        EVERYONE,
+        OC
     }
     @Enumerated(EnumType.STRING)
-    private EventAnnouncement.AnnouncementType type;
+    private EventAnnouncementType type;
 
     @CreationTimestamp
     @Column(name = "date_posted", updatable = false)

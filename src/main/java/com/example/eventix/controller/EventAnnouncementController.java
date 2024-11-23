@@ -1,6 +1,5 @@
 package com.example.eventix.controller;
 
-import com.example.eventix.dto.AnnouncementDTO;
 import com.example.eventix.dto.EventAnnouncementDTO;
 import com.example.eventix.dto.ResponseDTO;
 import com.example.eventix.service.EventAnnouncementService;
@@ -22,24 +21,24 @@ public class EventAnnouncementController {
         return ResponseEntity.ok().body(eventAnnouncementService.getAllEventAnnouncements());
     }
 
-    @GetMapping("/getAnnouncement/{eventAnnouncementId}")
-    public ResponseEntity<ResponseDTO> getAnnouncement(@PathVariable int eventAnnouncementId){
+    @GetMapping("/getEventAnnouncement/{eventAnnouncementId}")
+    public ResponseEntity<ResponseDTO> getEventAnnouncement(@PathVariable int eventAnnouncementId){
         return ResponseEntity.ok().body(eventAnnouncementService.getEventAnnouncement(eventAnnouncementId));
     }
 
-    @PostMapping(value ="/saveAnnouncement", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseDTO> saveAnnouncement(@RequestBody EventAnnouncementDTO eventAnnouncementDTO){
+    @PostMapping(value ="/saveEventAnnouncement", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseDTO> saveEventAnnouncement(@RequestBody EventAnnouncementDTO eventAnnouncementDTO){
         //return ResponseEntity.ok(announcementService.saveAnnouncement(announcementDTO));
         return ResponseEntity.ok().body(eventAnnouncementService.saveEventAnnouncement(eventAnnouncementDTO));
     }
 
-    @PutMapping(value ="/updateAnnouncement/{eventAnnouncementId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseDTO> updateAnnouncement(@PathVariable int eventAnnouncementId, @RequestBody EventAnnouncementDTO eventAnnouncementDTO){
+    @PutMapping(value ="/updateEventAnnouncement/{eventAnnouncementId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseDTO> updateEventAnnouncement(@PathVariable int eventAnnouncementId, @RequestBody EventAnnouncementDTO eventAnnouncementDTO){
         return ResponseEntity.ok().body(eventAnnouncementService.updateEventAnnouncement(eventAnnouncementId, eventAnnouncementDTO));
     }
 
-    @DeleteMapping("/deleteAnnouncement/{eventAnnouncementId}")
-    public ResponseEntity<ResponseDTO> deleteAnnouncement(@PathVariable int eventAnnouncementId){
+    @DeleteMapping("/deleteEventAnnouncement/{eventAnnouncementId}")
+    public ResponseEntity<ResponseDTO> deleteEventAnnouncement(@PathVariable int eventAnnouncementId){
         return ResponseEntity.ok().body(eventAnnouncementService.deleteEventAnnouncement(eventAnnouncementId));
     }
 
