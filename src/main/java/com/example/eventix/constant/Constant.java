@@ -6,5 +6,6 @@ public class Constant {
 
     public static final String EVENT_PHOTO_DIRECTORY = "src/main/resources/static/uploads/events/eventImages/";
     public static final String EVENT_BUDGET_DIRECTORY = "src/main/resources/static/uploads/events/eventBudgets/";
+    public static final String EVENT_POST_PHOTO_DIRECTORY = "src/main/resources/static/uploads/events/eventPosts/";
 
 }
