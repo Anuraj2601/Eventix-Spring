@@ -18,7 +18,10 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -226,5 +229,68 @@ public class MeetingService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public ResponseDTO joinOnlineMeeting(int meetingId) {
+        try {
+            Optional<Meeting> meetingOpt = meetingRepo.findById(meetingId);
+            if (meetingOpt.isPresent()) {
+                Meeting meeting = meetingOpt.get();
+                if (!"ONLINE".equalsIgnoreCase(meeting.getMeetingType())) {
+                    responseDTO.setStatusCode(VarList.RSP_ERROR);
+                    responseDTO.setMessage("This is not an online meeting");
+                    responseDTO.setContent(null);
+                    return responseDTO;
+                }
+
+                // Generate or fetch the meeting token/link from VideoSDK
+                RestTemplate restTemplate = new RestTemplate();
+                String meetingLink;
+
+                if (meeting.getMeetingLink() == null || meeting.getMeetingLink().isEmpty()) {
+                    // Generate a new meeting link if not already created
+                    var request = new org.springframework.http.HttpEntity<>(null, createHeaders());
+                    var response = restTemplate.postForEntity(VIDEO_SDK_API_URL, request, String.class);
+                    if (response.getStatusCode().is2xxSuccessful()) {
+                        // Assuming response body contains the meeting ID or link
+                        meetingLink = response.getBody(); // Replace this with correct parsing logic
+                        meeting.setMeetingLink(meetingLink);
+                        meetingRepo.save(meeting); // Update DB with the new meeting link
+                    } else {
+                        responseDTO.setStatusCode(VarList.RSP_ERROR);
+                        responseDTO.setMessage("Failed to create meeting link");
+                        responseDTO.setContent(null);
+                        return responseDTO;
+                    }
+                } else {
+                    // Use the existing meeting link
+                    meetingLink = meeting.getMeetingLink();
+                }
+
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Join online meeting using the provided link");
+                responseDTO.setContent(meetingLink);
+            } else {
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("Meeting not found");
+                responseDTO.setContent(null);
+            }
+
+            return responseDTO;
+        } catch (Exception e) {
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(e.getMessage());
+            responseDTO.setContent(null);
+            return responseDTO;
+        }
+    }
+
+    /**
+     * Helper method to create HTTP headers with the API key
+     */
+    private org.springframework.http.HttpHeaders createHeaders() {
+        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+        headers.set("Authorization", "Bearer " + VIDEO_SDK_API_TOKEN);
+        return headers;
     }
 }

@@ -29,10 +29,15 @@ public class Meeting {
     @Column(nullable = false)
     private LocalTime time;
 
+
     // Enum for the type of meeting (ONLINE or PHYSICAL)
     public enum MeetingType{
         ONLINE,
         PHYSICAL
+    }
+
+    public String getMeetingType() {
+        return meeting_type != null ? meeting_type.name() : null;
     }
 
     @Enumerated(EnumType.STRING)
