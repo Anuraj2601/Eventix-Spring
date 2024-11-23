@@ -53,4 +53,9 @@ public class MeetingController {
     public ResponseEntity<ResponseDTO> deleteMeeting(@PathVariable int meeting_id){
         return ResponseEntity.ok().body(meetingService.deleteMeeting(meeting_id));
     }
+
+    @GetMapping("/joinOnlineMeeting/{meetingId}")
+    public ResponseEntity<ResponseDTO> joinOnlineMeeting(@PathVariable int meetingId) {
+        return ResponseEntity.ok().body(meetingService.joinOnlineMeeting(meetingId));
+    }
 }
