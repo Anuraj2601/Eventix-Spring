@@ -14,7 +14,8 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.io.File;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -36,6 +37,9 @@ public class MeetingService {
     @Autowired
     private MeetingRepo meetingRepo;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @Autowired
     private ModelMapper modelMapper;
 
@@ -56,7 +60,7 @@ public class MeetingService {
 
     public ResponseDTO saveMeeting(MeetingDTO meetingDTO) {
         try {
-            // Check if meeting already exists
+            // Check if the meeting already exists
             if (meetingRepo.existsById(meetingDTO.getMeeting_id())) {
                 responseDTO.setStatusCode(VarList.RSP_DUPLICATED);
                 responseDTO.setMessage("Meeting already exists");
@@ -75,14 +79,26 @@ public class MeetingService {
             // Handle meeting type (QR code for physical, meeting link for online)
             if ("PHYSICAL".equalsIgnoreCase(meetingDTO.getMeetingType())) {
                 String qrCodeUrl = qrCodeService.generateQRCode("Meeting ID: " + meetingDTO.getMeetingId(), 200, 200, "meeting-" + meetingDTO.getMeetingId());
-                meetingDTO.setQrCodeUrl(qrCodeUrl); // Set QR code URL for physical meetings
+                meetingDTO.setQrCodeUrl(qrCodeUrl);
             } else if ("ONLINE".equalsIgnoreCase(meetingDTO.getMeetingType())) {
                 String meetingLink = createVideoSdkMeetingLink();
-                meetingDTO.setMeetingLink(meetingLink); // Set meeting link for online meetings
+                meetingDTO.setMeetingLink(meetingLink);
             }
 
             // Save meeting entity
             Meeting savedMeeting = meetingRepo.save(meeting);
+
+            // After the save, you can now retrieve the meeting_id from the saved entity
+            int meetingId = savedMeeting.getMeeting_id();  // The meeting_id is auto-generated after save
+
+            // Now call the stored procedure with the saved meeting ID
+            entityManager.createNativeQuery("CALL InsertMeetingParticipants(:meetingId, :clubId, :participantType)")
+                    .setParameter("meetingId", meetingId) // Use the meetingId from the saved entity
+                    .setParameter("clubId", meetingDTO.getClub_id()) // Directly fetch from DTO
+                    .setParameter("participantType", meetingDTO.getParticipant_type().name()) // Use enum name as String
+                    .executeUpdate();
+
+            // Map saved entity back to DTO
             MeetingDTO savedMeetingDTO = modelMapper.map(savedMeeting, MeetingDTO.class);
 
             responseDTO.setStatusCode(VarList.RSP_SUCCESS);
@@ -329,6 +345,28 @@ public class MeetingService {
                 "Your Meeting QR Code",
                 "Hello,\n\nPlease find the QR code for your meeting attached.\n\nThank you!",
                 qrCodeFile
+        );
+    }
+
+    public void sendMeetingCodeToUser(int meetingId, String email) throws Exception {
+        Meeting meeting = meetingRepo.findById(meetingId)
+                .orElseThrow(() -> new Exception("Meeting not found with ID: " + meetingId));
+
+        if (meeting.getMeetingLink() == null || meeting.getMeetingLink().isEmpty()) {
+            throw new Exception("Meeting Code not available for this meeting.");
+        }
+
+        String meetingCode = meeting.getMeetingLink().substring(meeting.getMeetingLink().lastIndexOf("/") + 1);
+
+        String emailBody = String.format(
+                "Hello,\n\nHere is the meeting code: %s\n\nThank you!",
+                meetingCode
+        );
+
+        emailService.sendEmailWithAttachment1(
+                email,
+                "Your Online Meeting Code",
+                emailBody
         );
     }
 }

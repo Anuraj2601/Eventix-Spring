@@ -73,4 +73,17 @@ public class MeetingController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to send QR Code: " + e.getMessage());
         }
     }
+
+    @PostMapping("/sendMeetingCode/{meetingId}")
+    public ResponseEntity<String> sendMeetingCode(
+            @PathVariable int meetingId,
+            @RequestBody EmailRequest emailRequest,
+            @RequestHeader("Authorization") String token) {
+        try {
+            meetingService.sendMeetingCodeToUser(meetingId, emailRequest.getEmail());
+            return ResponseEntity.ok("Meeting Code sent successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to send Meeting Code: " + e.getMessage());
+        }
+    }
 }
