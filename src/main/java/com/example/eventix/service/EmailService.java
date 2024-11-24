@@ -28,4 +28,15 @@ public class EmailService {
 
         mailSender.send(message);
     }
+
+    public void sendEmailWithAttachment1(String email, String yourOnlineMeetingCode, String emailBody) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        helper.setTo(email);
+        helper.setSubject(yourOnlineMeetingCode);
+        helper.setText(emailBody);
+
+        mailSender.send(message);
+    }
 }
