@@ -424,31 +424,27 @@ public class EventService {
 //        }
 //    }
 
-//    public ResponseDTO deleteEvent(int event_id){
-//        try{
-//            if(eventRepo.existsById(event_id)){
-//                eventRepo.deleteById(event_id);
-//                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
-//                responseDTO.setMessage("Event Deleted Successfully");
-//                responseDTO.setContent(null);
-//
-//
-//            }else{
-//                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
-//                responseDTO.setMessage("No Event Found");
-//                responseDTO.setContent(null);
-//
-//            }
-//
-//            return responseDTO;
-//
-//        }catch(Exception e){
-//            responseDTO.setStatusCode(VarList.RSP_ERROR);
-//            responseDTO.setMessage(e.getMessage());
-//            responseDTO.setContent(e);
-//            return responseDTO;
-//        }
-//    }
+
+    public ResponseDTO deleteEventById(int event_id) {
+        try {
+            if (eventRepo.existsById(event_id)) {
+                eventRepo.deleteById(event_id);
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Event deleted successfully.");
+                responseDTO.setContent(null);
+            } else {
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("Event not found.");
+                responseDTO.setContent(null);
+            }
+        } catch (Exception e) {
+            log.error("Error deleting event: {}", e.getMessage());
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage("Error deleting event: " + e.getMessage());
+            responseDTO.setContent(null);
+        }
+        return responseDTO;
+    }
 
 
 //    private final Function<String, String> fileExtension = filename -> Optional.of(filename).filter(name -> name.contains("."))
