@@ -14,35 +14,7 @@ public class MeetingParticipantService {
 
     @Autowired
     private MeetingParticipantRepository participantRepository;
-    private final QRCodeService qrCodeService;
-    private final MeetingParticipantRepository participantRepository;
 
-    @Autowired
-    public MeetingParticipantService(QRCodeService qrCodeService, MeetingParticipantRepository participantRepository) {
-        this.qrCodeService = qrCodeService;
-        this.participantRepository = participantRepository;
-    }
-
-    // Method to handle QR code generation after participant is inserted
-    @Transactional
-    public void generateQRCodeForNewParticipant(Long participantId) {
-        MeetingParticipant participant = participantRepository.findById(participantId).orElseThrow(() -> new RuntimeException("Participant not found"));
-
-        // Generate the QR code content based on the userId, clubId, and meetingId
-        String content = participant.getUserId() + "-" + participant.getClubId() + "-" + participant.getMeetingId();
-
-        try {
-            // Generate QR code image and get the URL
-            String qrCodeUrl = qrCodeService.generateQRCode(content, 200, 200, "meeting-participant-" + participant.getUserId() + "-" + participant.getClubId() + "-" + participant.getMeetingId());
-
-            // Update the participant record with the QR code URL
-            participant.setQrCodeUrl(qrCodeUrl);
-            participantRepository.save(participant);
-        } catch (Exception e) {
-            e.printStackTrace();
-            // Handle exceptions, such as error in QR code generation
-        }
-    }
     // Fetch all participants for a specific meeting
     public List<MeetingParticipantDTO> getAllParticipants(int meetingId) {
         List<MeetingParticipant> participants = participantRepository.findByMeetingId(meetingId);
