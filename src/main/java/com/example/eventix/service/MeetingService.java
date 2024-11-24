@@ -12,7 +12,10 @@ import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.io.File;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -44,6 +47,12 @@ public class MeetingService {
 
     @Autowired
     private QRCodeService qrCodeService; // Autowire QR code service
+
+    @Autowired
+    private EmailService emailService;
+
+    @Value("${qr.code.directory}")
+    private String qrCodeDirectory;
 
     public ResponseDTO saveMeeting(MeetingDTO meetingDTO) {
         try {
@@ -293,5 +302,33 @@ public class MeetingService {
         org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
         headers.set("Authorization", "Bearer " + VIDEO_SDK_API_TOKEN);
         return headers;
+    }
+
+    public void sendQrCodeToUser(int meetingId, String userEmail) throws Exception {
+        // Fetch the meeting
+        Meeting meeting = meetingRepo.findById(meetingId)
+                .orElseThrow(() -> new Exception("Meeting not found with ID: " + meetingId));
+
+        // Ensure the QR code URL exists
+        if (meeting.getQrCodeUrl() == null || meeting.getQrCodeUrl().isEmpty()) {
+            throw new Exception("QR Code not available for this meeting.");
+        }
+
+        // Construct the file path to the QR code
+        String fileName = meeting.getQrCodeUrl().substring(meeting.getQrCodeUrl().lastIndexOf("/") + 1);
+        File qrCodeFile = new File(qrCodeDirectory, fileName);
+
+        // Ensure the QR code file exists
+        if (!qrCodeFile.exists()) {
+            throw new Exception("QR Code file not found for meeting: " + meetingId);
+        }
+
+        // Send the email with the QR code as an attachment
+        emailService.sendEmailWithAttachment(
+                userEmail,
+                "Your Meeting QR Code",
+                "Hello,\n\nPlease find the QR code for your meeting attached.\n\nThank you!",
+                qrCodeFile
+        );
     }
 }
