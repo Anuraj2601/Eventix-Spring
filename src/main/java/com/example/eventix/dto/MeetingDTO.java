@@ -31,6 +31,7 @@ public class MeetingDTO {
         return meeting_type != null ? meeting_type.name() : null;  // Returns the name of the enum as a String
     }
 
+
     public String getMeetingId() {
         return String.valueOf(meeting_id);
     }
