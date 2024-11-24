@@ -1,10 +1,12 @@
 package com.example.eventix.controller;
 
+import com.example.eventix.dto.EmailRequest;
 import com.example.eventix.dto.MeetingDTO;
 import com.example.eventix.dto.ResponseDTO;
 import com.example.eventix.service.MeetingService;
 import com.example.eventix.service.QRCodeService; // Add the service for QR code generation
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -57,5 +59,18 @@ public class MeetingController {
     @GetMapping("/joinOnlineMeeting/{meetingId}")
     public ResponseEntity<ResponseDTO> joinOnlineMeeting(@PathVariable int meetingId) {
         return ResponseEntity.ok().body(meetingService.joinOnlineMeeting(meetingId));
+    }
+
+    @PostMapping("/sendQrCode/{meetingId}")
+    public ResponseEntity<String> sendQrCode(
+            @PathVariable int meetingId,
+            @RequestBody EmailRequest emailRequest,
+            @RequestHeader("Authorization") String token) {
+        try {
+            meetingService.sendQrCodeToUser(meetingId, emailRequest.getEmail());
+            return ResponseEntity.ok("QR Code sent successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to send QR Code: " + e.getMessage());
+        }
     }
 }
