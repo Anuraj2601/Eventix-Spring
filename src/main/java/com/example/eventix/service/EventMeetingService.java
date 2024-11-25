@@ -8,18 +8,24 @@ import com.example.eventix.entity.EventMeeting;
 import com.example.eventix.repository.EventMeetingRepo;
 import com.example.eventix.repository.EventRepo;
 import com.example.eventix.util.VarList;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.util.List;
 
 @Service
 @Transactional
 public class EventMeetingService {
 
+
+    @PersistenceContext
+    private EntityManager entityManager;
     @Autowired
     private EventMeetingRepo eventMeetingRepo;
 
@@ -51,6 +57,10 @@ public class EventMeetingService {
 
 
                 savedEventMeetingDTO.setEvent_id(savedEventMeeting.getEvent().getEvent_id());
+                entityManager.createNativeQuery("CALL InsertEventMeetingParticipants(:meetingId, :eventId)")
+                        .setParameter("meetingId", savedEventMeeting.getE_meeting_id()) // Use the meeting ID from the saved entity
+                        .setParameter("eventId", savedEventMeeting.getEvent().getEvent_id()) // Fetch the event ID from the saved entity
+                        .executeUpdate();
 
 
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
