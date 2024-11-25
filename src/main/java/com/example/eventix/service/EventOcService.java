@@ -1,4 +1,7 @@
 package com.example.eventix.service;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.dao.DataAccessException;
+
 
 import com.example.eventix.dto.EventOcDTO;
 import com.example.eventix.dto.ResponseDTO;
@@ -19,6 +22,9 @@ import java.util.Optional;
 @Service
 @Transactional
 public class EventOcService {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private EventOcRepo eventOcRepo;
@@ -59,6 +65,14 @@ public class EventOcService {
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Event Oc Saved Successfully");
                 responseDTO.setContent(savedEventOcDTO);
+                try {
+                    // Assuming oc_id is savedEventOc.getOc_id() and user_id is eventOcDTO.getUser_id()
+                    jdbcTemplate.update("CALL update_event_oc_in_candidates('insert',  ?)",
+                            savedEventOc.getOc_id());
+                } catch (Exception e) {
+                    // Log the error or handle failure of the stored procedure
+                    System.err.println("Error calling stored procedure: " + e.getMessage());
+                }
 
 
 //                EventOc savedEventOc =  eventOcRepo.save(modelMapper.map(eventOcDTO, EventOc.class));
@@ -265,23 +279,45 @@ public class EventOcService {
 
     }
 
-    public ResponseDTO removeEventOc(int eventOc_id){
-
-        try{
-            if(eventOcRepo.existsById(eventOc_id)){
+    public ResponseDTO removeEventOc(int eventOc_id) {
+        try {
+            if (eventOcRepo.existsById(eventOc_id)) {
                 EventOc existingEventOc = eventOcRepo.findById(eventOc_id).orElseThrow(() -> new RuntimeException("Event OC not found"));
 
-                //existingPost.setPost_status(status);
+                // Call the stored procedure to update the candidates first
+                try {
+                    jdbcTemplate.update("CALL update_event_oc_in_candidates('delete', ?)", eventOc_id);
+                } catch (DataAccessException e) {
+                    // Log SQL-related exceptions handled by Spring JDBC
+                    System.err.println("Error executing SQL operation: " + e.getMessage());
+                    e.printStackTrace();
+
+                    // Return error response if the stored procedure fails
+                    responseDTO.setStatusCode(VarList.RSP_ERROR);
+                    responseDTO.setMessage("Error updating event OC in candidates");
+                    responseDTO.setContent(e.getMessage());
+                    return responseDTO;
+                } catch (Exception e) {
+                    // Log any general exceptions
+                    System.err.println("Error calling stored procedure: " + e.getMessage());
+                    e.printStackTrace();
+
+                    // Return error response if the stored procedure fails
+                    responseDTO.setStatusCode(VarList.RSP_ERROR);
+                    responseDTO.setMessage("Unexpected error occurred while updating event OC in candidates");
+                    responseDTO.setContent(e.getMessage());
+                    return responseDTO;
+                }
+
+                // After the stored procedure executes successfully, mark the Event OC as removed
                 existingEventOc.set_removed(true);
-
-
-                eventOcRepo.save(existingEventOc);  // Save the updated event oc
+                eventOcRepo.save(existingEventOc); // Save the updated event OC
 
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Event OC status updated successfully");
                 responseDTO.setContent(existingEventOc);
 
-            }else{
+            } else {
                 responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
                 responseDTO.setMessage("No Event OC Found");
                 responseDTO.setContent(null);
@@ -289,14 +325,12 @@ public class EventOcService {
 
             return responseDTO;
 
-        }catch(Exception e){
+        } catch (Exception e) {
             responseDTO.setStatusCode(VarList.RSP_ERROR);
             responseDTO.setMessage(e.getMessage());
             responseDTO.setContent(e);
             return responseDTO;
-
         }
-
     }
 
 

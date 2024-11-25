@@ -15,7 +15,7 @@ public class EventDTO {
     private String name;
     private String venue;
     private LocalDate date;
-    //private LocalTime time;
+    private LocalTime time;
     private String purpose;
     private String benefits;
     private String event_image;
@@ -23,6 +23,8 @@ public class EventDTO {
 
     private int iud_status;
     private int budget_status;
+
+    private boolean public_status;
 
     private int club_id;
     private String clubImage;

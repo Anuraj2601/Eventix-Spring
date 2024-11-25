@@ -337,6 +337,64 @@ public class EventService {
         }
     }
 
+
+    public ResponseDTO updateBudgetStatus(int eventId, int status) {
+        try {
+            // Find the event by ID
+            Optional<Event> eventOptional = eventRepo.findById(eventId);
+            if (eventOptional.isPresent()) {
+                Event event = eventOptional.get();
+                event.setBudget_status(status); // Update the budget status
+
+                // Save the updated event back to the repository
+                eventRepo.save(event);
+
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Budget status updated successfully.");
+                responseDTO.setContent(event); // Optionally return the updated event
+            } else {
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("Event not found.");
+                responseDTO.setContent(null);
+            }
+        } catch (Exception e) {
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage("Error updating budget status: " + e.getMessage());
+            responseDTO.setContent(null);
+        }
+        return responseDTO;
+    }
+
+
+    public ResponseDTO updateIudStatus(int eventId, int status) {
+        try {
+            // Find the event by ID
+            Optional<Event> eventOptional = eventRepo.findById(eventId);
+            if (eventOptional.isPresent()) {
+                Event event = eventOptional.get();
+                event.setIud_status(status); // Update the budget status
+
+                // Save the updated event back to the repository
+                eventRepo.save(event);
+
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("IUD status updated successfully.");
+                responseDTO.setContent(event); // Optionally return the updated event
+            } else {
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("Event not found.");
+                responseDTO.setContent(null);
+            }
+        } catch (Exception e) {
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage("Error updating IUD status: " + e.getMessage());
+            responseDTO.setContent(null);
+        }
+        return responseDTO;
+    }
+
+
+
 //    public ResponseDTO updateEvent(int event_id, EventDTO eventDTO, MultipartFile file){
 //        try{
 //            if(eventRepo.existsById(event_id)){
@@ -366,31 +424,27 @@ public class EventService {
 //        }
 //    }
 
-//    public ResponseDTO deleteEvent(int event_id){
-//        try{
-//            if(eventRepo.existsById(event_id)){
-//                eventRepo.deleteById(event_id);
-//                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
-//                responseDTO.setMessage("Event Deleted Successfully");
-//                responseDTO.setContent(null);
-//
-//
-//            }else{
-//                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
-//                responseDTO.setMessage("No Event Found");
-//                responseDTO.setContent(null);
-//
-//            }
-//
-//            return responseDTO;
-//
-//        }catch(Exception e){
-//            responseDTO.setStatusCode(VarList.RSP_ERROR);
-//            responseDTO.setMessage(e.getMessage());
-//            responseDTO.setContent(e);
-//            return responseDTO;
-//        }
-//    }
+
+    public ResponseDTO deleteEventById(int event_id) {
+        try {
+            if (eventRepo.existsById(event_id)) {
+                eventRepo.deleteById(event_id);
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Event deleted successfully.");
+                responseDTO.setContent(null);
+            } else {
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("Event not found.");
+                responseDTO.setContent(null);
+            }
+        } catch (Exception e) {
+            log.error("Error deleting event: {}", e.getMessage());
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage("Error deleting event: " + e.getMessage());
+            responseDTO.setContent(null);
+        }
+        return responseDTO;
+    }
 
 
 //    private final Function<String, String> fileExtension = filename -> Optional.of(filename).filter(name -> name.contains("."))

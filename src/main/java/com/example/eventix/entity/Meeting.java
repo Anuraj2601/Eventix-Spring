@@ -29,10 +29,15 @@ public class Meeting {
     @Column(nullable = false)
     private LocalTime time;
 
+
     // Enum for the type of meeting (ONLINE or PHYSICAL)
     public enum MeetingType{
         ONLINE,
         PHYSICAL
+    }
+
+    public String getMeetingType() {
+        return meeting_type != null ? meeting_type.name() : null;
     }
 
     @Enumerated(EnumType.STRING)
@@ -51,14 +56,18 @@ public class Meeting {
     private ParticipantType participant_type;
 
     // Relationship with Clubs entity, indicating each meeting belongs to a club
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "club_id", nullable = false)
-    @JsonBackReference
+    @JsonBackReference // Prevent infinite recursion during JSON serialization
     private Clubs clubs;
+
 
     @Column(name = "qr_code_url", columnDefinition = "LONGTEXT")
     private String qrCodeUrl;  // URL for the QR code (for physical meetings)
 
     private String meetingLink;
+
+    @Column(nullable = true)  // This is optional as String columns are nullable by default
+    private String venue;
 
 }

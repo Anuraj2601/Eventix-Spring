@@ -102,6 +102,38 @@ public class EventController {
         return ResponseEntity.ok().body(eventService.getEventsByClubId(clubId));
     }
 
+    @PutMapping("/updateBudgetStatus/{eventId}")
+    public ResponseEntity<ResponseDTO> updateBudgetStatus(@PathVariable int eventId, @RequestParam("status") int status, @RequestParam("role") String role) {
+
+        // Ensure only the treasurer can perform this operation
+        if (!"treasurer".equalsIgnoreCase(role)) {
+            ResponseDTO responseDTO = new ResponseDTO();
+            //responseDTO.setStatusCode(VarList.RSP_UNAUTHORIZED);
+            responseDTO.setMessage("Only the treasurer can update the budget status.");
+            return ResponseEntity.status(403).body(responseDTO);
+        }
+
+        // Call service method to update the budget status
+        return ResponseEntity.ok().body(eventService.updateBudgetStatus(eventId, status));
+    }
+
+
+    @PutMapping("/updateIudStatus/{eventId}")
+    public ResponseEntity<ResponseDTO> updateIudStatus(@PathVariable int eventId, @RequestParam("status") int status, @RequestParam("role") String role) {
+
+        // Ensure only the treasurer can perform this operation
+        if (!"admin".equalsIgnoreCase(role)) {
+            ResponseDTO responseDTO = new ResponseDTO();
+            //responseDTO.setStatusCode(VarList.RSP_UNAUTHORIZED);
+            responseDTO.setMessage("Only the Admin can update the budget status.");
+            return ResponseEntity.status(403).body(responseDTO);
+        }
+
+        // Call service method to update the budget status
+        return ResponseEntity.ok().body(eventService.updateIudStatus(eventId, status));
+    }
+
+
 //    @GetMapping("/getEvent/{event_id}")
 //    public ResponseEntity<ResponseDTO> getEvent(@PathVariable int event_id){
 //        return ResponseEntity.ok().body(eventService.getEvent(event_id));
@@ -189,9 +221,9 @@ public ResponseEntity<Resource> getEventImage(@PathVariable String imageName) {
 //        return ResponseEntity.ok().body(eventService.updateEvent(event_id, eventDTO, file));
 //    }
 //
-//    @DeleteMapping("/deleteEvent/{event_id}")
-//    public ResponseEntity<ResponseDTO> deleteEvent(@PathVariable int event_id){
-//        return ResponseEntity.ok().body(eventService.deleteEvent(event_id));
-//    }
+    @DeleteMapping("/deleteEvent/{event_id}")
+    public ResponseEntity<ResponseDTO> deleteEventById(@PathVariable int event_id){
+        return ResponseEntity.ok().body(eventService.deleteEventById(event_id));
+    }
 
 }
