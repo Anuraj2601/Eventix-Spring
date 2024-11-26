@@ -103,32 +103,8 @@ public class EventController {
 //    }
 //}
 
-//    @GetMapping("/image/{imageName}")
-//    public ResponseEntity<Resource> getEventImage(@PathVariable String imageName) {
-//        try {
-//            // Path to the directory where images are stored
-//            Path imagePath = Paths.get("src/main/resources/static/uploads/events/eventImages/").resolve(imageName).normalize();
-//            UrlResource resource = new UrlResource(imagePath.toUri());
-//
-//            if (resource.exists() && resource.isReadable()) {
-//                String contentType = Files.probeContentType(imagePath); // Detect content type
-//                if (contentType == null) {
-//                    contentType = "application/octet-stream"; // Fallback content type
-//                }
-//                return ResponseEntity.ok()
-//                        .contentType(MediaType.parseMediaType(contentType))
-//                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + imageName + "\"")
-//                        .body((Resource) resource);
-//            } else {
-//                return ResponseEntity.notFound().build();
-//            }
-//        } catch (MalformedURLException e) {
-//            return ResponseEntity.badRequest().build();
-//        } catch (IOException e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
-//    }
-@GetMapping("/uploads/events/eventImages/{imageName}")
+
+@GetMapping("/uploads/events/eventPosts/{imageName}")
 public ResponseEntity<Resource> getEventImage(@PathVariable String imageName) {
     try {
         // Using the constant for the event photo directory
