@@ -1,8 +1,6 @@
 package com.example.eventix.service;
 
 import com.example.eventix.dto.EventFeedbackDTO;
-import com.example.eventix.dto.EventMeetingDTO;
-import com.example.eventix.dto.EventRegistrationDTO;
 import com.example.eventix.dto.ResponseDTO;
 import com.example.eventix.entity.EventFeedback;
 import com.example.eventix.repository.EventFeedbackRepo;
@@ -90,17 +88,17 @@ public class EventFeedbackService {
         try{
             List<EventFeedback> eventFeedbacksList = eventFeedbackRepo.findAll();
             if(!eventFeedbacksList.isEmpty()){
-                List<EventRegistrationDTO> eventRegistrationDTOList = modelMapper.map(eventFeedbacksList, new TypeToken<List<EventFeedbackDTO>>(){}.getType());
+                List<EventFeedbackDTO> eventFeedbackDTOList = modelMapper.map(eventFeedbacksList, new TypeToken<List<EventFeedbackDTO>>(){}.getType());
 
                 // Manually set the user id and Event_reg_id for each EventRegistrationDTO
                 for (int i = 0; i < eventFeedbacksList.size(); i++) {
-                    eventRegistrationDTOList.get(i).setUser_id(eventFeedbacksList.get(i).getStudent().getId());
+                    eventFeedbackDTOList.get(i).setUser_id(eventFeedbacksList.get(i).getStudent().getId());
                     //eventRegistrationDTOList.get(i).setEReg_id(eventFeedbacksList.get(i).getE_reg_id());
                 }
 
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Retrieved All event feedbacks Successfully");
-                responseDTO.setContent(eventRegistrationDTOList);
+                responseDTO.setContent(eventFeedbackDTOList);
 
 
             }else{
@@ -129,14 +127,14 @@ public class EventFeedbackService {
         try{
             if(eventFeedbackRepo.existsById(eventFeedbackId)){
                 EventFeedback eventFeedback = eventFeedbackRepo.findById(eventFeedbackId).orElse(null);
-                EventRegistrationDTO eventRegistrationDTO =  modelMapper.map(eventFeedback, EventRegistrationDTO.class);
+                EventFeedbackDTO eventFeedbackDTO =  modelMapper.map(eventFeedback, EventFeedbackDTO.class);
 
                 // Manually set user_id
-                eventRegistrationDTO.setUser_id(eventFeedback.getStudent().getId());
+                eventFeedbackDTO.setUser_id(eventFeedback.getStudent().getId());
                 //eventRegistrationDTO.setEReg_id(eventFeedback.getE_reg_id());
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Event Feedback Retrieved Successfully");
-                responseDTO.setContent(eventRegistrationDTO);
+                responseDTO.setContent(eventFeedbackDTO);
             }else{
                 responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
                 responseDTO.setMessage("No Event Feedback found");
