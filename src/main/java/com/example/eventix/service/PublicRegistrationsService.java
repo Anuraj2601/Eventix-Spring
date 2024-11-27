@@ -43,6 +43,9 @@ public class PublicRegistrationsService {
 
         // Convert the list of entities to a list of DTOs
         return registrations.stream().map(registration -> new PublicRegistrationsDTO(
+                registration.getCheckInStatus(),
+
+                registration.getId(),
                 registration.getEventId(),
                 registration.getClubId(),
                 registration.getEventName(),
@@ -59,6 +62,8 @@ public class PublicRegistrationsService {
 
         // Convert the list of entities to a list of DTOs
         return registrations.stream().map(registration -> new PublicRegistrationsDTO(
+                registration.getCheckInStatus(),
+                registration.getId(),
                 registration.getEventId(),
                 registration.getClubId(),
                 registration.getEventName(),
@@ -66,6 +71,7 @@ public class PublicRegistrationsService {
                 registration.getEmail(),
                 registration.getMobile(),
                 registration.getRegistrationTime()
+
         )).collect(Collectors.toList());
     }
 
@@ -75,6 +81,8 @@ public class PublicRegistrationsService {
         if (registration.isPresent()) {
             PublicRegistrations reg = registration.get();
             return new PublicRegistrationsDTO(
+                    reg.getCheckInStatus(),
+                    reg.getId(),
                     reg.getEventId(),
                     reg.getClubId(),
                     reg.getEventName(),
@@ -82,6 +90,7 @@ public class PublicRegistrationsService {
                     reg.getEmail(),
                     reg.getMobile(),
                     reg.getRegistrationTime()
+
             );
         } else {
             throw new RuntimeException("Public registration not found");
