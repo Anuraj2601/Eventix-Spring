@@ -43,6 +43,9 @@ public class EventService {
     @Autowired
     private ResponseDTO responseDTO;
 
+    @Autowired
+    private EmailService emailService;
+
 
     public ResponseDTO saveEvent(EventDTO eventDTO, MultipartFile eventImage, MultipartFile budgetFile) {
         try {
@@ -224,6 +227,7 @@ public class EventService {
                     EventDTO eventDTO = modelMapper.map(event, EventDTO.class);
                     if (event.getClub() != null) {
                         eventDTO.setClubImage(event.getClub().getClub_image()); // Map club image
+                        eventDTO.setClubInCharge(event.getClub().getClub_in_charge());
 
                         // Map club president's image
                         if (event.getClub().getPresident() != null) {
@@ -349,6 +353,13 @@ public class EventService {
 
                 // Save the updated event back to the repository
                 eventRepo.save(event);
+
+                if (status == 1) { // Assuming 1 means approval
+                    String recipientEmail = event.getClub().getClub_in_charge(); // Update with actual email field
+                    String eventDetails = "Date: " + event.getDate() + ", Time: " + event.getTime() + ", Venue: " + event.getVenue();
+                    String clubName = event.getClub().getClub_name();
+                    emailService.sendEventApprovalEmail(recipientEmail, event.getName(), eventDetails, clubName);
+                }
 
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("IUD status updated successfully.");
