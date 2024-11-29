@@ -59,6 +59,20 @@ public class MeetingParticipantService {
         } else {
             return "Participant not found";
         }
+
+    }
+
+    public List<MeetingParticipantDTO> getAllParticipantsByUserIdAndClubId(int userId, int clubId) {
+        List<MeetingParticipant> participants = participantRepository.findByUserIdAndClubId(userId, clubId);
+        return participants.stream()
+                .map(participant -> new MeetingParticipantDTO(
+                        participant.getParticipantId(),
+                        participant.getMeetingId(),
+                        participant.getUserId(),
+                        participant.getClubId(),
+                        participant.getAttendance(),
+                        participant.getQrCodeUser()))
+                .collect(Collectors.toList());
     }
 
     public String generateQRCodeImage(String data) throws WriterException {
