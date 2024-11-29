@@ -43,34 +43,6 @@ public class EventService {
     @Autowired
     private ResponseDTO responseDTO;
 
-//    public ResponseDTO saveEvent(EventDTO eventDTO, MultipartFile file) {
-//        try{
-//            if(eventRepo.existsById(eventDTO.getEvent_id())){
-//                responseDTO.setStatusCode(VarList.RSP_DUPLICATED);
-//                responseDTO.setMessage("Event already exists");
-//                responseDTO.setContent(eventDTO);
-//
-//            }else{
-//                eventDTO.setImageUrl(photoFunction.apply(0,file));
-//                Event savedEvent = eventRepo.save(modelMapper.map(eventDTO, Event.class));
-//                EventDTO savedEventDTO = modelMapper.map(savedEvent, EventDTO.class);
-//                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
-//                responseDTO.setMessage("Event Saved Successfully");
-//                responseDTO.setContent(savedEventDTO);
-//            }
-//
-//            return responseDTO;
-//
-//        }catch(Exception e){
-//
-//            responseDTO.setStatusCode(VarList.RSP_ERROR);
-//            responseDTO.setMessage(e.getMessage());
-//            responseDTO.setContent(null);
-//            return responseDTO;
-//
-//        }
-//    }
-
 
     public ResponseDTO saveEvent(EventDTO eventDTO, MultipartFile eventImage, MultipartFile budgetFile) {
         try {
@@ -89,7 +61,7 @@ public class EventService {
                     return responseDTO;
                 }
 
-                // Handle the optional image file with better exception handling
+                // Handle the optional image file with exception handling
                 try {
                     if (eventImage != null && !eventImage.isEmpty()) {
                         eventDTO.setEvent_image(photoFunction.apply(0, eventImage));
@@ -395,35 +367,73 @@ public class EventService {
     }
 
 
+    public ResponseDTO updateEventById(int event_id, EventDTO eventDTO, MultipartFile eventImage, MultipartFile budgetFile) {
+        try {
+            log.info("Updating event with ID: {}", event_id);
+            // Check if the event exists
+            Optional<Event> existingEventOpt = eventRepo.findById(event_id);
+            if (existingEventOpt.isPresent()) {
+                Event existingEvent = existingEventOpt.get();
 
-//    public ResponseDTO updateEvent(int event_id, EventDTO eventDTO, MultipartFile file){
-//        try{
-//            if(eventRepo.existsById(event_id)){
-//
-//                eventDTO.setImageUrl(photoFunction.apply(0,file));
-//                Event updatedEvent =  eventRepo.save(modelMapper.map(eventDTO, Event.class));
-//                EventDTO updatedEventDTO = modelMapper.map(updatedEvent, EventDTO.class);
-//                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
-//                responseDTO.setMessage("Event Updated Successfully");
-//                responseDTO.setContent(updatedEventDTO);
-//
-//
-//            }else{
-//                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
-//                responseDTO.setMessage("No Event Found");
-//                responseDTO.setContent(null);
-//
-//            }
-//
-//            return responseDTO;
-//
-//        }catch(Exception e){
-//            responseDTO.setStatusCode(VarList.RSP_ERROR);
-//            responseDTO.setMessage(e.getMessage());
-//            responseDTO.setContent(null);
-//            return responseDTO;
-//        }
-//    }
+                // Update fields from EventDTO
+                existingEvent.setName(eventDTO.getName());
+                existingEvent.setVenue(eventDTO.getVenue());
+                existingEvent.setDate(eventDTO.getDate());
+                existingEvent.setTime(eventDTO.getTime());
+                existingEvent.setPurpose(eventDTO.getPurpose());
+                existingEvent.setBenefits(eventDTO.getBenefits());
+                existingEvent.setPublic_status(eventDTO.isPublic_status());
+
+                // Handle optional event image
+                if (eventImage != null && !eventImage.isEmpty()) {
+                    try {
+                        existingEvent.setEvent_image(photoFunction.apply(event_id, eventImage));
+                    } catch (Exception e) {
+                        log.error("Error updating event image: {}", e.getMessage());
+                        responseDTO.setStatusCode(VarList.RSP_ERROR);
+                        responseDTO.setMessage("Failed to update event image");
+                        responseDTO.setContent(null);
+                        return responseDTO;
+                    }
+                }
+
+                // Handle optional budget file
+                if (budgetFile != null && !budgetFile.isEmpty()) {
+                    try {
+                        existingEvent.setBudget_pdf(pdfFunction.apply(event_id, budgetFile));
+                    } catch (Exception e) {
+                        log.error("Error updating budget file: {}", e.getMessage());
+                        responseDTO.setStatusCode(VarList.RSP_ERROR);
+                        responseDTO.setMessage("Failed to update budget file");
+                        responseDTO.setContent(null);
+                        return responseDTO;
+                    }
+                }
+
+                // Save the updated event
+                Event updatedEvent = eventRepo.save(existingEvent);
+                EventDTO updatedEventDTO = modelMapper.map(updatedEvent, EventDTO.class);
+
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Event updated successfully");
+                responseDTO.setContent(updatedEventDTO);
+                return responseDTO;
+            } else {
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("Event not found");
+                responseDTO.setContent(null);
+                return responseDTO;
+            }
+        } catch (Exception e) {
+            log.error("Error updating event: {}", e.getMessage());
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(e.getMessage());
+            responseDTO.setContent(null);
+            return responseDTO;
+        }
+    }
+
+
 
 
     public ResponseDTO deleteEventById(int event_id) {
@@ -448,24 +458,6 @@ public class EventService {
     }
 
 
-//    private final Function<String, String> fileExtension = filename -> Optional.of(filename).filter(name -> name.contains("."))
-//            .map(name -> "." + name.substring(filename.lastIndexOf(".") + 1)).orElse(".png");
-//
-//    private final BiFunction<Integer,MultipartFile,String> photoFunction = (id, image) -> {
-//        String originalFilename = image.getOriginalFilename();
-//        String fileExtension1 = fileExtension.apply(originalFilename);
-//
-//        String randomFileName = UUID.randomUUID().toString() + fileExtension1;
-//        try {
-//            Path fileStorageLocation = Paths.get(PHOTO_DIRECTORY).toAbsolutePath().normalize();
-//            if (!Files.exists(fileStorageLocation)) {
-//                Files.createDirectories(fileStorageLocation);
-//            }
-//            Files.copy(image.getInputStream(),fileStorageLocation.resolve(randomFileName), REPLACE_EXISTING);
-//            return ServletUriComponentsBuilder.fromCurrentContextPath().path("/static/image/events/" + randomFileName).toUriString();
-//        } catch (Exception exception) {
-//            throw new RuntimeException("Unable to save image");
-//        }
-//    };
+
 
 }
