@@ -1,10 +1,10 @@
 package com.example.eventix.service;
 
-import com.example.eventix.dto.EventAnnouncementDTO;
 import com.example.eventix.dto.NotificationDTO;
 import com.example.eventix.dto.ResponseDTO;
 import com.example.eventix.entity.Notification;
 import com.example.eventix.repository.NotificationRepo;
+import com.example.eventix.repository.UsersRepo;
 import com.example.eventix.util.VarList;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -22,6 +22,9 @@ public class NotificationService {
     private NotificationRepo notificationRepo;
 
     @Autowired
+    private UsersRepo usersRepo;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
@@ -37,7 +40,13 @@ public class NotificationService {
                 responseDTO.setContent(notificationDTO);
 
             }else{
-                Notification savedNotification =  notificationRepo.save(modelMapper.map(notificationDTO, Notification.class));
+
+                Notification notification = modelMapper.map(notificationDTO, Notification.class);
+
+                notification.setStudent(usersRepo.findById(notificationDTO.getUser_id()).orElse(null));
+
+
+                Notification savedNotification =  notificationRepo.save(notification);
                 NotificationDTO savedNotificationDTO = modelMapper.map(savedNotification, NotificationDTO.class);
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Notification Saved Successfully");
