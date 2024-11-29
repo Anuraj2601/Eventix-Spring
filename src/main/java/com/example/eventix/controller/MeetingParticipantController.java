@@ -27,4 +27,10 @@ public class MeetingParticipantController {
         String responseMessage = participantService.updateAttendance(userId, meetingId, attendanceStatus);
         return ResponseEntity.ok(responseMessage);
     }
+
+    @GetMapping("/user/{userId}/club/{clubId}")
+    public ResponseEntity<List<MeetingParticipantDTO>> getAllParticipantsByUserIdAndClubId(@PathVariable int userId, @PathVariable int clubId) {
+        List<MeetingParticipantDTO> participants = participantService.getAllParticipantsByUserIdAndClubId(userId, clubId);
+        return ResponseEntity.ok(participants);
+    }
 }
