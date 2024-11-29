@@ -28,6 +28,8 @@ public class EventDTO {
 
     private int club_id;
     private String clubImage;
+    private String clubInCharge;
+    private String clubName;
 
     private String clubPresidentImage;
     private String clubPresidentName;
