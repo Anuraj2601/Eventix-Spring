@@ -104,7 +104,7 @@ public class EventController {
 //}
 
 
-@GetMapping("/uploads/events/eventPosts/{imageName}")
+@GetMapping("/uploads/events/eventImages/{imageName}")
 public ResponseEntity<Resource> getEventImage(@PathVariable String imageName) {
     try {
         // Using the constant for the event photo directory

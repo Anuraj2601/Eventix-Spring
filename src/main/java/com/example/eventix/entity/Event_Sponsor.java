@@ -15,6 +15,8 @@ public class Event_Sponsor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int sponsor_id;
 
+    private int event_id;
+
     private String sponsor_name;
 
     private String company_logo;
