@@ -7,6 +7,10 @@ import com.example.eventix.entity.Event;
 import com.example.eventix.entity.Meeting;
 import com.example.eventix.repository.EventRepo;
 import com.example.eventix.util.VarList;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -16,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.ByteArrayOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -468,7 +473,42 @@ public class EventService {
         return responseDTO;
     }
 
+    public byte[] generateEventProposal(int eventId) {
+        try {
+            // Fetch event details from the database
+            Optional<Event> eventOptional = eventRepo.findById(eventId);
+            if (eventOptional.isEmpty()) {
+                throw new RuntimeException("Event not found for ID: " + eventId);
+            }
 
+            Event event = eventOptional.get();
+
+            // Prepare a ByteArrayOutputStream to hold the PDF content
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            PdfWriter writer = new PdfWriter(outputStream);
+            PdfDocument pdfDocument = new PdfDocument(writer);
+            Document document = new Document(pdfDocument);
+
+
+            // Add event details to the PDF
+            document.add(new Paragraph("Event Proposal").setBold().setFontSize(18));
+            document.add(new Paragraph("Event Name: " + event.getName()));
+            document.add(new Paragraph("Date: " + event.getDate()));
+            document.add(new Paragraph("Time: " + event.getTime()));
+            document.add(new Paragraph("Venue: " + event.getVenue()));
+            document.add(new Paragraph("Purpose: " + event.getPurpose()));
+            document.add(new Paragraph("Benefits: " + event.getBenefits()));
+
+            // Close the document
+            document.close();
+
+            // Return the generated PDF as a byte array
+            return outputStream.toByteArray();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error generating event proposal: " + e.getMessage(), e);
+        }
+    }
 
 
 }
