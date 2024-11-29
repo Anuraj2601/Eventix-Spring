@@ -214,6 +214,7 @@ public class EventService {
     }
 
 
+
     public ResponseDTO getAllEventsWithClubDetails() {
         try {
             List<Event> events = eventRepo.findAllEventsWithClubDetails(); // Fetch events with clubs
