@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -124,6 +125,34 @@ public class NotificationService {
 
         }
 
+    }
+
+    public ResponseDTO getNotificationsByUserId(int userId) {
+        try {
+            // Fetch notifications from the repository
+            List<Notification> notifications = notificationRepo.findByUserId(userId);
+
+            if (notifications.isEmpty()) {
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("No notifications found for the user");
+                responseDTO.setContent(null);
+            } else {
+                // Map notifications to DTOs
+                List<NotificationDTO> notificationDTOs = notifications.stream()
+                        .map(notification -> modelMapper.map(notification, NotificationDTO.class))
+                        .collect(Collectors.toList());
+
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Notifications retrieved successfully");
+                responseDTO.setContent(notificationDTOs);
+            }
+        } catch (Exception e) {
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(e.getMessage());
+            responseDTO.setContent(null);
+        }
+
+        return responseDTO;
     }
 
 
