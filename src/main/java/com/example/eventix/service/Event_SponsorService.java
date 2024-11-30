@@ -164,22 +164,7 @@ public class Event_SponsorService {
     private final Function<String, String> fileExtension = filename -> Optional.of(filename).filter(name -> name.contains("."))
             .map(name -> "." + name.substring(filename.lastIndexOf(".") + 1)).orElse(".png");
 
-//    private final BiFunction<Integer,MultipartFile,String> photoFunction = (id,image) -> {
-//        String originalFilename = image.getOriginalFilename();
-//        String fileExtension1 = fileExtension.apply(originalFilename);
-//
-//        String randomFileName = UUID.randomUUID().toString() + fileExtension1;
-//        try {
-//            Path fileStorageLocation = Paths.get(PHOTO_DIRECTORY).toAbsolutePath().normalize();
-//            if (!Files.exists(fileStorageLocation)) {
-//                Files.createDirectories(fileStorageLocation);
-//            }
-//            Files.copy(image.getInputStream(),fileStorageLocation.resolve(randomFileName), REPLACE_EXISTING);
-//            return ServletUriComponentsBuilder.fromCurrentContextPath().path("/static/image/" + randomFileName).toUriString();
-//        } catch (Exception exception) {
-//            throw new RuntimeException("Unable to save image");
-//        }
-//    };
+
 private final BiFunction<Integer, MultipartFile, String> photoFunction = (id, image) -> {
     try {
         // Define the directory for storing sponsor logos
