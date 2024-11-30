@@ -56,8 +56,7 @@ public class UserService implements UserDetailsService {
         try{
             if(usersRepo.findByEmail(email).isPresent()){
                 Users user = usersRepo.findByEmail(email).orElse(null);
-                //PostDTO postDTO =  modelMapper.map(post, PostDTO.class);
-                //postDTO.setPublished_user_id(post.getPublished_user().getId());
+
 
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("User Retrieved Successfully");
