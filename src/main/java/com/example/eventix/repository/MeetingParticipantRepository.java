@@ -15,4 +15,7 @@ public interface MeetingParticipantRepository extends JpaRepository<MeetingParti
     // Fetch a participant by userId and meetingId
     MeetingParticipant findByUserIdAndMeetingId(int userId, int meetingId);
 
+    List<MeetingParticipant> findByUserIdAndClubId(int userId, int clubId);
+
+
 }

@@ -78,11 +78,11 @@ public class EventController {
         return ResponseEntity.ok().body(eventService.updateIudStatus(eventId, status));
     }
 
+    @GetMapping("/getEvent/{event_id}")
+    public ResponseEntity<ResponseDTO> getEvent(@PathVariable int event_id){
+        return ResponseEntity.ok().body(eventService.getEvent(event_id));
+    }
 
-//    @GetMapping("/getEvent/{event_id}")
-//    public ResponseEntity<ResponseDTO> getEvent(@PathVariable int event_id){
-//        return ResponseEntity.ok().body(eventService.getEvent(event_id));
-//    }
 // New endpoint to serve event images
 //@GetMapping("/image/{imageName}")
 //public ResponseEntity<Resource> getEventImage(@PathVariable String imageName) {
@@ -137,14 +137,38 @@ public ResponseEntity<Resource> getEventImage(@PathVariable String imageName) {
         return ResponseEntity.ok().body(eventService.saveEvent(eventDTO,eventImage,budgetFile));
     }
 
-//    @PutMapping(value = "/updateEvent/{event_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ResponseEntity<ResponseDTO> updateEvent(@PathVariable int event_id, @RequestPart("data") EventDTO eventDTO, @RequestPart(value = "file", required = false) MultipartFile file){
-//        return ResponseEntity.ok().body(eventService.updateEvent(event_id, eventDTO, file));
-//    }
-//
     @DeleteMapping("/deleteEvent/{event_id}")
     public ResponseEntity<ResponseDTO> deleteEventById(@PathVariable int event_id){
         return ResponseEntity.ok().body(eventService.deleteEventById(event_id));
+    }
+
+    @PutMapping(value = "/updateEvent/{event_id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseDTO> updateEvent(
+            @PathVariable int event_id,
+            @RequestPart("data") EventDTO eventDTO,
+            @RequestPart(value = "eventImage", required = false) MultipartFile eventImage,
+            @RequestPart(value = "budgetFile", required = false) MultipartFile budgetFile) {
+        return ResponseEntity.ok().body(eventService.updateEventById(event_id, eventDTO, eventImage, budgetFile));
+    }
+
+    @GetMapping("/{id}/download-proposal")
+    public ResponseEntity<byte[]> downloadEventProposal(@PathVariable int id) {
+        try {
+            // Call the service method to generate the PDF
+            byte[] pdfBytes = eventService.generateEventProposal(id);
+
+            // Set response headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("attachment", "event_proposal.pdf");
+
+            // Return the PDF as a ResponseEntity
+            return ResponseEntity.ok().headers(headers).body(pdfBytes);
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
     }
 
 }

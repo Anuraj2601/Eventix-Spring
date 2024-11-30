@@ -30,25 +30,9 @@ public class MeetingParticipantController {
         return ResponseEntity.ok(responseMessage);
     }
 
-    @PostMapping("/qr-code")
-    public ResponseEntity<?> generateQRCode(@RequestBody QRCodeRequest qrCodeRequest) {
-        try {
-            // Validate and process input
-            String userId = qrCodeRequest.getUserId();
-            String meetingId = qrCodeRequest.getMeetingId();
-            String clubId = qrCodeRequest.getClubId();
-
-            // Generate QR code logic (example)
-            String qrCodeData = "User: " + userId + ", Meeting: " + meetingId + ", Club: " + clubId;
-            String qrCodeImage = participantService.generateQRCodeImage(qrCodeData); // Assume QRCodeService exists
-
-            // Send email logic
-            participantService.sendQRCodeEmail(userId, qrCodeImage); // Assume EmailService exists
-
-            return ResponseEntity.ok(("QR Code sent successfully"));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(("Error generating QR Code: " + e.getMessage()));
-        }
+    @GetMapping("/user/{userId}/club/{clubId}")
+    public ResponseEntity<List<MeetingParticipantDTO>> getAllParticipantsByUserIdAndClubId(@PathVariable int userId, @PathVariable int clubId) {
+        List<MeetingParticipantDTO> participants = participantService.getAllParticipantsByUserIdAndClubId(userId, clubId);
+        return ResponseEntity.ok(participants);
     }
 }

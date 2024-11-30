@@ -116,4 +116,36 @@ public class EmailService {
             throw new MailException("Error while sending email with attachment: " + e.getMessage()) {};
         }
     }
+
+    public void sendEventApprovalEmail(String recipientEmail, String eventName, String eventDetails, String clubName) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+            helper.setTo(recipientEmail);
+            helper.setSubject("Event Approved: " + eventName);
+            helper.setText(buildApprovalEmailBody(eventName, eventDetails, clubName), true);
+
+            mailSender.send(message);
+            System.out.println("Approval email sent to " + recipientEmail);
+        } catch (Exception e) {
+            System.err.println("Failed to send approval email: " + e.getMessage());
+        }
+    }
+
+    private String buildApprovalEmailBody(String eventName, String eventDetails, String clubName) {
+        return "<html>" +
+                "<body>" +
+                "<h2>Event Approved!</h2>" +
+                "<p>Dear Sir/Madam,</p>" +
+                "<p>The event <strong>" + eventName + "</strong> from <strong>" + clubName + "</strong> has been approved.</p>" +
+                "<p>Details:</p>" +
+                "<ul>" +
+                "<li>" + eventDetails + "</li>" +
+                "</ul>" +
+                "<p>Thank you,</p>" +
+                "<p>Eventix Team</p>" +
+                "</body>" +
+                "</html>";
+    }
 }
