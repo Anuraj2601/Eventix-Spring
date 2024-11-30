@@ -138,9 +138,13 @@ public class NotificationService {
                 responseDTO.setContent(null);
             } else {
                 // Map notifications to DTOs
-                List<NotificationDTO> notificationDTOs = notifications.stream()
-                        .map(notification -> modelMapper.map(notification, NotificationDTO.class))
-                        .collect(Collectors.toList());
+                List<NotificationDTO> notificationDTOs = notifications.stream().map(notification -> {
+                    NotificationDTO dto = modelMapper.map(notification, NotificationDTO.class); // Map other fields
+                    if (notification.getStudent() != null) { // Ensure student is not null
+                        dto.setUser_id(notification.getStudent().getId()); // Manually set user_id
+                    }
+                    return dto;
+                }).collect(Collectors.toList());
 
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Notifications retrieved successfully");
