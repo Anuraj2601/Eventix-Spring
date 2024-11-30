@@ -28,6 +28,7 @@ public class RegistrationService {
     @Autowired
     private UsersRepo usersRepository;
 
+
     @Autowired
     private NotificationService notificationService;
 
@@ -125,6 +126,16 @@ public class RegistrationService {
         return registrationRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public List<RegistrationDTO> getRegistrationsByClubId(int clubId) {
+        List<Registration> registrations = registrationRepository.findByClubId(clubId);
+
+        // Map entities to DTOs
+        return registrations.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
     }
 
     // Get registration by ID
