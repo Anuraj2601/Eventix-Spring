@@ -1,17 +1,25 @@
 package com.example.eventix.service;
 
-import com.example.eventix.repository.UsersRepo;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.MimeMessageHelper;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+
 import org.springframework.stereotype.Service;
 
-import java.io.*;
-import java.util.Base64;
-import java.util.Map;
+import java.util.Hashtable;
 
 @Service
 public class EmailService {
@@ -19,115 +27,93 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    @Autowired
-    private UsersRepo userRepository;
+    private String qrCodeDirectory = "src/main/resources/static/qr-codes/";
 
-    public void sendEmailWithAttachment(String to, String subject, String text, File attachment) throws MessagingException, MessagingException {
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+    // Send the email with the QR code attached
+    public void sendQrCodeEmail(String userEmail, String qrCodeData, String meetingId, String meetingName) throws Exception {
+        try {
+            // Generate the QR code image
+            BufferedImage qrCodeImage = generateQrCodeImage(qrCodeData);  // Directly use qrCodeData
 
-        helper.setTo(to);
-        helper.setSubject(subject);
-        helper.setText(text);
+            // Store the QR code image as a PNG file
+            File qrCodeFile = storeQrCodeImageAsFile(qrCodeImage, qrCodeData);
 
-        // Add attachment
-        helper.addAttachment(attachment.getName(), attachment);
-
-        mailSender.send(message);
+            // Send the email with QR code attachment
+            sendEmailWithAttachment(
+                    userEmail,
+                    "Invitation to " + meetingName,
+                    "Hello,\n\nYou are invited to the meeting: " + meetingName + ".\n\nPlease find your QR code for the meeting attached.\n\nThank you!",
+                    qrCodeFile
+            );
+        } catch (Exception e) {
+            System.err.println("Error sending email: " + e.getMessage());
+            throw new Exception("Error sending QR code email: " + e.getMessage());
+        }
     }
 
-    public void sendEmailWithAttachment1(String email, String yourOnlineMeetingCode, String emailBody) throws MessagingException {
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-        helper.setTo(email);
-        helper.setSubject(yourOnlineMeetingCode);
-        helper.setText(emailBody);
+    // Helper method to generate a QR code image (BufferedImage)
+    private BufferedImage generateQrCodeImage(String qrCodeData) {
+        try {
+            MultiFormatWriter qrCodeWriter = new MultiFormatWriter();
+            Hashtable<EncodeHintType, Object> hintMap = new Hashtable<>();
+            hintMap.put(EncodeHintType.MARGIN, 1);  // Small margin
+            BitMatrix bitMatrix = qrCodeWriter.encode(qrCodeData, BarcodeFormat.QR_CODE, 300, 300, hintMap);
 
-        mailSender.send(message);
-    }
+            int width = bitMatrix.getWidth();
+            BufferedImage image = new BufferedImage(width, width, BufferedImage.TYPE_INT_RGB);
+            image.createGraphics();
 
-    public void sendQRCodeEmail(String userId, String qrCodeImage) throws MessagingException {
-        // Get user email by ID (logic omitted)
-        String email = userRepository.getEmailByUserId(Integer.parseInt(userId));
+            Graphics2D graphics = (Graphics2D) image.getGraphics();
+            graphics.setColor(Color.WHITE);
+            graphics.fillRect(0, 0, width, width);
 
-        // Send email logic
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
-
-        helper.setTo(email);
-        helper.setSubject("Your QR Code for the Meeting");
-        helper.setText("Attached is your QR code for the meeting.\n\n" + qrCodeImage);
-
-        mailSender.send(message);
-    }
-
-    public void sendQrCodeEmail(String toEmail, Map<Long, String> qrCodeDataUrls, Long meetingId) throws MessagingException, IOException {
-        MimeMessage mimeMessage = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-
-        // Set email subject and recipient
-        helper.setTo(toEmail);
-        helper.setSubject("Your QR Code for Meeting ID: " + meetingId);
-
-        // Prepare email content
-        StringBuilder emailContent = new StringBuilder();
-        emailContent.append("<html>")
-                .append("<body>")
-                .append("<h3>Dear User,</h3>")
-                .append("<p>Please find below the QR code(s) for Meeting ID: ").append(meetingId).append(".</p>");
-
-        for (Map.Entry<Long, String> entry : qrCodeDataUrls.entrySet()) {
-            Long participantId = entry.getKey();
-            String qrCodeDataUrl = entry.getValue();
-
-            // Validate QR Code Data URL
-            if (qrCodeDataUrl == null || !qrCodeDataUrl.contains(",")) {
-                throw new IllegalArgumentException("Invalid QR code data format for participant ID: " + participantId);
+            graphics.setColor(Color.BLACK);
+            for (int i = 0; i < width; i++) {
+                for (int j = 0; j < width; j++) {
+                    if (bitMatrix.get(i, j)) {
+                        graphics.fillRect(i, j, 1, 1);
+                    }
+                }
             }
+            return image;
+        } catch (WriterException e) {
+            throw new RuntimeException("Error generating QR code", e);
+        }
+    }
 
-            // Extract Base64 Data
-            String base64Data = qrCodeDataUrl.split(",")[1];
+    // Helper method to store the generated QR code image as a PNG file
+    private File storeQrCodeImageAsFile(BufferedImage qrCodeImage, String qrCodeData) throws IOException {
+        // Create a file name based on the QR code data (you can customize this)
+        String fileName = qrCodeData.replaceAll("[^a-zA-Z0-9]", "_") + ".png";  // Replace non-alphanumeric chars
+        File qrCodeFile = new File(qrCodeDirectory, fileName);
 
-            // Decode Base64 and Save QR Code to File
-            String filePath = "path/to/temp/qrcode_" + participantId + ".png";
-            File qrCodeFile = new File(filePath);
-
-            try (OutputStream os = new FileOutputStream(qrCodeFile)) {
-                os.write(Base64.getDecoder().decode(base64Data));
-                os.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException("Error writing QR code to file for participant ID: " + participantId, e);
-            }
-
-            // Add QR Code to Email Content
-            String contentId = "qrCode" + participantId; // Unique Content-ID
-            emailContent.append("<p>Participant ID: ").append(participantId).append("</p>")
-                    .append("<img src='cid:").append(contentId).append("' alt='QR Code' style='max-width: 300px; height: auto;' />")
-                    .append("<hr>");
-
-            // Attach the QR Code to the email as an inline image
-            helper.addInline(contentId, qrCodeFile);
+        // Ensure the directory exists, and create it if not
+        if (!new File(qrCodeDirectory).exists()) {
+            new File(qrCodeDirectory).mkdirs();
         }
 
-        emailContent.append("<p>Thank you!</p>")
-                .append("</body>")
-                .append("</html>");
+        // Write the image to the file
+        ImageIO.write(qrCodeImage, "PNG", qrCodeFile);
 
-        // Set email body with HTML content
-        helper.setText(emailContent.toString(), true);
+        return qrCodeFile;
+    }
 
-        // Send the email
-        mailSender.send(mimeMessage);
+    // Send email with the attachment using the simpler way (via MimeMessageHelper)
+    public void sendEmailWithAttachment(String toEmail, String subject, String body, File attachment) throws MailException {
+        try {
+            // MimeMessageHelper is still required for email attachment handling
+            MimeMessageHelper helper = new MimeMessageHelper(mailSender.createMimeMessage(), true); // true indicates multipart message
 
-        // Clean up temporary files
-        for (Long participantId : qrCodeDataUrls.keySet()) {
-            String filePath = "path/to/temp/qrcode_" + participantId + ".png";
-            File qrCodeFile = new File(filePath);
-            if (qrCodeFile.exists()) {
-                qrCodeFile.delete();
-            }
-            }
+            helper.setTo(toEmail);
+            helper.setSubject(subject);
+            helper.setText(body);
+            helper.addAttachment(attachment.getName(), attachment);
+
+            mailSender.send(helper.getMimeMessage());
+            System.out.println("Email sent successfully with QR code attachment.");
+        } catch (Exception e) {
+            throw new MailException("Error while sending email with attachment: " + e.getMessage()) {};
+        }
     }
 }

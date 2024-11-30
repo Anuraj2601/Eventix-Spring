@@ -80,26 +80,27 @@ public class MeetingController {
 //    }
 
     @PostMapping("/sendQrCode/{meetingId}")
-    public ResponseEntity<ResponseMessage> sendQrCode(@PathVariable Long meetingId,
-                                                      @RequestBody SendQrCodeRequest request) {
+    public ResponseEntity<ResponseMessage> sendQrCode(
+            @PathVariable Long meetingId,
+            @RequestBody SendQrCodeRequest request) {
         try {
-            emailService.sendQrCodeEmail(request.getEmail(), request.getQrCodeDataUrls(), meetingId);
+            System.out.println("Email: " + request.getEmail());
+            System.out.println("Meeting ID: " + meetingId);
+            System.out.println("Meeting Name: " + request.getMeetingName());
+            System.out.println("QR Code Data: " + request.getQrCodeData());
+
+            // Send the email using the EmailService
+            emailService.sendQrCodeEmail(
+                    request.getEmail(),
+                    request.getQrCodeData(),  // Pass the qrCodeData directly
+                    meetingId.toString(), // Pass the meeting ID as string
+                    request.getMeetingName()
+            );
             return ResponseEntity.ok(new ResponseMessage("QR Code sent successfully!"));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(new ResponseMessage("Error sending QR code: " + e.getMessage()));
         }
     }
 
-    @PostMapping("/sendMeetingCode/{meetingId}")
-    public ResponseEntity<String> sendMeetingCode(
-            @PathVariable int meetingId,
-            @RequestBody EmailRequest emailRequest,
-            @RequestHeader("Authorization") String token) {
-        try {
-            meetingService.sendMeetingCodeToUser(meetingId, emailRequest.getEmail());
-            return ResponseEntity.ok("Meeting Code sent successfully!");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to send Meeting Code: " + e.getMessage());
-        }
-    }
+   
 }
