@@ -150,4 +150,25 @@ public ResponseEntity<Resource> getEventImage(@PathVariable String imageName) {
             @RequestPart(value = "budgetFile", required = false) MultipartFile budgetFile) {
         return ResponseEntity.ok().body(eventService.updateEventById(event_id, eventDTO, eventImage, budgetFile));
     }
+
+    @GetMapping("/{id}/download-proposal")
+    public ResponseEntity<byte[]> downloadEventProposal(@PathVariable int id) {
+        try {
+            // Call the service method to generate the PDF
+            byte[] pdfBytes = eventService.generateEventProposal(id);
+
+            // Set response headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("attachment", "event_proposal.pdf");
+
+            // Return the PDF as a ResponseEntity
+            return ResponseEntity.ok().headers(headers).body(pdfBytes);
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
+    }
+
 }
