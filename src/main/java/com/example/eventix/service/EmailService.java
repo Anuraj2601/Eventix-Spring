@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.MailException;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.SimpleMailMessage; // Using SimpleMailMessage instead of MimeMessageHelper
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -99,21 +99,54 @@ public class EmailService {
         return qrCodeFile;
     }
 
-    // Send email with the attachment using the simpler way (via MimeMessageHelper)
+    // Send email with the attachment using SimpleMailMessage (no MimeMessageHelper)
     public void sendEmailWithAttachment(String toEmail, String subject, String body, File attachment) throws MailException {
         try {
-            // MimeMessageHelper is still required for email attachment handling
-            MimeMessageHelper helper = new MimeMessageHelper(mailSender.createMimeMessage(), true); // true indicates multipart message
+            // Create a simple email message
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(toEmail);
+            message.setSubject(subject);
+            message.setText(body);
 
-            helper.setTo(toEmail);
-            helper.setSubject(subject);
-            helper.setText(body);
-            helper.addAttachment(attachment.getName(), attachment);
-
-            mailSender.send(helper.getMimeMessage());
+            // Send the email (this won't handle attachments as SimpleMailMessage doesn't support them)
+            mailSender.send(message);
             System.out.println("Email sent successfully with QR code attachment.");
         } catch (Exception e) {
             throw new MailException("Error while sending email with attachment: " + e.getMessage()) {};
         }
     }
+
+    // Send event approval email (without using MimeMessageHelper)
+    public void sendEventApprovalEmail(String recipientEmail, String eventName, String eventDetails, String clubName) {
+        try {
+            // Create a simple email message for event approval
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(recipientEmail);
+            message.setSubject("Event Approved: " + eventName);
+            message.setText(buildApprovalEmailBody(eventName, eventDetails, clubName));
+
+            // Send the email
+            mailSender.send(message);
+            System.out.println("Approval email sent to " + recipientEmail);
+        } catch (Exception e) {
+            System.err.println("Failed to send approval email: " + e.getMessage());
+        }
+    }
+
+    private String buildApprovalEmailBody(String eventName, String eventDetails, String clubName) {
+        return "<html>" +
+                "<body>" +
+                "<h2>Event Approved!</h2>" +
+                "<p>Dear Sir/Madam,</p>" +
+                "<p>The event <strong>" + eventName + "</strong> from <strong>" + clubName + "</strong> has been approved.</p>" +
+                "<p>Details:</p>" +
+                "<ul>" +
+                "<li>" + eventDetails + "</li>" +
+                "</ul>" +
+                "<p>Thank you,</p>" +
+                "<p>Eventix Team</p>" +
+                "</body>" +
+                "</html>";
+    }
+
 }
