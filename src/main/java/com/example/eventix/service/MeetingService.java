@@ -348,25 +348,5 @@ public class MeetingService {
         );
     }
 
-    public void sendMeetingCodeToUser(int meetingId, String email) throws Exception {
-        Meeting meeting = meetingRepo.findById(meetingId)
-                .orElseThrow(() -> new Exception("Meeting not found with ID: " + meetingId));
 
-        if (meeting.getMeetingLink() == null || meeting.getMeetingLink().isEmpty()) {
-            throw new Exception("Meeting Code not available for this meeting.");
-        }
-
-        String meetingCode = meeting.getMeetingLink().substring(meeting.getMeetingLink().lastIndexOf("/") + 1);
-
-        String emailBody = String.format(
-                "Hello,\n\nHere is the meeting code: %s\n\nThank you!",
-                meetingCode
-        );
-
-        emailService.sendEmailWithAttachment1(
-                email,
-                "Your Online Meeting Code",
-                emailBody
-        );
-    }
 }
