@@ -1,7 +1,10 @@
 package com.example.eventix.service;
 
 import com.example.eventix.dto.MeetingDTO;
+import com.example.eventix.dto.NotificationDTO;
+import com.example.eventix.dto.RegistrationDTO;
 import com.example.eventix.dto.ResponseDTO;
+import com.example.eventix.entity.Announcements;
 import com.example.eventix.entity.Clubs;
 import com.example.eventix.entity.Meeting;
 import com.example.eventix.repository.ClubsRepo;
@@ -55,6 +58,12 @@ public class MeetingService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private RegistrationService registrationService;
+
+    @Autowired
+    private NotificationService notificationService;
+
     @Value("${qr.code.directory}")
     private String qrCodeDirectory;
 
@@ -100,6 +109,8 @@ public class MeetingService {
 
             // Map saved entity back to DTO
             MeetingDTO savedMeetingDTO = modelMapper.map(savedMeeting, MeetingDTO.class);
+
+            sendMeetingNotifications(savedMeeting);
 
             responseDTO.setStatusCode(VarList.RSP_SUCCESS);
             responseDTO.setMessage("Meeting Saved Successfully");
@@ -346,6 +357,27 @@ public class MeetingService {
                 "Hello,\n\nPlease find the QR code for your meeting attached.\n\nThank you!",
                 qrCodeFile
         );
+    }
+
+
+    private void sendMeetingNotifications(Meeting meeting)  {
+
+        int clubId = meeting.getClubs().getClub_id();
+
+        // Get all registered students for the club from registrationService
+        List<RegistrationDTO> registeredMembers = registrationService.getRegistrationsByClubId(clubId);
+
+        // Send a notification to each member
+        for (RegistrationDTO member : registeredMembers) {
+            NotificationDTO notificationDTO = new NotificationDTO();
+            notificationDTO.setNotification("New Meeting: " + meeting.getMeeting_name());
+            notificationDTO.set_read(false);
+            notificationDTO.setUser_id(member.getUserId());
+            notificationDTO.setClub_id(clubId);
+
+
+            notificationService.saveNotification(notificationDTO);
+        }
     }
 
 
