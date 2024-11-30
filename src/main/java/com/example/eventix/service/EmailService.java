@@ -42,7 +42,7 @@ public class EmailService {
             sendEmailWithAttachment(
                     userEmail,
                     "Invitation to " + meetingName,
-                    "Hello,\n\nYou are invited to the meeting: " + meetingName + ".\n\nPlease find your QR code for the meeting attached.\n\nThank you!",
+                    "Hello there,\n\nYou are invited to : " + meetingName + ".\n\nPlease find your QR code for the meeting attached.\n\nThank you!",
                     qrCodeFile
             );
         } catch (Exception e) {
