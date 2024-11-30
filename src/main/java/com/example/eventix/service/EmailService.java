@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import org.springframework.mail.javamail.MimeMessageHelper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -23,7 +24,6 @@ import java.util.Hashtable;
 
 @Service
 public class EmailService {
-
     @Autowired
     private JavaMailSender mailSender;
 
@@ -42,7 +42,7 @@ public class EmailService {
             sendEmailWithAttachment(
                     userEmail,
                     "Invitation to " + meetingName,
-                    "Hello there,\n\nYou are invited to : " + meetingName + ".\n\nPlease find your QR code for the meeting attached.\n\nThank you!",
+                    "Hello,\n\nYou are invited to the meeting: " + meetingName + ".\n\nPlease find your QR code for the meeting attached.\n\nThank you!",
                     qrCodeFile
             );
         } catch (Exception e) {
@@ -99,17 +99,18 @@ public class EmailService {
         return qrCodeFile;
     }
 
-    // Send email with the attachment using SimpleMailMessage (no MimeMessageHelper)
+    // Send email with the attachment using the simpler way (via MimeMessageHelper)
     public void sendEmailWithAttachment(String toEmail, String subject, String body, File attachment) throws MailException {
         try {
-            // Create a simple email message
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setTo(toEmail);
-            message.setSubject(subject);
-            message.setText(body);
+            // MimeMessageHelper is still required for email attachment handling
+            MimeMessageHelper helper = new MimeMessageHelper(mailSender.createMimeMessage(), true); // true indicates multipart message
 
-            // Send the email (this won't handle attachments as SimpleMailMessage doesn't support them)
-            mailSender.send(message);
+            helper.setTo(toEmail);
+            helper.setSubject(subject);
+            helper.setText(body);
+            helper.addAttachment(attachment.getName(), attachment);
+
+            mailSender.send(helper.getMimeMessage());
             System.out.println("Email sent successfully with QR code attachment.");
         } catch (Exception e) {
             throw new MailException("Error while sending email with attachment: " + e.getMessage()) {};
