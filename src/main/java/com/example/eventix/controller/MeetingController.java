@@ -3,8 +3,10 @@ package com.example.eventix.controller;
 import com.example.eventix.dto.EmailRequest;
 import com.example.eventix.dto.MeetingDTO;
 import com.example.eventix.dto.ResponseDTO;
+import com.example.eventix.service.EmailService;
 import com.example.eventix.service.MeetingService;
 import com.example.eventix.service.QRCodeService; // Add the service for QR code generation
+import com.example.eventix.util.ResponseMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,6 +20,9 @@ public class MeetingController {
 
     @Autowired
     private MeetingService meetingService;
+
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private QRCodeService qrCodeService; // Autowire QR code service
@@ -61,29 +66,41 @@ public class MeetingController {
         return ResponseEntity.ok().body(meetingService.joinOnlineMeeting(meetingId));
     }
 
+//    @PostMapping("/sendQrCode/{meetingId}")
+//    public ResponseEntity<String> sendQrCode(
+//            @PathVariable int meetingId,
+//            @RequestBody EmailRequest emailRequest,
+//            @RequestHeader("Authorization") String token) {
+//        try {
+//            meetingService.sendQrCodeToUser(meetingId, emailRequest.getEmail());
+//            return ResponseEntity.ok("QR Code sent successfully!");
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to send QR Code: " + e.getMessage());
+//        }
+//    }
+
     @PostMapping("/sendQrCode/{meetingId}")
-    public ResponseEntity<String> sendQrCode(
-            @PathVariable int meetingId,
-            @RequestBody EmailRequest emailRequest,
-            @RequestHeader("Authorization") String token) {
+    public ResponseEntity<ResponseMessage> sendQrCode(
+            @PathVariable Long meetingId,
+            @RequestBody SendQrCodeRequest request) {
         try {
-            meetingService.sendQrCodeToUser(meetingId, emailRequest.getEmail());
-            return ResponseEntity.ok("QR Code sent successfully!");
+            System.out.println("Email: " + request.getEmail());
+            System.out.println("Meeting ID: " + meetingId);
+            System.out.println("Meeting Name: " + request.getMeetingName());
+            System.out.println("QR Code Data: " + request.getQrCodeData());
+
+            // Send the email using the EmailService
+            emailService.sendQrCodeEmail(
+                    request.getEmail(),
+                    request.getQrCodeData(),  // Pass the qrCodeData directly
+                    meetingId.toString(), // Pass the meeting ID as string
+                    request.getMeetingName()
+            );
+            return ResponseEntity.ok(new ResponseMessage("QR Code sent successfully!"));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to send QR Code: " + e.getMessage());
+            return ResponseEntity.status(500).body(new ResponseMessage("Error sending QR code: " + e.getMessage()));
         }
     }
 
-    @PostMapping("/sendMeetingCode/{meetingId}")
-    public ResponseEntity<String> sendMeetingCode(
-            @PathVariable int meetingId,
-            @RequestBody EmailRequest emailRequest,
-            @RequestHeader("Authorization") String token) {
-        try {
-            meetingService.sendMeetingCodeToUser(meetingId, emailRequest.getEmail());
-            return ResponseEntity.ok("Meeting Code sent successfully!");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to send Meeting Code: " + e.getMessage());
-        }
-    }
+   
 }

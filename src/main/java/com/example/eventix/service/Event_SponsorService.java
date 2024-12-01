@@ -164,20 +164,32 @@ public class Event_SponsorService {
     private final Function<String, String> fileExtension = filename -> Optional.of(filename).filter(name -> name.contains("."))
             .map(name -> "." + name.substring(filename.lastIndexOf(".") + 1)).orElse(".png");
 
-    private final BiFunction<Integer,MultipartFile,String> photoFunction = (id,image) -> {
+
+private final BiFunction<Integer, MultipartFile, String> photoFunction = (id, image) -> {
+    try {
+        // Define the directory for storing sponsor logos
+        String uploadDirectory = "src/main/resources/static/uploads/sponsor-logos/";
         String originalFilename = image.getOriginalFilename();
         String fileExtension1 = fileExtension.apply(originalFilename);
-
         String randomFileName = UUID.randomUUID().toString() + fileExtension1;
-        try {
-            Path fileStorageLocation = Paths.get(PHOTO_DIRECTORY).toAbsolutePath().normalize();
-            if (!Files.exists(fileStorageLocation)) {
-                Files.createDirectories(fileStorageLocation);
-            }
-            Files.copy(image.getInputStream(),fileStorageLocation.resolve(randomFileName), REPLACE_EXISTING);
-            return ServletUriComponentsBuilder.fromCurrentContextPath().path("/static/image/" + randomFileName).toUriString();
-        } catch (Exception exception) {
-            throw new RuntimeException("Unable to save image");
-        }
-    };
+
+        // Construct the path to save the file
+        Path filePath = Paths.get(uploadDirectory, randomFileName);
+
+        // Ensure the directory exists
+        Files.createDirectories(filePath.getParent());
+
+        // Save the file to the defined path
+        Files.write(filePath, image.getBytes());
+
+        // Construct the URL to access the image
+        String baseUrl = "http://localhost:8080/uploads/sponsor-logos/";
+        return baseUrl + randomFileName;
+
+    } catch (Exception exception) {
+        throw new RuntimeException("Unable to save sponsor logo", exception);
+    }
+};
+
+
 }
