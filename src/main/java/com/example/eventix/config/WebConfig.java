@@ -28,9 +28,9 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("file:src/main/resources/static/uploads/")
                 .setCachePeriod(3600);  // Optional: Set cache period for static resources
 
-        registry.addResourceHandler("/clubs/**")
-                .addResourceLocations("file:src/main/resources/static/clubs/")
-                .setCachePeriod(3600);  // Optional: Set cache period for static resources
+   //     registry.addResourceHandler("/clubs/**")
+       //         .addResourceLocations("file:src/main/resources/static/clubs/")
+     //           .setCachePeriod(3600);  // Optional: Set cache period for static resources
 
     }
 }
