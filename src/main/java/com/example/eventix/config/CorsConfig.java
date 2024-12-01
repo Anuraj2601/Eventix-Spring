@@ -15,25 +15,25 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class CorsConfig {
 
-    @Bean
-    public WebMvcConfigurer webMvcConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // Allow all paths
-                         // Allow frontend
-                        .allowedOrigins("https://eventix-18.netlify.app")
-                        .allowedMethods("GET", "POST", "PUT","PATCH", "DELETE", "OPTIONS") // Allow specific methods
-                        .allowedHeaders("*") // Allow all headers
-                        .allowCredentials(true); // Allow credentials like cookies, authorization headers
-            }
-        };
-    }
+//    @Bean
+//    public WebMvcConfigurer webMvcConfigurer() {
+//        return new WebMvcConfigurer() {
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/**") // Allow all paths
+//                         // Allow frontend
+//                        .allowedOrigins("https://eventix-18.netlify.app")
+//                        .allowedMethods("GET", "POST", "PUT","PATCH", "DELETE", "OPTIONS") // Allow specific methods
+//                        .allowedHeaders("*") // Allow all headers
+//                        .allowCredentials(true); // Allow credentials like cookies, authorization headers
+//            }
+//        };
+//    }
 
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
-        corsConfig.addAllowedOrigin("http://localhost:3000"); // Adjust for your frontend URL
+        corsConfig.addAllowedOrigin("https://eventix-18.netlify.app"); // Adjust for your frontend URL
         corsConfig.addAllowedMethod("*");
         corsConfig.addAllowedHeader("*");
         corsConfig.setAllowCredentials(true);
