@@ -161,5 +161,49 @@ public class NotificationService {
 
 
 
+    public ResponseDTO markAllAsRead(int user_id) {
+        try {
+            // Fetch all notifications for the given user_id
+            List<Notification> notifications = notificationRepo.findByUserId(user_id);
+
+            if (notifications.isEmpty()) {
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("No notifications found for the user");
+                responseDTO.setContent(null);
+                return responseDTO;
+            }
+
+            // Update is_read to true only if it is currently false
+            boolean anyUpdated = false;
+            for (Notification notification : notifications) {
+                if (!notification.is_read()) { // Check if is_read is false
+                    notification.set_read(true);
+                    anyUpdated = true; // Track if any notifications were updated
+                }
+            }
+
+            if (anyUpdated) {
+                // Save only if there are updates
+                notificationRepo.saveAll(notifications);
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("All unread notifications marked as read successfully");
+            } else {
+                // If no updates were needed
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("All notifications are already marked as read");
+            }
+
+            responseDTO.setContent(null);
+
+        } catch (Exception e) {
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(e.getMessage());
+            responseDTO.setContent(null);
+        }
+
+        return responseDTO;
+    }
+
+
 
 }

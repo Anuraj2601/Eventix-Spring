@@ -36,4 +36,10 @@ public class NotificationController {
     public ResponseEntity<ResponseDTO> saveNotification(@RequestBody NotificationDTO notificationDTO){
         return ResponseEntity.ok().body(notificationService.saveNotification(notificationDTO));
     }
+
+    @PutMapping(value = "/markAllAsRead/{user_id}")
+    public ResponseEntity<ResponseDTO> markAllAsRead(@PathVariable int user_id){
+        return ResponseEntity.ok().body(notificationService.markAllAsRead(user_id));
+    }
+
 }
