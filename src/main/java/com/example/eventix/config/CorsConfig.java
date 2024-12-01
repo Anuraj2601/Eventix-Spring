@@ -10,6 +10,8 @@ import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.servlet.Filter;
+
 
 @Configuration
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -28,5 +30,18 @@ public class CorsConfig {
                         .allowCredentials(true); // Allow credentials like cookies, authorization headers
             }
         };
+    }
+
+    @Bean
+    public Filter corsFilter() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.addAllowedOrigin("https://eventix-18.netlify.app");
+        config.addAllowedMethod("*");
+        config.addAllowedHeader("*");
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return (Filter) new CorsFilter(source);
     }
 }
