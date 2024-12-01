@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/president")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://eventix-18.netlify.app")
 public class MeetingController {
 
     @Autowired

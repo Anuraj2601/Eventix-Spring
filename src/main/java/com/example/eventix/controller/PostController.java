@@ -23,7 +23,7 @@ import java.nio.file.Paths;
 
 @RestController
 @RequestMapping("/member")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://eventix-18.netlify.app")
 public class PostController {
 
     @Autowired

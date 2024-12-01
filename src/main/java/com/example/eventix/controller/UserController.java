@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://eventix-18.netlify.app")
 @RequestMapping("/api/users")
 public class UserController {
     @Autowired

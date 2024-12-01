@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/clubs")
-@CrossOrigin("http://localhost:5173")
+@CrossOrigin(origins = "https://eventix-18.netlify.app")
 public class ClubsController {
 
     @Autowired
