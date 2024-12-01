@@ -10,8 +10,6 @@ import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.servlet.Filter;
-
 
 @Configuration
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -33,15 +31,15 @@ public class CorsConfig {
     }
 
     @Bean
-    public Filter corsFilter() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("https://eventix-18.netlify.app");
-        config.addAllowedMethod("*");
-        config.addAllowedHeader("*");
-        config.setAllowCredentials(true);
+    public CorsFilter corsFilter() {
+        CorsConfiguration corsConfig = new CorsConfiguration();
+        corsConfig.addAllowedOrigin("http://localhost:3000"); // Adjust for your frontend URL
+        corsConfig.addAllowedMethod("*");
+        corsConfig.addAllowedHeader("*");
+        corsConfig.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return (Filter) new CorsFilter(source);
+        source.registerCorsConfiguration("/**", corsConfig);
+        return new CorsFilter(source);
     }
 }
