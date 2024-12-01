@@ -1,11 +1,13 @@
 package com.example.eventix.service;
-import com.example.eventix.dto.CandidateDTO;
+import com.example.eventix.dto.*;
 
 import com.example.eventix.entity.Candidate;
+import com.example.eventix.entity.Election;
 import com.example.eventix.entity.Users;
 import com.example.eventix.repository.CandidateRepository;
 import com.example.eventix.repository.UsersRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +21,15 @@ public class CandidateService {
 
     @Autowired
     private UsersRepo usersRepo;
+
+    @Autowired
+    private NotificationService notificationService;
+
+    @Autowired
+    private ElectionService electionService;
+
+    @Autowired
+    private UserService userService;
 
     // Save a candidate with populated user details
     public Candidate save(Candidate candidate) {
@@ -56,8 +67,39 @@ public class CandidateService {
                 .orElseThrow(() -> new IllegalArgumentException("Candidate not found"));
         candidate.setSelected(selected);
         candidate = candidateRepository.save(candidate);
+
+        sendCandidateNotification(candidate, selected);
         return mapToDTO(candidate);
     }
+
+    private void sendCandidateNotification(Candidate candidate, String selected) {
+        String message;
+
+        ResponseDTO electionResponse = electionService.getElection(candidate.getElection().getElection_id());
+        ElectionDTO election = (ElectionDTO) electionResponse.getContent(); // Cast to ElectionDTO
+
+        ResponseDTO userDetailsResponse = userService.getUserByEmail(candidate.getUserEmail());
+        Users userDetails = (Users) userDetailsResponse.getContent();
+
+
+        if ("selected".equalsIgnoreCase(selected)) {
+            message = "Congratulations! You have been selected for election " + election.getElection_name();
+        } else if ("rejected".equalsIgnoreCase(selected)) {
+            message = "We regret to inform you that you have not been selected for election " + election.getElection_name();
+        } else {
+            return; // Exit if the status is neither "selected" nor "rejected"
+        }
+
+        NotificationDTO notificationDTO = new NotificationDTO();
+        notificationDTO.setNotification(message);
+        notificationDTO.set_read(false);
+        notificationDTO.setClub_id(candidate.getClubId());
+        notificationDTO.setUser_id(userDetails.getId());
+
+
+        notificationService.saveNotification(notificationDTO);
+    }
+
     private CandidateDTO mapToDTO(Candidate candidate) {
         Integer electionId = null;
         if (candidate.getElection() != null) {
