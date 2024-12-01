@@ -21,25 +21,12 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Allow all paths
-                        .allowedOrigins("http://localhost:5173") // Allow frontend
+                         // Allow frontend
                         .allowedOrigins("https://eventix-18.netlify.app")
                         .allowedMethods("GET", "POST", "PUT","PATCH", "DELETE", "OPTIONS") // Allow specific methods
                         .allowedHeaders("*") // Allow all headers
                         .allowCredentials(true); // Allow credentials like cookies, authorization headers
             }
         };
-    }
-
-    @Bean
-    public CorsFilter corsFilter() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("https://eventix-18.netlify.app/");
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-        config.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
     }
 }
