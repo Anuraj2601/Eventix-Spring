@@ -23,14 +23,23 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/clubs/**")
                 .addResourceLocations("classpath:/static/clubs/");
 
-        registry.addResourceHandler("/uploads/**")
-//                .addResourceLocations("file:C:/eventix/uploads/profile-photos/")
-                .addResourceLocations("file:src/main/resources/static/uploads/")
-                .setCachePeriod(3600);  // Optional: Set cache period for static resources
+        registry.addResourceHandler("/images/**")
+                .addResourceLocations("classpath:/static/images/");
 
-        registry.addResourceHandler("/clubs/**")
-                .addResourceLocations("file:src/main/resources/static/clubs/")
-                .setCachePeriod(3600);  // Optional: Set cache period for static resources
+        registry.addResourceHandler("/qr-codes/**")
+                .addResourceLocations("classpath:/static/qr-codes/");
+
+        registry.addResourceHandler("/uploads/**")
+                .addResourceLocations("classpath:/static/uploads/");
+
+//        registry.addResourceHandler("/uploads/**")
+////                .addResourceLocations("file:C:/eventix/uploads/profile-photos/")
+//                .addResourceLocations("file:src/main/resources/static/uploads/")
+//                .setCachePeriod(3600);  // Optional: Set cache period for static resources
+//
+//        registry.addResourceHandler("/clubs/**")
+//                .addResourceLocations("file:src/main/resources/static/clubs/")
+//                .setCachePeriod(3600);  // Optional: Set cache period for static resources
 
     }
 }
