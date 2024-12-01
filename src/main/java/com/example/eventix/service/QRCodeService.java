@@ -51,7 +51,7 @@ public class QRCodeService {
         ImageIO.write(image, "PNG", outputFile);
 
         // Return the URL for accessing the QR code
-        return "http://localhost:8080/qr-codes/" + fileName + ".png";
+        return "http://eventix-spring-production.up.railway.app/qr-codes/" + fileName + ".png";
     }
 
 }

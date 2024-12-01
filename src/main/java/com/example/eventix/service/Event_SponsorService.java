@@ -183,7 +183,7 @@ private final BiFunction<Integer, MultipartFile, String> photoFunction = (id, im
         Files.write(filePath, image.getBytes());
 
         // Construct the URL to access the image
-        String baseUrl = "http://localhost:8080/uploads/sponsor-logos/";
+        String baseUrl = "http://eventix-spring-production.up.railway.app/uploads/sponsor-logos/";
         return baseUrl + randomFileName;
 
     } catch (Exception exception) {
