@@ -42,4 +42,10 @@ public class NotificationController {
         return ResponseEntity.ok().body(notificationService.markAllAsRead(user_id));
     }
 
+    @GetMapping("/getUnreadNotificationCount/{user_id}")
+    public ResponseDTO getUnreadNotificationCount(@PathVariable int user_id) {
+        return notificationService.getUnreadNotificationCount(user_id);
+    }
+
+
 }

@@ -204,6 +204,29 @@ public class NotificationService {
         return responseDTO;
     }
 
+    public ResponseDTO getUnreadNotificationCount(int user_id) {
+        try {
+            // Fetch the count of unread notifications for the given user_id
+            long unreadCount = notificationRepo.countUnreadNotificationsByUserId(user_id);
+
+            // Check if there are any unread notifications
+            if (unreadCount > 0) {
+                responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                responseDTO.setMessage("Unread notifications count retrieved successfully");
+                responseDTO.setContent(unreadCount); // Returning the count as the content
+            } else {
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("No unread notifications found for the user");
+                responseDTO.setContent(0); // No unread notifications
+            }
+        } catch (Exception e) {
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage("Error while fetching unread notifications count: " + e.getMessage());
+            responseDTO.setContent(null);
+        }
+
+        return responseDTO;
+    }
 
 
 }
