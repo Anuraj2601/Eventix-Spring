@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/clubs")
 @CrossOrigin(origins = "https://eventix-18.netlify.app")
+@RequestMapping("/clubs")
 public class ClubsController {
 
     @Autowired
