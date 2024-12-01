@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/student")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://eventix-18.netlify.app")
 public class EventFeedbackController {
 
     @Autowired

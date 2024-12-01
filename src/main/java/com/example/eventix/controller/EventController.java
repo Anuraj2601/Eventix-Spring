@@ -25,7 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/event/")
 
-@CrossOrigin("http://localhost:5173")
+@CrossOrigin("https://eventix-18.netlify.app")
 
 public class EventController {
 
