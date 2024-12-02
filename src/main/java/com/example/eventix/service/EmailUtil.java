@@ -32,7 +32,7 @@ public class EmailUtil {
         // Build the HTML content of the email
         String emailContent = """
         <div>
-            <h3>Hello,</h3>
+            <h3>Welcome to EVENTIX!!!,</h3>
             <p>Your OTP is: <strong>%s</strong></p>
             <p>Please use this OTP to complete your verification process.</p>
             <p>If you did not request this, please ignore this email.</p>
