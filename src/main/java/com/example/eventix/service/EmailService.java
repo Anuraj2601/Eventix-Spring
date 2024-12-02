@@ -5,6 +5,10 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+
+import com.example.eventix.entity.Meeting;
+import com.example.eventix.repository.MeetingRepo;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +25,15 @@ import com.google.zxing.common.BitMatrix;
 import org.springframework.stereotype.Service;
 
 import java.util.Hashtable;
+import java.util.Optional;
 
 @Service
 public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
+
+    @Autowired
+    private MeetingRepo meetingRepo;
 
     private String qrCodeDirectory = "src/main/resources/static/qr-codes/";
 
@@ -150,4 +158,40 @@ public class EmailService {
                 "</html>";
     }
 
+    public void sendMeetingCode(int meetingId, String recipientEmail) throws Exception {
+        // Fetch meeting details
+        Optional<Meeting> meetingOptional = meetingRepo.findById(meetingId);
+        if (meetingOptional.isEmpty()) {
+            throw new Exception("Meeting not found for ID: " + meetingId);
+        }
+        Meeting meeting = meetingOptional.get();
+
+        // Ensure the meeting is an online meeting and has a code
+        if (!"ONLINE".equalsIgnoreCase(meeting.getMeetingType())) {
+            throw new Exception("This meeting is not an online meeting.");
+        }
+        String meetingCode = meeting.getMeetingLink(); // Assuming meeting entity has a field `meetingCode`
+        if (meetingCode == null || meetingCode.isBlank()) {
+            throw new Exception("Meeting code is not generated for this meeting.");
+        }
+
+        // Compose email
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        helper.setTo(recipientEmail);
+        helper.setSubject("Online Meeting Code - " + meeting.getMeeting_name());
+        helper.setText(
+                "Dear User,\n\n" +
+                        "Please find the details of your online meeting below:\n\n" +
+                        "Meeting Name: " + meeting.getMeeting_name() + "\n" +
+                        "Date: " + meeting.getDate() + "\n" +
+                        "Time: " + meeting.getTime() + "\n\n" +
+                        "Meeting Code/Link: " + meetingCode + "\n\n" +
+                        "Thank you.",
+                false
+        );
+
+        // Send email
+        mailSender.send(message);
+    }
 }
