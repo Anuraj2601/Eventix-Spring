@@ -73,6 +73,14 @@ public class Users implements UserDetails {
     @Transient // This field is not persisted in the database
     private boolean isCurrentUser;
 
+    public boolean isActive() {
+        return active;
+    }
+
+    // Set the 'active' field as a boolean
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
