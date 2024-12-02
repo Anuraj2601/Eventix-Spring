@@ -413,4 +413,47 @@ public class UsersManagementService {
             throw new RuntimeException("Unable to save image");
         }
     };
+
+    public ReqRes verifyEmailOtpAndActivate(String email, String otp) {
+        ReqRes response = new ReqRes();
+
+        try {
+            // Find user by email
+            Users user = usersRepo.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("User not found with this email: " + email));
+
+            // Validate OTP and check if it's expired (within 5 minutes or 300 seconds)
+            if (user.getOtp().equals(otp)) {
+                long secondsElapsed = Duration.between(user.getOtpGeneratedTime(), LocalDateTime.now()).getSeconds();
+
+                if (secondsElapsed < 300) {  // OTP is valid and not expired
+                    // Activate the user
+                    user.setActive(true);
+                    usersRepo.save(user);
+
+                    response.setStatusCode(200);
+                    response.setMessage("OTP verified. You can now login.");
+                } else {
+                    // OTP is expired
+                    response.setStatusCode(400);
+                    response.setMessage("OTP has expired. Please regenerate OTP.");
+                }
+            } else {
+                // OTP is invalid
+                response.setStatusCode(400);
+                response.setMessage("Invalid OTP. Please check and try again.");
+            }
+        } catch (RuntimeException e) {
+            // Handle user not found or other runtime exceptions
+            response.setStatusCode(400);
+            response.setError("Error: " + e.getMessage());
+        } catch (Exception e) {
+            // General exception handling for unexpected errors
+            response.setStatusCode(500);
+            response.setError("An error occurred while verifying the OTP: " + e.getMessage());
+        }
+
+        return response;
+    }
+
 }
