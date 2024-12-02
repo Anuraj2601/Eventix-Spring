@@ -57,7 +57,7 @@ public String updateProfilePhoto(String email, MultipartFile file) throws IOExce
         Files.write(filePath, file.getBytes());
 
         // Construct the URL to access the image
-        String baseUrl = "http://localhost:8080/uploads/profile-photos/";
+        String baseUrl = "https://eventix-spring-production.up.railway.app/uploads/profile-photos/";
         String photoUrl = baseUrl + fileName;
 
         // Store the URL in the database

@@ -91,4 +91,18 @@ public class UserManagementController {
     public byte[] getPhoto(@PathVariable("filename") String filename) throws IOException {
         return Files.readAllBytes(Paths.get(PHOTO_DIRECTORY + filename));
     }
+
+    @PatchMapping("/verify-email-otp")
+    public ResponseEntity<String> verifyEmailOtp(@RequestParam String email, @RequestParam String otp) {
+        // Call the service method to verify the OTP and activate the user
+        ReqRes response = usersManagementService.verifyEmailOtpAndActivate(email, otp);
+
+        // Handle response based on the status code from service
+        if (response.getStatusCode() == 200) {
+            return ResponseEntity.ok(response.getMessage());
+        } else {
+            return ResponseEntity.status(response.getStatusCode()).body(response.getMessage());
+        }
+    }
+
 }

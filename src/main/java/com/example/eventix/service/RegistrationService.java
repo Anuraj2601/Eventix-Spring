@@ -1,5 +1,6 @@
 package com.example.eventix.service;
 
+import com.example.eventix.dto.NotificationDTO;
 import com.example.eventix.entity.Registration;
 import com.example.eventix.entity.Users;
 import com.example.eventix.entity.Clubs;
@@ -10,6 +11,7 @@ import com.example.eventix.repository.UsersRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,7 +28,43 @@ public class RegistrationService {
     @Autowired
     private UsersRepo usersRepository;
 
+
+    @Autowired
+    private NotificationService notificationService;
+
     // Create or update a registration
+//    public RegistrationDTO saveRegistration(RegistrationDTO registrationDTO) {
+//        Registration registration = new Registration();
+//        registration.setRegistrationId(registrationDTO.getRegistrationId()); // Set ID for update
+//        registration.setTeam(registrationDTO.getTeam());
+//        registration.setInterviewSlot(registrationDTO.getInterviewSlot());
+//        registration.setReason(registrationDTO.getReason());
+//
+//        // Only set 'accepted' if provided, else default will be used
+//        registration.setAccepted(registrationDTO.getAccepted());
+//        // Only set 'position' if provided, else default will be used
+//        registration.setPosition(registrationDTO.getPosition());
+//
+//        Optional<Clubs> club = clubsRepository.findById(registrationDTO.getClubId());
+//        if (club.isPresent()) {
+//            registration.setClub(club.get());
+//        } else {
+//            throw new RuntimeException("Club not found");
+//        }
+//
+//        Optional<Users> user = usersRepository.findByEmail(registrationDTO.getEmail());
+//        if (user.isPresent()) {
+//            registration.setUser(user.get());
+//        } else {
+//            throw new RuntimeException("User not found");
+//        }
+//
+//        Registration savedRegistration = registrationRepository.save(registration);
+//        registrationDTO.setRegistrationId(savedRegistration.getRegistrationId());
+//        return registrationDTO;
+//    }
+
+
     public RegistrationDTO saveRegistration(RegistrationDTO registrationDTO) {
         Registration registration = new Registration();
         registration.setRegistrationId(registrationDTO.getRegistrationId()); // Set ID for update
@@ -48,6 +86,9 @@ public class RegistrationService {
 
         Optional<Users> user = usersRepository.findByEmail(registrationDTO.getEmail());
         if (user.isPresent()) {
+            System.out.println("user"+ user);
+            System.out.println("user.get()"+ user.get());
+            System.out.println("user.get().getID()" + user.get().getId());
             registration.setUser(user.get());
         } else {
             throw new RuntimeException("User not found");
@@ -55,6 +96,19 @@ public class RegistrationService {
 
         Registration savedRegistration = registrationRepository.save(registration);
         registrationDTO.setRegistrationId(savedRegistration.getRegistrationId());
+
+        // Check if 'accepted' is true and send notification
+        if (registrationDTO.getAccepted() == 1) {
+            NotificationDTO notificationDTO = new NotificationDTO();
+            notificationDTO.setNotification("Your registration has been accepted for Club "+ club.get().getClub_name() );
+            notificationDTO.set_read(false);
+            notificationDTO.setUser_id(user.get().getId());
+            notificationDTO.setClub_id(club.get().getClub_id());
+
+
+            notificationService.saveNotification(notificationDTO); // Send notification
+        }
+
         return registrationDTO;
     }
 
@@ -72,6 +126,16 @@ public class RegistrationService {
         return registrationRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public List<RegistrationDTO> getRegistrationsByClubId(int clubId) {
+        List<Registration> registrations = registrationRepository.findByClubId(clubId);
+
+        // Map entities to DTOs
+        return registrations.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
     }
 
     // Get registration by ID

@@ -1,6 +1,8 @@
 package com.example.eventix.service;
 
 import com.example.eventix.dto.AnnouncementDTO;
+import com.example.eventix.dto.NotificationDTO;
+import com.example.eventix.dto.RegistrationDTO;
 import com.example.eventix.dto.ResponseDTO;
 import com.example.eventix.entity.Announcements;
 import com.example.eventix.repository.AnnouncementRepo;
@@ -19,10 +21,18 @@ public class AnnouncementService {
 
     @Autowired
     private AnnouncementRepo announcementRepo;
+
     @Autowired
     private ModelMapper modelMapper;
+
     @Autowired
     private ResponseDTO responseDTO;
+
+    @Autowired
+    private RegistrationService registrationService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     public ResponseDTO saveAnnouncement(AnnouncementDTO announcementDTO){
         try{
@@ -34,6 +44,9 @@ public class AnnouncementService {
             }else{
                 Announcements savedAnnouncement =  announcementRepo.save(modelMapper.map(announcementDTO, Announcements.class));
                 AnnouncementDTO savedAnnouncementDTO = modelMapper.map(savedAnnouncement, AnnouncementDTO.class);
+
+                sendClubNotifications(savedAnnouncement);
+
                 responseDTO.setStatusCode(VarList.RSP_SUCCESS);
                 responseDTO.setMessage("Announcement Saved Successfully");
                 responseDTO.setContent(savedAnnouncementDTO);
@@ -163,4 +176,28 @@ public class AnnouncementService {
 
 
     }
+
+
+    private void sendClubNotifications(Announcements announcement) {
+        // Retrieve the club ID from the announcement
+        int clubId = announcement.getClub().getClub_id();
+
+        // Get all registered students for the club from registrationService
+        List<RegistrationDTO> registeredMembers = registrationService.getRegistrationsByClubId(clubId);
+
+        // Send a notification to each member
+        for (RegistrationDTO member : registeredMembers) {
+            NotificationDTO notificationDTO = new NotificationDTO();
+            notificationDTO.setNotification("New Announcement: " + announcement.getTitle());
+            notificationDTO.set_read(false);
+            notificationDTO.setUser_id(member.getUserId());
+            notificationDTO.setClub_id(clubId);
+
+
+            notificationService.saveNotification(notificationDTO);
+        }
+    }
+
+
+
 }
