@@ -22,7 +22,7 @@ public class EmailUtil {
         mimeMessageHelper.setSubject("Verify OTP");
         mimeMessageHelper.setText("""
                 <div>
-                    <a href="https://eventix-spring-production.up.railway.app/verify-account?email=%s&otp=%s" target="_blank">Click Link to verify</a>
+                    <a href="https://eventix-18.netlify.app/Accountverify?email=%s&otp=%s" target="_blank">Click Link to verify</a>
                 </div>
                 """.formatted(email, otp), true);
 
