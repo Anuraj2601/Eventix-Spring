@@ -32,11 +32,11 @@ public class EmailUtil {
         // Build the HTML content of the email
         String emailContent = """
         <div>
-            <h3>Welcome to EVENTIX!!!,</h3>
+            <h3>Welcome to EVENTIX !!! ,</h3>
             <p>Your OTP is: <strong>%s</strong></p>
             <p>Please use this OTP to complete your verification process.</p>
             <p>If you did not request this, please ignore this email.</p>
-            <p><a href="http://localhost:8080/verify-account?email=%s&otp=%s" target="_blank">Click here to verify your account</a></p>
+            <p><a href="https://eventix-18.netlify.app/Accountverify?email=%s&otp=%s" target="_blank">Click here to verify your account</a></p>
         </div>
     """.formatted(otp, email, otp);
 
