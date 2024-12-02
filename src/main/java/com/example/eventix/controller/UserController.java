@@ -106,4 +106,10 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getUserByEmail(email));
 
     }
+
+    @GetMapping("/getUserForLogin")
+    public ResponseEntity<ResponseDTO> getUserForLogin(@RequestParam String email) {
+        // Call the service method to get the user by email and check if it's active
+        return ResponseEntity.ok().body(userService.checkEmailActiveStatus(email));
+    }
 }

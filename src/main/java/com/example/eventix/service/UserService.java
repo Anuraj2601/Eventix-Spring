@@ -80,4 +80,41 @@ public class UserService implements UserDetailsService {
         }
 
     }
+
+    public ResponseDTO checkEmailActiveStatus(String email) {
+        try {
+            // Find the user by email (removes Optional and checks for null directly)
+            Users user = usersRepo.findByEmail(email).orElse(null);
+
+            if (user != null) {  // Check if the user is found
+                // Check if the user is active (active == true)
+                if (user.isActive()) {
+                    // Return success if the user is active
+                    responseDTO.setStatusCode(VarList.RSP_SUCCESS);
+                    responseDTO.setMessage("User is active.");
+                    responseDTO.setContent(user);
+                } else {
+                    // Return a message if the user is inactive
+                    responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                    responseDTO.setMessage("User is inactive. Please verify your email.");
+                    responseDTO.setContent(null);
+                }
+            } else {
+                // Return a message if no user is found with the given email
+                responseDTO.setStatusCode(VarList.RSP_NO_DATA_FOUND);
+                responseDTO.setMessage("No user found with this email.");
+                responseDTO.setContent(null);
+            }
+
+            return responseDTO;
+
+        } catch (Exception e) {
+            // Handle any exceptions that might occur
+            responseDTO.setStatusCode(VarList.RSP_ERROR);
+            responseDTO.setMessage(e.getMessage());
+            responseDTO.setContent(null);
+            return responseDTO;
+        }
+    }
+
 }
