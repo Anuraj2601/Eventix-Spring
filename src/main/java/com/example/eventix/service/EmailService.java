@@ -125,16 +125,16 @@ public class EmailService {
         }
     }
 
-    // Send event approval email (without using MimeMessageHelper)
+    // Send event approval email
     public void sendEventApprovalEmail(String recipientEmail, String eventName, String eventDetails, String clubName) {
         try {
-            // Create a simple email message for event approval
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setTo(recipientEmail);
-            message.setSubject("Event Approved: " + eventName);
-            message.setText(buildApprovalEmailBody(eventName, eventDetails, clubName));
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-            // Send the email
+            helper.setTo(recipientEmail);
+            helper.setSubject("Event Approved: " + eventName);
+            helper.setText(buildApprovalEmailBody(eventName, eventDetails, clubName), true); // true enables HTML
+
             mailSender.send(message);
             System.out.println("Approval email sent to " + recipientEmail);
         } catch (Exception e) {
