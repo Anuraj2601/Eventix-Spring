@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.eventix.dto.UserProfileDTO;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PutMapping;
 
 
 import java.util.List;
@@ -111,5 +112,14 @@ public class UserController {
     public ResponseEntity<ResponseDTO> getUserForLogin(@RequestParam String email) {
         // Call the service method to get the user by email and check if it's active
         return ResponseEntity.ok().body(userService.checkEmailActiveStatus(email));
+    }
+
+    @PutMapping("/updateRoles")
+    public ResponseEntity<ResponseDTO> updateRoles(
+            @RequestParam Integer currentAdminId,
+            @RequestParam Integer currentTreasurerId,
+            @RequestParam Integer newAdminId,
+            @RequestParam Integer newTreasurerId) {
+        return ResponseEntity.ok().body(userService.updateRoles(currentAdminId, currentTreasurerId, newAdminId, newTreasurerId));
     }
 }

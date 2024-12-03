@@ -117,4 +117,30 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    public ResponseDTO updateRoles(Integer currentAdminId, Integer currentTreasurerId, Integer newAdminId, Integer newTreasurerId) {
+        ResponseDTO responseDTO = new ResponseDTO();
+        try {
+            Users currentAdmin = usersRepo.findById(currentAdminId).orElseThrow(() -> new RuntimeException("Current admin not found"));
+            Users currentTreasurer = usersRepo.findById(currentTreasurerId).orElseThrow(() -> new RuntimeException("Current treasurer not found"));
+            Users newAdmin = usersRepo.findById(newAdminId).orElseThrow(() -> new RuntimeException("New admin not found"));
+            Users newTreasurer = usersRepo.findById(newTreasurerId).orElseThrow(() -> new RuntimeException("New treasurer not found"));
+
+            currentAdmin.setRole("student");
+            currentTreasurer.setRole("student");
+            newAdmin.setRole("ADMIN");
+            newTreasurer.setRole("treasurer");
+
+            usersRepo.save(currentAdmin);
+            usersRepo.save(currentTreasurer);
+            usersRepo.save(newAdmin);
+            usersRepo.save(newTreasurer);
+
+            responseDTO.setStatusCode(200);
+            responseDTO.setMessage("Roles updated successfully.");
+        } catch (Exception e) {
+            responseDTO.setStatusCode(500);
+            responseDTO.setMessage("Error: " + e.getMessage());
+        }
+        return responseDTO;
+    }
 }
