@@ -47,23 +47,23 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT,"/regenerate-otp").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/photo").permitAll()
                         .requestMatchers(HttpMethod.GET,"/static/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/president/getAllElections").hasAnyAuthority("student","member", "oc", "president")
+                        .requestMatchers(HttpMethod.GET, "/president/getAllElections").hasAnyAuthority("student","member", "oc", "president", "ADMIN", "treasurer")
                         .requestMatchers("/api/voters/election/**").permitAll()
 
-//                         .requestMatchers("/president/").hasAnyAuthority("president")
-//                         .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
-                        .requestMatchers("/president/getAllEvents").hasAnyAuthority("member", "oc", "president", "student", "ADMIN")
+//                         .requestMatchers("/president/").hasAnyAuthority("president", "student", "ADMIN", "treasurer")
+//                         .requestMatchers("/admin/**").hasAnyAuthority( "student", "ADMIN", "treasurer")
+                        .requestMatchers("/president/getAllEvents").hasAnyAuthority("member", "oc", "president", "student", "ADMIN", "treasurer")
 
                         .requestMatchers("/president/getAllEventOcs").hasAnyAuthority("member", "oc", "president", "student", "treasurer","ADMIN", "secretary")
                         .requestMatchers("/president/getAllAnnouncements").hasAnyAuthority("member", "oc", "president", "student", "treasurer","ADMIN", "secretary")
-                        .requestMatchers("/president/releaseElection/**").hasAnyAuthority("student","president")
+                        .requestMatchers("/president/releaseElection/**").hasAnyAuthority("student","president", "treasurer","ADMIN")
 
                         .requestMatchers("/president/**").hasAnyAuthority("member", "oc", "president", "student", "treasurer","ADMIN", "secretary")
                         .requestMatchers("/student/**").hasAnyAuthority("member", "oc", "president", "student", "treasurer","ADMIN", "secretary")
 
                         .requestMatchers("/admin/**").hasAnyAuthority("member", "oc", "president", "student", "treasurer","ADMIN", "secretary")
 
-                        .requestMatchers("/user/**").hasAnyAuthority("USER","student", "president")
+                        .requestMatchers("/user/**").hasAnyAuthority("USER","student", "president", "treasurer", "ADMIN")
                         .requestMatchers("/adminuser/**").hasAnyAuthority("member", "oc", "president", "student", "treasurer","ADMIN", "secretary","USER")
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .anyRequest().permitAll())
